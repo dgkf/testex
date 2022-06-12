@@ -46,11 +46,11 @@ roclet with `testex`'s:
 You could call it a day there if you'd like, but there are a few options if
 you'd like to tune your testing workflow.
 
-#### Running tests with testthat
+#### Running tests with `testthat`
 
 If you'd like to automatically test your examples when you test your package,
 `testex` can generate tests for you that will automatically contribute to
-`testthat` results. Simly run:
+`testthat` results. Simply run:
 
 ```r
 testex::use_testex_as_testthat()
