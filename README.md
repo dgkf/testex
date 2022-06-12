@@ -185,7 +185,7 @@ consecutive `@testthat` expecations will all test the previous example output.
 
 ## Prior Art
 
-I stumbled across the aweseome [`roxytest`](https://github.com/mikldk/roxytest)
+I stumbled across the awesome [`roxytest`](https://github.com/mikldk/roxytest)
 package when searching around for a solution like this. That package takes a bit
 of a different approach, embedding test _writing_ alongside examples. The test
 tags that are offered in that package are used to generate `tinytest` and
