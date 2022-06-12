@@ -2,43 +2,6 @@
 
 Add tests and assertions in-line in examples
 
-## Goals
-
-R offers some pretty outstanding tools for presenting example code alongside a
-package. `testex` aims to make it a bit more powerful by giving you a convenient
-shorthand for writing tests and easier ability to customize how they are
-executed.
-
-* Example tests that integrate nicely with popular tools. For those that like to
-  write Rd files by hand and those that like to generate documentation via
-  `roxygen2`.
-
-* Choose where and how your examples are tested - whether you prefer to test
-  through `R CMD check` or other mechanisms.
-
-### Use Cases
-
-Since R packages may mix and match tools (`roxygen2`, `testthat`, etc.) to suit
-their development needs, a mechanism of testing examples should also be flexible
-enough to accommodate any development style. Priority workflows include
-
-* Handwritten Rd documentation  
-  Probably the least common use-case, but a priority none-the-less since it
-  stress tests the goal of delivering a workflow-agnostic testing pattern.
-
-* `roxygen2`-generated Rd documentation  
-  It's hard to find a recent package that doesn't use `roxygen2` for generating
-  documentation. As such, any tools should integrate nicely.
-
-* `testthat` testing  
-  Choose whether you want to treat example tests as tests during `R CMD check`s
-  of examples or during your additional testing steps. Use `testthat` to
-  execute example tests and integrate the results with your test suite.
-
-All paths lead back to `Rd` files as a common ground. Whatever tool you prefer
-to use, using this central format as the basis for testing means that `testex`
-can accommodate your workflow.
-
 ## Quick Start
 
 ### 1. Add some expectations
@@ -77,6 +40,43 @@ roclet with `testex`'s:
 - Roxygen: list(markdown = TRUE, roclets = c("namespace", "rd"))
 + Roxygen: list(markdown = TRUE, roclets = c("namespace", "testex::rd"))
 ```
+
+## Goals
+
+R offers some pretty outstanding tools for presenting example code alongside a
+package. `testex` aims to make it a bit more powerful by giving you a convenient
+shorthand for writing tests and easier ability to customize how they are
+executed.
+
+* Example tests that integrate nicely with popular tools. For those that like to
+  write Rd files by hand and those that like to generate documentation via
+  `roxygen2`.
+
+* Choose where and how your examples are tested - whether you prefer to test
+  through `R CMD check` or other mechanisms.
+
+### Use Cases
+
+Since R packages may mix and match tools (`roxygen2`, `testthat`, etc.) to suit
+their development needs, a mechanism of testing examples should also be flexible
+enough to accommodate any development style. Priority workflows include
+
+* Handwritten Rd documentation  
+  Probably the least common use-case, but a priority none-the-less since it
+  stress tests the goal of delivering a workflow-agnostic testing pattern.
+
+* `roxygen2`-generated Rd documentation  
+  It's hard to find a recent package that doesn't use `roxygen2` for generating
+  documentation. As such, any tools should integrate nicely.
+
+* `testthat` testing  
+  Choose whether you want to treat example tests as tests during `R CMD check`s
+  of examples or during your additional testing steps. Use `testthat` to
+  execute example tests and integrate the results with your test suite.
+
+All paths lead back to `Rd` files as a common ground. Whatever tool you prefer
+to use, using this central format as the basis for testing means that `testex`
+can accommodate your workflow.
 
 ## Under the hood
 
@@ -143,10 +143,10 @@ hello <- function(who) {
 After running `roxygen2::roxygenize()`, you can take a peak at the `Rd` files
 and see how the code has been translated to `testex` tests.
 
-### Leverage `testthat` expecations
+### Leverage `testthat` expectations
 
-A convenience tag is also provided for those that prefer the `testthat` style of
-testing. `testthat` provides a wealth of expecation functions, which can be used
+A convenience tag is also provide for those that prefer the `testthat` style of
+testing. `testthat` provides a wealth of expectation functions, which can be used
 in conjunction with `testex` to write more familiar tests. 
 
 ```r
@@ -167,7 +167,8 @@ hello <- function(who) {
 ```
 
 The `@testthat` tag will automatically insert the `.Last.value` from the
-previous example into the first argument of each expectation. 
+previous example into the first argument of each expectation. Multiple
+consecutive `@testthat` expecations will all test the previous example output.
 
 ## Roadmap
 
