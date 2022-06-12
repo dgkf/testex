@@ -1,0 +1,305 @@
+#' @export
+use_rd_roclet <- function(path = getwd(), check = NA, use_testthat = NA) {
+  path <- file.path(find_package_root(path), "DESCRIPTION")
+  desc <- read.dcf(path)
+  desc <- read.dcf(path, keep.white = colnames(desc))
+
+  # update Roxygen settings
+  roxygen <- if (!"Roxygen" %in% colnames(desc)) {
+    list(markdown = TRUE, roclets = c("namespace"))
+  } else {
+    eval(
+      parse(text = desc[1L,"Roxygen"], keep.source = FALSE),
+      envir = new.env(parent = baseenv())
+    )
+  }
+
+  roxygen$roclets <- c(
+    setdiff(roxygen$roclets, c("rd", "testex::rd")),
+    "testex::rd"
+  )
+
+  if (is.na(use_testthat)) {
+    deps <- intersect(c("Depends", "Imports", "Suggests"), colnames(desc))
+    use_testthat <- roxygen$testex.use_testthat %||%
+      any(grepl("\\btestthat\\b", desc[,deps]))
+  }
+
+  ## custom options throw warnings
+  # roxygen$testex.use_testthat <- use_testthat
+  # roxygen$testex.check <- roxygen$testex.check %||% check %|NA|% TRUE
+
+  # add testex to Suggests
+  suggests <- if (!"Suggests" %in% colnames(desc)) {
+    character(0L)
+  } else {
+    desc[1L,"Suggests"]
+  }
+
+  if (!grepl("\\btestex\\b", suggests)) {
+    suggests <- paste(c(suggests, "testex"), collapse = "\n")
+  }
+
+  desc[1L, "Roxygen"] <- paste0("\n    ", deparse(roxygen), collapse = "")
+  desc[1L, "Suggests"] <- suggests
+  write.dcf(
+    desc,
+    path,
+    keep.white = setdiff(colnames(desc), "Roxygen"),
+    width = 80L,
+    indent = 2L
+  )
+}
+
+
+#' @export
+rd <- function() {
+  roxygen2::roclet("rd")
+}
+
+#' @exportS3Method roxygen2::roclet_process roclet_rd
+roclet_process.roclet_rd <- function(x, blocks, env, base_path) {
+  testex_tags <- c("expect", "testthat")
+  rdname <- basename(base_path)
+
+  for (bi in seq_along(blocks)) {
+    block <- blocks[[bi]]
+    tags <- vapply(block$tags, `[[`, character(1L), "tag")
+
+    ti_ex_tag <- which(tags == "examples")
+    ti_ex_last_subtag <- tail(which(tags %in% c("examples", testex_tags)), 1L)
+    if (!length(ti_ex_tag)) break
+
+    ex_tag <- block$tags[[ti_ex_tag]]
+    ex <- ex_tag$val
+
+    # try to track lines of code through example for test descriptions
+    ex_file <- ex_tag$file
+    ex_lines <- rep_len(ex_tag$line, 2L)
+
+    # stateful aggregators to collect consecutive tests into \testonly block
+    last_tag <- NULL
+    tests <- list()
+
+    for (ti in seq(from = ti_ex_tag, to = ti_ex_last_subtag)) {
+      tag <- block$tags[[ti]]
+
+      if (!is.null(last_tag) && last_tag != tag$tag) {
+        test_rd <- format_tests(last_tag, tests, file = ex_file, lines = ex_lines)
+        ex <- append_test_rd(ex, test_rd)
+        tests <- list()
+      }
+
+      switch(
+        tag$tag,
+        examples = next,
+        expect = ,
+        testthat = {
+          if (length(tests) == 0L) ex_lines[[2L]] <- tag$line - 1L
+          tests <- append_test(tag$tag, tests, tag$test[[1L]])
+          if (nchar(trimws(tag$remainder)) > 0L) {
+            testonly <- format_tests(
+              last_tag %||% tag$tag,
+              tests,
+              file = ex_file,
+              lines = ex_lines
+            )
+            remainder <- sub("^\n", "", tag$remainder)
+            ex <- append_test_rd(ex, c(testonly, remainder))
+            ex_lines <- rep_len(tag$line + srcref_nlines(tag$test), 2L)
+            tests <- list()
+          }
+        },
+        stop(paste0("Tag unexpected while building examples: ", tag$tag))
+      )
+
+      # now that we've merged the content into the example, flag for removal
+      blocks[[bi]]$tags[[ti]] <- NULL
+      last_tag <- tag$tag
+    }
+
+    if (!is.null(last_tag) && length(tests)) {
+      test_rd <- format_tests(last_tag, tests, file = ex_file, lines = ex_lines)
+      ex <- append_test_rd(ex, test_rd)
+    }
+
+    # filter out any tags that were merged into the example block
+    blocks[[bi]]$tags <- Filter(Negate(is.null), blocks[[bi]]$tags)
+    blocks[[bi]]$tags[[ti_ex_tag]]$val <- ex
+  }
+
+  roxygen2:::roclet_process.roclet_rd(x, blocks, env, base_path)
+}
+
+#' @exportS3Method roxygen2::roclet_output roclet_rd
+roclet_output.roclet_rd <- function(...) {
+  roxygen2:::roclet_output.roclet_rd(...)
+}
+
+#' @exportS3Method roxygen2::roxy_tag_parse roxy_tag_expect
+roxy_tag_parse.roxy_tag_expect <- function(x) {
+  xlines <- strsplit(x$raw, "\n")[[1L]]
+
+  # try to parse first expression
+  status <- tryCatch({
+      x$test <- parse(text = x$raw, n = 1, keep.source = TRUE)
+      TRUE
+    },
+    error = function(e) e
+  )
+
+  # if parsing failed, use the error message to try to subset text before
+  # parsing error and try to parse first expression again
+  if (!isTRUE(status)) {
+    msg <- conditionMessage(status)
+    err_loc_re <- ":(\\d+):(\\d+):"
+    m <- regexec(err_loc_re, msg)[[1L]]
+    loc <- substring(msg, m[-1L], m[-1L] + attr(m, "match.length")[-1L] - 1L)
+    loc <- as.numeric(loc)
+    text <- head(xlines, loc[[1L]])
+    text[[length(text)]] <- substring(tail(text, 1L), 1L, loc[[2L]] - 1L)
+
+    status <- tryCatch({
+        x$test <- parse(text = text, n = 1, keep.source = TRUE)
+        TRUE
+      },
+      error = function(e) e
+    )
+  }
+
+  if (!isTRUE(status)) {
+    warning(
+      "Error encountered while parsing expectation. This will likely ",
+      "cause an error when testing examples."
+    )
+  }
+
+  test_lines <- as.character(attr(x$test, "srcref")[[1L]], useSource = TRUE)
+  test_loc <- c(length(test_lines), nchar(tail(test_lines, 1L)))
+  x$remainder <- paste(collapse = "\n", c(
+    substring(xlines[[test_loc[[1L]]]], test_loc[[2L]] + 1L),
+    tail(xlines, -test_loc[[1L]])
+  ))
+
+  x
+}
+
+#' @exportS3Method roxygen2::roxy_tag_parse roxy_tag_testthat
+roxy_tag_parse.roxy_tag_testthat <- roxy_tag_parse.roxy_tag_expect
+
+
+
+#' Deparse an expression and indent for pretty-printing
+#'
+#' @param x A \code{code} object
+#' @param indent An \code{integer} number of spaces or a string to prefix each
+#'   line of the deparsed output.
+#'
+#' @family roclet_process_helpers
+#'
+deparse_indent <- function(x, indent = 0L) {
+  if (is.numeric(indent)) indent <- strrep(" ", indent)
+  paste0(indent, deparse(x), collapse = "\n")
+}
+
+
+
+#' Format test for an Rd \\testonly block
+#'
+#' @param tag The roxygen tag that we are formatting
+#' @param tests A \code{list} of test \code{code} objects to be formatted into a
+#'   \code{\\testonly} block.
+#'
+#' @family roclet_process_helpers
+format_tests <- function(tag, tests, ...) {
+  UseMethod("format_tests", structure(1L, class = tag))
+}
+
+format_tests.expect <- function(tag, tests, ...) {
+  tests <- vapply(tests, deparse_indent, character(1L), indent = 2L)
+  tests[-length(tests)] <- paste0(tests[-length(tests)], ",")
+  c("\\testonly{", "testex::testex(", escape_infotex(tests), ")}")
+}
+
+format_tests.testthat <- function(tag, tests, file, lines) {
+  tests <- vapply(tests, deparse_indent, character(1L), indent = 2L)
+  desc <- sprintf("%s [%d:%d]", basename(file), lines[[1L]], lines[[2L]])
+
+  c(
+    "\\testonly{",
+    paste0("testex::testthat_block(test_that(", deparse(desc), ", {"),
+    escape_infotex(tests),
+    "}))}"
+  )
+}
+
+
+
+#' Restructure and append tests to a test aggregating list
+#'
+#' @param tag The roxygen tag that we are formatting
+#' @param tests A \code{list} of test \code{code} objects to be formatted into a
+#'   \code{\\testonly} block.
+#' @param test A new test \code{code} object to append to the list. If
+#'   necessary, the code will be modified to accommodate the testing style.
+#'
+#' @family roclet_process_helpers
+append_test <- function(tag, tests, test) {
+  UseMethod("append_test", structure(1L, class = tag))
+}
+
+append_test.expect <- function(tag, tests, test) {
+  if (!"." %in% all.names(test))
+    test <- bquote(identical(., .(test)))
+  append(tests, list(test))
+}
+
+append_test.testthat <- function(tag, tests, test) {
+  if (!"." %in% all.names(test))
+    test <- as.call(append(as.list(test), quote(.), after = 1L))
+  append(tests, list(test))
+}
+
+
+
+#' Escape escaped Rd \\testonly strings
+#'
+#' @param x A \code{character} value
+#'
+#' @family roclet_process_helpers
+escape_infotex <- function(x) {
+  gsub("\\\\", "\\\\\\\\", x)
+}
+
+
+
+#' Determine the number of source code lines of a given srcref
+#'
+#' @param x A \code{srcref} object
+#'
+#' @family roclet_process_helpers
+srcref_nlines <- function(x) {
+  getSrcLocation(x, "line", first = FALSE) - getSrcLocation(x, "line") + 1L
+}
+
+
+
+#' Append a test to the examples Rd section
+#'
+#' @note
+#' Because of how newlines are formatted when rendering Rd contents,
+#' \code{\\testonly} blocks must starts on the last line of the code that they
+#' test. Otherwise, an extra newline is printed when Rd is output as text.
+#'
+#' @param ex The existing character vector of example Rd section lines
+#' @param test The additional test lines to add to the example
+#'
+#' @family roclet_process_helpers
+append_test_rd <- function(ex, test) {
+  c(
+    ex[-length(ex)],
+    # \testonly on same line to prevent unintended linebreaks
+    paste(ex[[length(ex)]], test[[1L]]),
+    test[-1L]
+  )
+}
