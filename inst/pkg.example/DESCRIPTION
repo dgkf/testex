@@ -13,4 +13,4 @@ Roxygen: list(markdown = TRUE, roclets = c("namespace", "testex::rd"))
 RoxygenNote: 7.2.0
 License: MIT + file LICENSE
 Config/testthat/edition: 3
-Config/testex/options: list(check = TRUE, testthat = FALSE)
+Config/testex/options: list(check = FALSE)

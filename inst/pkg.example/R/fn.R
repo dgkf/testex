@@ -6,7 +6,6 @@
 #' fn("testing")
 #'
 #' \testonly{testex::testex(
-#'   { x <- 0L; for (i in 1:5e8) x <- x + 1L; TRUE },
 #'   . == "testing 1 2 3",
 #'   startsWith(., "testing")
 #' )}

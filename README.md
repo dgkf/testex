@@ -41,6 +41,36 @@ roclet with `testex`'s:
 + Roxygen: list(markdown = TRUE, roclets = c("namespace", "testex::rd"))
 ```
 
+### 3. Configure how you want to run your tests
+
+You could call it a day there if you'd like, but there are a few options if
+you'd like to tune your testing workflow.
+
+#### Running tests with testthat
+
+If you'd like to automatically test your examples when you test your package,
+`testex` can generate tests for you that will automatically contribute to
+`testthat` results. Simly run:
+
+```r
+testex::use_testex_as_testthat()
+```
+
+This will add a `tests/testthat/test-testex.R` file to your `testthat` directory
+which will re-build and run testthat tests based on examples each time you run
+your testing suite. Tests are created to expect that examples execute
+successfully and that each example expectation is fullfilled. 
+
+#### Disabling example checks during `R CMD check`
+
+By default, your tests will run when your run examples using `R CMD check`.
+However, `R CMD check` will stop on the first error and truncates error output,
+which can be inconvenient for debugging. If you'd prefer 
+
+```
+Config/testex/options: list(check = FALSE)
+```
+
 ## Goals
 
 R offers some pretty outstanding tools for presenting example code alongside a
@@ -176,12 +206,11 @@ consecutive `@testthat` expecations will all test the previous example output.
 |---|---|
 | Example result propegation using `testex::testex()`| :ballot_box_with_check: |
 | `DESCRPTION` `Config/testex/options` to disable execution during `R CMD check` | :ballot_box_with_check: |
-| `DESCRPTION` `Config/testex/options` to enable execution from script in `/tests` | :black_square_button: |
 | `roxygen2` tag `@expect` | :ballot_box_with_check: |
 | `roxygen2` tag `@testthat` | :ballot_box_with_check: |
-| Aggregation with `testthat` test results | :black_square_button: |
+| Aggregation with `testthat` test results | :ballot_box_with_check: |
 | Other ideas? Request a feature! | :thought_balloon: |
-| Have a better name for the package. I'm all ears! | :ear: |
+| Have a better name for the package? I'm all ears! | :ear: |
 
 ## Prior Art
 

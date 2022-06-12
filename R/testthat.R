@@ -55,16 +55,44 @@ testthat_block <- function(..., val, envir = parent.frame()) {
 
 
 #' @export
-test_examples <- function(package,
-  path = if (missing(package)) getwd() else find.package(package, quiet = TRUE),
-  ...) {
+expect_no_example_failure <- function(object, ...) {
+  object <- substitute(object)
+  act <- list(
+    val = tryCatch(eval(object, envir = parent.frame()), error = identity),
+    lab = deparse(object)
+  )
 
-  path <- find_package_root(path)
-  rds <- tools::Rd_db(dir = path)
+  testthat::expect(
+    !inherits(act$val, "error"),
+    sprintf("Example %s threw an error during execution.", act$lab)
+  )
+
+  invisible(act$val)
+}
+
+
+#' @export
+test_examples_as_testthat <- function(package, path = getwd(), ...,
+  reporter = testthat::get_reporter(), envir = parent.frame()) {
+
+  if (!missing(package)) {
+    package_path <- find.package(package, quiet = TRUE)
+    package_man <- file.path(package_path, "man")
+    if (isTRUE(dir.exists(package_man))) rds <- tools::Rd_db(dir = package_path)
+    else rds <- tools::Rd_db(package)
+  } else {
+    path <- find_package_root(path)
+    package <- read.dcf(path, fields = "Package")[[1L]]
+    rds <- tools::Rd_db(dir = path)
+  }
 
   # create a temporary directory to store example tests
   testdir <- tempfile("testex")
   dir.create(testdir)
+
+  wd <- getwd()
+  setwd(testdir)
+  on.exit(setwd(wd))
 
   rd_examples <- lapply(rds, function(rd) {
     rd_tags <- vapply(rd, attr, character(1L), "Rd_tag")
@@ -82,15 +110,31 @@ test_examples <- function(package,
   for (i in seq_along(rd_examples)) {
     rd_filename <- names(rd_examples[i])
     rd_example <- rd_examples[[i]]
-    path <- file.path(testdir, rd_filename)
-    writeLines(paste(unlist(rd_example), collapse = ""), path)
-  }
+    example_code <- paste(unlist(rd_example), collapse = "")
 
-  testthat:::test_files(
-    test_dir = testdir,
-    test_paths = names(rd_examples),
-    test_package = packageName(),
-    ...,
-    load_package = "installed"
-  )
+    # inject manual .Last.value assignment to mimic example environment
+    example_exprs <- parse(text = example_code)
+    example_exprs <- lapply(example_exprs, function(expr) {
+      bquote(.Last.value <<- testex::expect_no_example_failure(.(expr)))
+    })
+
+    # open up base so that we can assign to global .Last.value...
+    # TODO: find another way to do this that isn't so heinous
+    example_exprs <- append(
+      example_exprs,
+      list(
+        bquote(library(.(package))),
+        quote(unlockBinding(".Last.value", getNamespace("base")))
+      ),
+      after = 0L
+    )
+
+    example_code <- lapply(example_exprs, function(expr) {
+      paste0(deparse(expr), collapse = "\n")
+    })
+
+    path <- file.path(testdir, rd_filename)
+    writeLines(paste(example_exprs, collapse = "\n\n"), path)
+    testthat:::test_one_file(basename(path))
+  }
 }
