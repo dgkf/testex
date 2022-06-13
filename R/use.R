@@ -1,3 +1,14 @@
+#' Replace default rd roclet with testex rd roclet
+#'
+#' @note
+#' The testex roclet aims to be functionally identical to the default roxygen rd
+#' roclet for any default roxygen tags. It replaces the default to intersperse
+#' tests in the midst of existing \code{\\examples{...}} sections of Rd files.
+#'
+#' @param path A package source code working directory
+#' @param check A \code{logical} value indicating whether tests should be
+#'   executing during \code{R CMD check}.
+#'
 #' @export
 use_rd_roclet <- function(path = getwd(), check = NA) {
   path <- file.path(find_package_root(path), "DESCRIPTION")
@@ -43,6 +54,15 @@ use_rd_roclet <- function(path = getwd(), check = NA) {
 
 
 
+#' Run examples as testthat expectations
+#'
+#' @param path A package source code working directory
+#' @param context A testthat test context to use as the basis for a new test
+#'   filename.
+#'
+#' @family use
+#'
+#' @importFrom utils packageName
 #' @export
 use_testex_as_testthat <- function(path = getwd(), context = "testex") {
   path <- find_package_root(path)

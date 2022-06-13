@@ -5,6 +5,9 @@
 #' of functions from \code{testthat}. Also handles temporarily attaching the
 #' \code{testthat} package.
 #'
+#' @param ... Expectations to evaluate with \pkg{testthat}
+#' @inheritParams testex
+#'
 #' @rdname testex_testthat
 #' @export
 testthat_expect <- function(..., val, envir = parent.frame()) {
@@ -54,8 +57,13 @@ testthat_block <- function(..., val, envir = parent.frame()) {
 
 
 
+#' testthat expectation asserting that code executes without error
+#'
+#' @param object An expression to evaluate
+#' @param ... Additional arguments unused
+#'
 #' @export
-expect_no_example_failure <- function(object, ...) {
+expect_no_example_error <- function(object, ...) {
   object <- substitute(object)
   act <- list(
     val = tryCatch(eval(object, envir = parent.frame()), error = identity),
@@ -71,9 +79,25 @@ expect_no_example_failure <- function(object, ...) {
 }
 
 
+
+#' Execute examples from Rd files as testthat tests
+#'
+#' Reads examples from Rd files and constructs \pkg{testthat}-style tests. Each
+#' expression is expected to run without error and any in-line expectations
+#' naturally result in individual expectations.
+#'
+#' @param package A package name whose examples should be tested
+#' @param path Optionally, a path to a source code directory to use. Will only
+#'   have an effect if parameter \code{package} is missing.
+#' @param ... Additional argument unused
+#' @param reporter A \pkg{testthat} reporter to use. Defaults to the active
+#'   reporter in the \pkg{testthat} environment or default reporter.
+#'
 #' @export
 test_examples_as_testthat <- function(package, path = getwd(), ...,
-  reporter = testthat::get_reporter(), envir = parent.frame()) {
+  reporter = testthat::get_reporter()) {
+
+  requireNamespace("testthat")
 
   if (!missing(package)) {
     package_path <- find.package(package, quiet = TRUE)
@@ -90,10 +114,6 @@ test_examples_as_testthat <- function(package, path = getwd(), ...,
   testdir <- tempfile("testex")
   dir.create(testdir)
 
-  wd <- getwd()
-  setwd(testdir)
-  on.exit(setwd(wd))
-
   rd_examples <- lapply(rds, function(rd) {
     rd_tags <- vapply(rd, attr, character(1L), "Rd_tag")
     rd_ex <- which(rd_tags == "\\examples")
@@ -107,7 +127,7 @@ test_examples_as_testthat <- function(package, path = getwd(), ...,
     tools::file_path_sans_ext(names(rd_examples))
   )
 
-  for (i in seq_along(rd_examples)) {
+  rd_examples_testfiles <- lapply(seq_along(rd_examples), function(i) {
     rd_filename <- names(rd_examples[i])
     rd_example <- rd_examples[[i]]
     example_code <- paste(unlist(rd_example), collapse = "")
@@ -115,7 +135,7 @@ test_examples_as_testthat <- function(package, path = getwd(), ...,
     # inject manual .Last.value assignment to mimic example environment
     example_exprs <- parse(text = example_code)
     example_exprs <- lapply(example_exprs, function(expr) {
-      bquote(.Last.value <<- testex::expect_no_example_failure(.(expr)))
+      bquote(.Last.value <<- testex::expect_no_example_error(.(expr)))
     })
 
     # open up base so that we can assign to global .Last.value...
@@ -123,8 +143,8 @@ test_examples_as_testthat <- function(package, path = getwd(), ...,
     example_exprs <- append(
       example_exprs,
       list(
-        bquote(library(.(package))),
-        quote(unlockBinding(".Last.value", getNamespace("base")))
+        call("library", package),
+        call("unlockBinding", ".Last.value", quote(getNamespace("base")))
       ),
       after = 0L
     )
@@ -135,6 +155,15 @@ test_examples_as_testthat <- function(package, path = getwd(), ...,
 
     path <- file.path(testdir, rd_filename)
     writeLines(paste(example_exprs, collapse = "\n\n"), path)
-    testthat:::test_one_file(basename(path))
+    path
+  })
+
+  if (bindingIsLocked(".Last.value", getNamespace("base"))) {
+    on.exit(lockBinding(".Last.value", getNamespace("base")), add = TRUE)
+  }
+
+  for (file in rd_examples_testfiles) {
+    testthat::context_start_file(basename(file))
+    testthat::source_file(file)
   }
 }

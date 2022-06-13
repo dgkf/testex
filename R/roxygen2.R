@@ -1,8 +1,66 @@
+#' testex replacement for roxygen2 rd roclet
+#'
+#' This roclet aims to be feature compatible with \pkg{roxygen2}'s \code{"rd"}
+#' roclet. In addition it supports two new \code{roxygen} tags, \code{@expect}
+#' and \code{@testthat}.
+#'
+#' @section tags:
+#' \code{testex} tags are all sub-tags meant to be used within an
+#' \code{@examples} block. They should be considered as tags \emph{within} the
+#' \code{@examples} block and used to construct blocks of testing code within
+#' example code.
+#'
+#' \describe{
+#'   \item{\code{@expect}: }{
+#'     In-line expectations to test the output of the previous command within an
+#'     example. If \code{.} is used within the expecation, it will be used to
+#'     refer to the output of the previous example command. Otherwise, the
+#'     result of the expression is expected to be identical to the previous
+#'     output.
+#'   }
+#' }
+#'
+#' \preformatted{
+#' #' @examples
+#' #' 1 + 2
+#' #' @expect 3
+#' #' @expect . == 3
+#' #'
+#' #' 3 + 4
+#' #' @expect identical(., 7)
+#' }
+#'
+#' \describe{
+#'   \item{\code{@testthat}: }{
+#'     Similar to \code{@expect}, \code{@testthat} can be used to make in-line
+#'     assertions using \pkg{testthat} expectations. \pkg{testthat} expectations
+#'     follow a convention where the first argument is an object to compare
+#'     against an expected value or characteristic. Since the value will always
+#'     be the result of the previous example, this part of the code is
+#'     implicitly constructed for you.
+#'
+#'     If you want to use the example result elsewhere in your expectation, you
+#'     can refer to it with a \code{.}. When used in this way, \pkg{testex} will
+#'     not do any further implicit modification of your expectation.
+#'   }
+#' }
+#'
+#' \preformatted{
+#' #' @examples
+#' #' 1 + 2
+#' #' @testthat expect_equal(3)
+#' #' @testthat expect_gt(0)
+#' #'
+#' #' 3 + 4
+#' #' @testthat expect_equal(., 7)
+#' }
+#'
 #' @export
 rd <- function() {
   roxygen2::roclet("rd")
 }
 
+#' @importFrom utils tail
 #' @exportS3Method roxygen2::roclet_process roclet_rd
 roclet_process.roclet_rd <- function(x, blocks, env, base_path) {
   testex_tags <- c("expect", "testthat")
@@ -74,14 +132,15 @@ roclet_process.roclet_rd <- function(x, blocks, env, base_path) {
     blocks[[bi]]$tags[[ti_ex_tag]]$val <- ex
   }
 
-  roxygen2:::roclet_process.roclet_rd(x, blocks, env, base_path)
+  .roxygen2()$roclet_process.roclet_rd(x, blocks, env, base_path)
 }
 
 #' @exportS3Method roxygen2::roclet_output roclet_rd
 roclet_output.roclet_rd <- function(...) {
-  roxygen2:::roclet_output.roclet_rd(...)
+  .roxygen2()$roclet_output.roclet_rd(...)
 }
 
+#' @importFrom utils head tail
 #' @exportS3Method roxygen2::roxy_tag_parse roxy_tag_expect
 roxy_tag_parse.roxy_tag_expect <- function(x) {
   xlines <- strsplit(x$raw, "\n")[[1L]]
@@ -155,18 +214,26 @@ deparse_indent <- function(x, indent = 0L) {
 #' @param tag The roxygen tag that we are formatting
 #' @param tests A \code{list} of test \code{code} objects to be formatted into a
 #'   \code{\\testonly} block.
+#' @param ... Additional arguments used by methods
 #'
+#' @rdname format_tests
 #' @family roclet_process_helpers
 format_tests <- function(tag, tests, ...) {
   UseMethod("format_tests", structure(1L, class = tag))
 }
 
+#' @rdname format_tests
 format_tests.expect <- function(tag, tests, ...) {
   tests <- vapply(tests, deparse_indent, character(1L), indent = 2L)
   tests[-length(tests)] <- paste0(tests[-length(tests)], ",")
   c("\\testonly{", "testex::testex(", escape_infotex(tests), ")}")
 }
 
+#' @param file The source file where the example test code originated
+#' @param lines A \code{numeric} vector of length two indicating the start and
+#'   end lines of the example code block tested by the test code.
+#'
+#' @rdname format_tests
 format_tests.testthat <- function(tag, tests, file, lines) {
   tests <- vapply(tests, deparse_indent, character(1L), indent = 2L)
   desc <- sprintf("%s [%d:%d]", basename(file), lines[[1L]], lines[[2L]])
@@ -224,6 +291,8 @@ escape_infotex <- function(x) {
 #' @param x A \code{srcref} object
 #'
 #' @family roclet_process_helpers
+#'
+#' @importFrom utils getSrcLocation
 srcref_nlines <- function(x) {
   getSrcLocation(x, "line", first = FALSE) - getSrcLocation(x, "line") + 1L
 }

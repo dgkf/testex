@@ -9,6 +9,15 @@ testthat_expect(..., val, envir = parent.frame())
 
 testthat_block(..., val, envir = parent.frame())
 }
+\arguments{
+\item{...}{Expectations to evaluate with \pkg{testthat}}
+
+\item{val}{A value to test against. By default, this will use the example's
+\code{.Last.value}.}
+
+\item{envir}{An environment in which tests should be evaluated. By default
+the parent environment where tests are evaluated.}
+}
 \description{
 A flavor of \code{testex} that will inject \code{.Last.value} into the first
 argument of each expression - suitable for using the \code{expect_*} family

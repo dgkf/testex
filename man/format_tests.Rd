@@ -2,15 +2,28 @@
 % Please edit documentation in R/roxygen2.R
 \name{format_tests}
 \alias{format_tests}
+\alias{format_tests.expect}
+\alias{format_tests.testthat}
 \title{Format test for an Rd \\testonly block}
 \usage{
 format_tests(tag, tests, ...)
+
+\method{format_tests}{expect}(tag, tests, ...)
+
+\method{format_tests}{testthat}(tag, tests, file, lines)
 }
 \arguments{
 \item{tag}{The roxygen tag that we are formatting}
 
 \item{tests}{A \code{list} of test \code{code} objects to be formatted into a
 \code{\\testonly} block.}
+
+\item{...}{Additional arguments used by methods}
+
+\item{file}{The source file where the example test code originated}
+
+\item{lines}{A \code{numeric} vector of length two indicating the start and
+end lines of the example code block tested by the test code.}
 }
 \description{
 Format test for an Rd \\testonly block

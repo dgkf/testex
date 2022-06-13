@@ -16,8 +16,6 @@ last example result.}
 
 \item{envir}{An environment in which tests should be evaluated. By default
 the parent environment where tests are evaluated.}
-
-\item{check}{Whether to execute testonly code during \code{R CMD check}.}
 }
 \description{
 A wrapper around \code{stopifnot} that allows you to use \code{.} to refer to

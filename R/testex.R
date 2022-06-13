@@ -10,7 +10,6 @@
 #'   \code{.Last.value}.
 #' @param envir An environment in which tests should be evaluated. By default
 #'   the parent environment where tests are evaluated.
-#' @param check Whether to execute testonly code during \code{R CMD check}.
 #'
 #' @rdname testex
 #' @export
