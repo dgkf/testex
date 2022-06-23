@@ -65,7 +65,8 @@ successfully and that each example expectation is fullfilled.
 
 By default, your tests will run when your run examples using `R CMD check`.
 However, `R CMD check` will stop on the first error and truncates error output,
-which can be inconvenient for debugging. If you'd prefer 
+which can be inconvenient for debugging. If you'd prefer not to run tests 
+during checking, you can add the following line to your `DESCRIPTION`.
 
 ```
 Config/testex/options: list(check = FALSE)
