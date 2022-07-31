@@ -8,7 +8,7 @@
 \usage{
 format_tests(tag, tests, ...)
 
-\method{format_tests}{expect}(tag, tests, ...)
+\method{format_tests}{expect}(tag, tests, file, lines)
 
 \method{format_tests}{testthat}(tag, tests, file, lines)
 }

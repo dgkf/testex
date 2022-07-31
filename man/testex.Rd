@@ -4,7 +4,7 @@
 \alias{testex}
 \title{A syntactic helper for writing quick and easy example tests}
 \usage{
-testex(..., val, envir = parent.frame())
+testex(..., val, source = NULL, envir = parent.frame())
 }
 \arguments{
 \item{...}{Expressions to evaluated. \code{.} will be replaced with the

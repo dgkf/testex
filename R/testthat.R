@@ -40,7 +40,7 @@ testthat_expect <- function(..., val, envir = parent.frame()) {
 #'
 #' @rdname testex_testthat
 #' @export
-testthat_block <- function(..., val, envir = parent.frame()) {
+testthat_block <- function(..., source = NULL, val, envir = parent.frame()) {
   if (missing(val)) val <- quote(.Last.value)
   else val <- substitute(val)
 
@@ -72,7 +72,8 @@ expect_no_example_error <- function(object, ...) {
 
   testthat::expect(
     !inherits(act$val, "error"),
-    sprintf("Example %s threw an error during execution.", act$lab)
+    message = sprintf("Example %s threw an error during execution.", act$lab),
+    ...
   )
 
   invisible(act$val)
@@ -133,7 +134,7 @@ test_examples_as_testthat <- function(package, path = getwd(), ...,
     example_code <- paste(unlist(rd_example), collapse = "")
 
     # inject manual .Last.value assignment to mimic example environment
-    example_exprs <- parse(text = example_code)
+    example_exprs <- parse(text = example_code, keep.source = TRUE)
     example_exprs <- lapply(example_exprs, function(expr) {
       bquote(.Last.value <<- testex::expect_no_example_error(.(expr)))
     })

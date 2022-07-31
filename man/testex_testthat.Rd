@@ -7,7 +7,7 @@
 \usage{
 testthat_expect(..., val, envir = parent.frame())
 
-testthat_block(..., val, envir = parent.frame())
+testthat_block(..., source = NULL, val, envir = parent.frame())
 }
 \arguments{
 \item{...}{Expectations to evaluate with \pkg{testthat}}

@@ -17,11 +17,11 @@ fn_roxygen("testing") \testonly{
 testex::testthat_block(test_that("fn.R [61:62]", {
   expect_equal(., "testing 1 2 3")
   expect_match(., "^testing")
-}))}
+}), source = "fn.R:61:62")}
 
 fn_roxygen("testing") \testonly{
 testex::testthat_block(test_that("fn.R [65:66]", {
   expect_equal(., "testing 1 2 3")
   expect_match(., "^testing")
-}))}
+}), source = "fn.R:65:66")}
 }

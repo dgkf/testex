@@ -13,7 +13,7 @@
 #'
 #' @rdname testex
 #' @export
-testex <- function(..., val, envir = parent.frame()) {
+testex <- function(..., val, source = NULL, envir = parent.frame()) {
   if (is_r_cmd_check() && isFALSE(testex_options()$check)) {
     return(invisible(.Last.value))
   }

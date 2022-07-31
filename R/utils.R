@@ -67,6 +67,16 @@ is_r_cmd_check <- function() {
 
 
 
+srcref_key <- function(x) {
+  sprintf(
+    "%s:%s",
+    getSrcFilename(x),
+    paste(as.numeric(getSrcref(x)), collapse = ":")
+  )
+}
+
+
+
 find_package_root <- function(path, quiet = FALSE) {
   while (dirname(path) != path) {
     if (file.exists(file.path(path, "DESCRIPTION")))

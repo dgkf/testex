@@ -37,7 +37,7 @@ fn <- function(x) {
 #'
 #' fn_roxygen("testing")
 #' @expect grepl("\\d", .)
-#' @expect startsWith(., "testing")
+#' @expect startsWith(., "tasting")
 #'
 #' fn_roxygen("testing")
 #' @expect {

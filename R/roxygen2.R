@@ -65,6 +65,7 @@ rd <- function() {
 roclet_process.roclet_rd <- function(x, blocks, env, base_path) {
   testex_tags <- c("expect", "testthat")
   rdname <- basename(base_path)
+  obj_locs <- eapply(env, getSrcLocation, which = "line")
 
   for (bi in seq_along(blocks)) {
     block <- blocks[[bi]]
@@ -80,6 +81,13 @@ roclet_process.roclet_rd <- function(x, blocks, env, base_path) {
     # try to track lines of code through example for test descriptions
     ex_file <- ex_tag$file
     ex_lines <- rep_len(ex_tag$line, 2L)
+
+    # find next obj in source code
+    obj <- names(obj_locs)[Position(function(i) i > ex_tag$line, obj_locs)]
+
+    print(obj)
+    print(ex_tag$line)
+    print(obj_locs[[obj]])
 
     # stateful aggregators to collect consecutive tests into \testonly block
     last_tag <- NULL
@@ -223,10 +231,17 @@ format_tests <- function(tag, tests, ...) {
 }
 
 #' @rdname format_tests
-format_tests.expect <- function(tag, tests, ...) {
+format_tests.expect <- function(tag, tests, file, lines) {
   tests <- vapply(tests, deparse_indent, character(1L), indent = 2L)
-  tests[-length(tests)] <- paste0(tests[-length(tests)], ",")
-  c("\\testonly{", "testex::testex(", escape_infotex(tests), ")}")
+  sourcekey <- paste0(basename(file), ":", lines[[1]], ":", lines[[2]])
+
+  c(
+    "\\testonly{",
+    "testex::testex(",
+      sprintf("%s,", escape_infotex(tests)),
+      sprintf("  source = \"%s\"", sourcekey),
+    ")}"
+  )
 }
 
 #' @param file The source file where the example test code originated
@@ -237,12 +252,13 @@ format_tests.expect <- function(tag, tests, ...) {
 format_tests.testthat <- function(tag, tests, file, lines) {
   tests <- vapply(tests, deparse_indent, character(1L), indent = 2L)
   desc <- sprintf("%s [%d:%d]", basename(file), lines[[1L]], lines[[2L]])
+  sourcekey <- paste0(basename(file), ":", lines[[1]], ":", lines[[2]])
 
   c(
     "\\testonly{",
-    paste0("testex::testthat_block(test_that(", deparse(desc), ", {"),
-    escape_infotex(tests),
-    "}))}"
+      paste0("testex::testthat_block(test_that(", deparse(desc), ", {"),
+      escape_infotex(tests),
+    paste0("}), source = \"", sourcekey, "\")}")
   )
 }
 
