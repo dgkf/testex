@@ -16,14 +16,18 @@ Test Function
 fn_roxygen("testing") \testonly{
 testex::testex(
   identical(., "testing 1 2 3"),
-  source = "fn.R:34:35"
+  obj    = "fn_roxygen",
+  source = "fn.R:34:35",
+  tests  = "fn.R:36:36"
 )}
 
 fn_roxygen("testing") \testonly{
 testex::testex(
   grepl("\\\\d", .),
   startsWith(., "tasting"),
-  source = "fn.R:37:38"
+  obj    = "fn_roxygen",
+  source = "fn.R:37:38",
+  tests  = "fn.R:39:40"
 )}
 
 fn_roxygen("testing") \testonly{
@@ -31,7 +35,9 @@ testex::testex(
   identical(., {
       "testing 1 2 3"
   }),
-  source = "fn.R:41:42"
+  obj    = "fn_roxygen",
+  source = "fn.R:41:42",
+  tests  = "fn.R:43:45"
 )}
 
 fn_roxygen("testing")

@@ -8,9 +8,9 @@
 \usage{
 format_tests(tag, tests, ...)
 
-\method{format_tests}{expect}(tag, tests, file, lines)
+\method{format_tests}{expect}(tag, tests, obj, file, example_lines, test_lines)
 
-\method{format_tests}{testthat}(tag, tests, file, lines)
+\method{format_tests}{testthat}(tag, tests, obj, file, example_lines, test_lines)
 }
 \arguments{
 \item{tag}{The roxygen tag that we are formatting}
