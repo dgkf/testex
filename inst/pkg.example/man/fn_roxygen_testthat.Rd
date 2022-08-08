@@ -14,22 +14,20 @@ Test Function
 }
 \examples{
 fn_roxygen("testing") \testonly{
-testex::testthat_block(test_that("fn.R [61:62]", {
-  expect_equal(., "testing 1 2 3")
-  expect_match(., "^testing")
+testex::testthat_block(test_that("`fn_roxygen_testthat` example (fn.R:61:62)", {
+  testex::with_srcref("fn.R:63:63", expect_equal(., "testing 1 2 3"))
+  testex::with_srcref("fn.R:64:64", expect_match(., "^tasting"))
 }),
-  obj    = "fn_roxygen_testthat",
-  source = "fn.R:61:62",
-  tests  = "fn.R:63:64"
+  obj     = "fn_roxygen_testthat",
+  example = "fn.R:61:62"
 )}
 
-fn_roxygen("testing") \testonly{
-testex::testthat_block(test_that("fn.R [65:66]", {
-  expect_equal(., "testing 1 2 3")
-  expect_match(., "^testing")
+fn_roxygen(stop(3)) \testonly{
+testex::testthat_block(test_that("`fn_roxygen_testthat` example (fn.R:65:66)", {
+  testex::with_srcref("fn.R:67:67", expect_equal(., "testing 1 2 3"))
+  testex::with_srcref("fn.R:68:68", expect_match(., "^testing"))
 }),
-  obj    = "fn_roxygen_testthat",
-  source = "fn.R:65:66",
-  tests  = "fn.R:67:68"
+  obj     = "fn_roxygen_testthat",
+  example = "fn.R:65:66"
 )}
 }

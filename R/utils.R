@@ -67,22 +67,11 @@ is_r_cmd_check <- function() {
 
 
 
-srcref_key <- function(x) {
-  sprintf(
-    "%s:%s",
-    getSrcFilename(x),
-    paste(as.numeric(getSrcref(x)), collapse = ":")
-  )
-}
-
-
-
-find_package_root <- function(path, quiet = FALSE) {
+find_package_root <- function(path = ".", quiet = FALSE) {
+  if (path == ".") path <- getwd()
   while (dirname(path) != path) {
     if (file.exists(file.path(path, "DESCRIPTION")))
       return(path)
-
-    if (path == ".") path <- getwd()
     path <- dirname(path)
   }
 
@@ -112,4 +101,17 @@ package_desc <- function() {
   if (!is.null(x)) return(file.path(x, "DESCRIPTION")[[1L, "Package"]])
 
   invisible(NULL)
+}
+
+
+vlapply <- function(..., FUN.VALUE = logical(1L)) {
+  vapply(..., FUN.VALUE = FUN.VALUE)
+}
+
+vcapply <- function(..., FUN.VALUE = character(1L)) {
+  vapply(..., FUN.VALUE = FUN.VALUE)
+}
+
+vnapply <- function(..., FUN.VALUE = numeric(1L)) {
+  vapply(..., FUN.VALUE = FUN.VALUE)
 }

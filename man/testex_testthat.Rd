@@ -5,15 +5,19 @@
 \alias{testthat_block}
 \title{Helpers for using testex with testthat}
 \usage{
-testthat_expect(..., val, envir = parent.frame())
+testthat_expect(..., value = get_example_value(), envir = parent.frame())
 
-testthat_block(..., source = NULL, val, envir = parent.frame())
+testthat_block(
+  ...,
+  value = get_example_value(),
+  obj = NULL,
+  example = NULL,
+  tests = NULL,
+  envir = parent.frame()
+)
 }
 \arguments{
 \item{...}{Expectations to evaluate with \pkg{testthat}}
-
-\item{val}{A value to test against. By default, this will use the example's
-\code{.Last.value}.}
 
 \item{envir}{An environment in which tests should be evaluated. By default
 the parent environment where tests are evaluated.}

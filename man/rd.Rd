@@ -45,10 +45,12 @@ assertions using \pkg{testthat} expectations. \pkg{testthat} expectations
 follow a convention where the first argument is an object to compare
 against an expected value or characteristic. Since the value will always
 be the result of the previous example, this part of the code is
-implicitly constructed for you.\preformatted{If you want to use the example result elsewhere in your expectation, you
+implicitly constructed for you.
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{If you want to use the example result elsewhere in your expectation, you
 can refer to it with a \code{.}. When used in this way, \pkg{testex} will
 not do any further implicit modification of your expectation.
-}
+}\if{html}{\out{</div>}}
 
 }
 }

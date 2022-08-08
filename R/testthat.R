@@ -10,9 +10,10 @@
 #'
 #' @rdname testex_testthat
 #' @export
-testthat_expect <- function(..., val, envir = parent.frame()) {
-  if (missing(val)) val <- quote(.Last.value)
-  else val <- substitute(val)
+testthat_expect <- function(..., value = get_example_value(),
+  envir = parent.frame()) {
+
+  if (!missing(value)) value <- substitute(value)
 
   exprs <- substitute(...())
   exprs <- lapply(exprs, function(expr) {
@@ -20,7 +21,7 @@ testthat_expect <- function(..., val, envir = parent.frame()) {
   })
 
   expr <- bquote({
-    . <- .(val)
+    . <- .(value)
     invisible(.)
   })
 
@@ -40,19 +41,36 @@ testthat_expect <- function(..., val, envir = parent.frame()) {
 #'
 #' @rdname testex_testthat
 #' @export
-testthat_block <- function(..., source = NULL, val, envir = parent.frame()) {
-  if (missing(val)) val <- quote(.Last.value)
-  else val <- substitute(val)
+testthat_block <- function(..., value = get_example_value(), obj = NULL,
+  example = NULL, tests = NULL, envir = parent.frame()) {
+
+  if (!missing(value)) value <- substitute(value)
 
   exprs <- substitute(...())
   expr <- bquote({
-    . <- .(val)
+    . <- .(value)
+    skip_if(inherits(., "error"), "previous example produced an error")
     invisible(.)
   })
 
-  expr <- as.call(append(as.list(expr), exprs, after = 2L))
+  expr <- as.call(append(as.list(expr), exprs, after = 3L))
   expr <- bquote(local(testex::with_attached("testthat", .(expr))))
   eval(expr, envir = envir)
+}
+
+
+
+#' @export
+with_srcref <- function(src, expr, envir = parent.frame()) {
+  expr <- substitute(expr)
+  withCallingHandlers(
+    eval(expr, envir = envir),
+    expectation = function(e) {
+      e[["srcref"]] <-as.srcref(src)
+      testthat::exp_signal(e)
+      invokeRestart(computeRestarts()[[1L]])
+    }
+  )
 }
 
 
@@ -63,7 +81,7 @@ testthat_block <- function(..., source = NULL, val, envir = parent.frame()) {
 #' @param ... Additional arguments unused
 #'
 #' @export
-expect_no_example_error <- function(object, ...) {
+expect_no_error <- function(object, ...) {
   object <- substitute(object)
   act <- list(
     val = tryCatch(eval(object, envir = parent.frame()), error = identity),
@@ -72,7 +90,7 @@ expect_no_example_error <- function(object, ...) {
 
   testthat::expect(
     !inherits(act$val, "error"),
-    message = sprintf("Example %s threw an error during execution.", act$lab),
+    failure_message = sprintf("Example %s threw an error during execution.", act$lab),
     ...
   )
 
@@ -95,76 +113,87 @@ expect_no_example_error <- function(object, ...) {
 #'   reporter in the \pkg{testthat} environment or default reporter.
 #'
 #' @export
-test_examples_as_testthat <- function(package, path = getwd(), ...,
+test_examples_as_testthat <- function(package, path, ...,
+  test_dir = tempfile("testex"), clean = TRUE, overwrite = TRUE,
   reporter = testthat::get_reporter()) {
 
   requireNamespace("testthat")
 
-  if (!missing(package)) {
-    package_path <- find.package(package, quiet = TRUE)
-    package_man <- file.path(package_path, "man")
-    if (isTRUE(dir.exists(package_man))) rds <- tools::Rd_db(dir = package_path)
-    else rds <- tools::Rd_db(package)
-  } else {
-    path <- find_package_root(path)
-    package <- read.dcf(path, fields = "Package")[[1L]]
-    rds <- tools::Rd_db(dir = path)
+  if (missing(path))
+    path <- find_package_root(testthat::test_path())
+
+  rds <- find_package_rds(package, path)
+  test_dir_exists <- dir.exists(test_dir)
+
+  if (!test_dir_exists) {
+    dir.create(test_dir)
+    if (clean) on.exit(unlink(test_dir))
   }
 
-  # create a temporary directory to store example tests
-  testdir <- tempfile("testex")
-  dir.create(testdir)
+  if (test_dir_exists && !overwrite)  {
+    test_files <- list.files(test_dir, full.names = TRUE)
+    test_files(test_files, chdir = FALSE, "examples [run from testex]")
+    return()
+  }
 
-  rd_examples <- lapply(rds, function(rd) {
-    rd_tags <- vapply(rd, attr, character(1L), "Rd_tag")
-    rd_ex <- which(rd_tags == "\\examples")
-    if (length(rd_ex) == 0L) return(NULL)
-    rd[[rd_ex]]
-  })
-
-  rd_examples <- Filter(Negate(is.null), rd_examples)
-  names(rd_examples) <- sprintf(
-    "test-%s.Rd.R",
-    tools::file_path_sans_ext(names(rd_examples))
-  )
-
-  rd_examples_testfiles <- lapply(seq_along(rd_examples), function(i) {
+  # find example sections and conver them to tests
+  rd_examples <- Filter(Negate(is.null), lapply(rds, rd_extract_examples))
+  test_files <- lapply(seq_along(rd_examples), function(i) {
     rd_filename <- names(rd_examples[i])
     rd_example <- rd_examples[[i]]
-    example_code <- paste(unlist(rd_example), collapse = "")
 
-    # inject manual .Last.value assignment to mimic example environment
-    example_exprs <- parse(text = example_code, keep.source = TRUE)
-    example_exprs <- lapply(example_exprs, function(expr) {
-      bquote(.Last.value <<- testex::expect_no_example_error(.(expr)))
-    })
-
-    # open up base so that we can assign to global .Last.value...
-    # TODO: find another way to do this that isn't so heinous
-    example_exprs <- append(
-      example_exprs,
-      list(
-        call("library", package),
-        call("unlockBinding", ".Last.value", quote(getNamespace("base")))
-      ),
-      after = 0L
+    # break up examples into examples and test, wrap examples in expectations
+    exprs <- split_testonly_as_expr(rd_example)
+    is_ex <- names(exprs) != "\\testonly"
+    exprs[is_ex] <- lapply(
+      exprs[is_ex],
+      wrap_expect_no_error,
+      value = quote(..Last.value)  # can't use base::.Last.value in testthat env
     )
 
-    example_code <- lapply(example_exprs, function(expr) {
-      paste0(deparse(expr), collapse = "\n")
-    })
+    # write out test code to file in test dir
+    path <- file.path(test_dir, paste0(tools::file_path_sans_ext(rd_filename), ".R"))
+    example_code <- vcapply(exprs, deparse_pretty)
+    writeLines(paste(example_code, collapse = "\n\n"), path)
 
-    path <- file.path(testdir, rd_filename)
-    writeLines(paste(example_exprs, collapse = "\n\n"), path)
     path
   })
 
-  if (bindingIsLocked(".Last.value", getNamespace("base"))) {
-    on.exit(lockBinding(".Last.value", getNamespace("base")), add = TRUE)
-  }
+  test_files(test_files, chdir = FALSE, "examples [run from testex]")
+}
 
-  for (file in rd_examples_testfiles) {
-    testthat::context_start_file(basename(file))
-    testthat::source_file(file)
-  }
+
+
+deparse_pretty <- function(expr) {
+  lines <- deparse(expr, width.cutoff = 120L)
+  paste0(gsub("^(  +)\\1", "\\1", lines), collapse = "\n")
+}
+
+
+
+test_files <- function(files, context, ...) {
+  testthat::context_start_file(context)
+  for (file in files) testthat::source_file(file, ...)
+}
+
+
+
+#' Wraps an example expression in a testthat expectation to not error
+#'
+wrap_expect_no_error <- function(expr, value) {
+  srckey <- srcref_key(expr, path = "root")
+  bquote(testthat::test_that("example executes without error", {
+    testex::with_srcref(.(srckey), {
+      .(value) <<- testex::expect_no_error(.(expr))
+    })
+  }))
+}
+
+
+
+#' Determine which symbol to use by default when testing examples
+#'
+get_example_value <- function() {
+  if (testthat::is_testing()) quote(..Last.value)
+  else quote(.Last.value)
 }

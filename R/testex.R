@@ -13,17 +13,18 @@
 #'
 #' @rdname testex
 #' @export
-testex <- function(..., val, source = NULL, envir = parent.frame()) {
+testex <- function(..., value = get_example_value(), obj = NULL,
+  example = NULL, tests = NULL, envir = parent.frame()) {
+
   if (is_r_cmd_check() && isFALSE(testex_options()$check)) {
     return(invisible(.Last.value))
   }
 
-  if (missing(val)) val <- quote(quote(.Last.value))
-  else val <- substitute(val)
+  if (!missing(value)) value <- substitute(value)
 
   exprs <- substitute(...())
   exprs <- lapply(exprs, function(expr) {
-    eval(bquote(substitute(.(expr), list(`.` = .(val)))))
+    eval(bquote(substitute(.(expr), list(`.` = .(value)))))
   })
 
   expr <- as.call(append(list(as.name("stopifnot")), exprs))
