@@ -59,7 +59,7 @@ testex::use_testex_as_testthat()
 This will add a `tests/testthat/test-testex.R` file to your `testthat` directory
 which will re-build and run testthat tests based on examples each time you run
 your testing suite. Tests are created to expect that examples execute
-successfully and that each example expectation is fullfilled. 
+successfully and that each example expectation is fulfilled. 
 
 #### Disabling example checks during `R CMD check`
 
