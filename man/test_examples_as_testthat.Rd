@@ -8,6 +8,9 @@ test_examples_as_testthat(
   package,
   path = getwd(),
   ...,
+  test_dir = tempfile("testex"),
+  clean = TRUE,
+  regenerate = TRUE,
   reporter = testthat::get_reporter()
 )
 }

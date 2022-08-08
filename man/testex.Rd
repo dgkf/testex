@@ -4,18 +4,25 @@
 \alias{testex}
 \title{A syntactic helper for writing quick and easy example tests}
 \usage{
-testex(..., val, envir = parent.frame())
+testex(
+  ...,
+  value = get_example_value(),
+  obj = NULL,
+  example = NULL,
+  tests = NULL,
+  envir = parent.frame()
+)
 }
 \arguments{
 \item{...}{Expressions to evaluated. \code{.} will be replaced with the
 expression passed to \code{val}, and may be used as a shorthand for the
 last example result.}
 
-\item{val}{A value to test against. By default, this will use the example's
-\code{.Last.value}.}
-
 \item{envir}{An environment in which tests should be evaluated. By default
 the parent environment where tests are evaluated.}
+
+\item{val}{A value to test against. By default, this will use the example's
+\code{.Last.value}.}
 }
 \description{
 A wrapper around \code{stopifnot} that allows you to use \code{.} to refer to

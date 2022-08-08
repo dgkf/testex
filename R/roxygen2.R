@@ -65,6 +65,7 @@ rd <- function() {
 roclet_process.roclet_rd <- function(x, blocks, env, base_path) {
   testex_tags <- c("expect", "testthat")
   rdname <- basename(base_path)
+  obj_locs <- eapply(env, getSrcLocation, which = "line")
 
   for (bi in seq_along(blocks)) {
     block <- blocks[[bi]]
@@ -81,6 +82,9 @@ roclet_process.roclet_rd <- function(x, blocks, env, base_path) {
     ex_file <- ex_tag$file
     ex_lines <- rep_len(ex_tag$line, 2L)
 
+    # find next obj in source code
+    obj <- names(obj_locs)[Position(function(i) i > ex_tag$line, obj_locs)]
+
     # stateful aggregators to collect consecutive tests into \testonly block
     last_tag <- NULL
     tests <- list()
@@ -89,22 +93,30 @@ roclet_process.roclet_rd <- function(x, blocks, env, base_path) {
       tag <- block$tags[[ti]]
 
       if (!is.null(last_tag) && last_tag != tag$tag) {
-        test_rd <- format_tests(last_tag, tests, file = ex_file, lines = ex_lines)
+        test_rd <- format_tests(
+          last_tag,
+          tests,
+          obj = obj,
+          file = ex_file,
+          lines = ex_lines
+        )
+
         ex <- append_test_rd(ex, test_rd)
         tests <- list()
       }
 
-      switch(
-        tag$tag,
+      switch(tag$tag,
         examples = next,
-        expect = ,
+        expect =,
         testthat = {
           if (length(tests) == 0L) ex_lines[[2L]] <- tag$line - 1L
-          tests <- append_test(tag$tag, tests, tag$test[[1L]])
+          tests <- append_test(tag$tag, tests, tag$test)
+
           if (nchar(trimws(tag$remainder)) > 0L) {
             testonly <- format_tests(
               last_tag %||% tag$tag,
               tests,
+              obj = obj,
               file = ex_file,
               lines = ex_lines
             )
@@ -123,7 +135,14 @@ roclet_process.roclet_rd <- function(x, blocks, env, base_path) {
     }
 
     if (!is.null(last_tag) && length(tests)) {
-      test_rd <- format_tests(last_tag, tests, file = ex_file, lines = ex_lines)
+      test_rd <- format_tests(
+        last_tag,
+        tests,
+        obj = obj,
+        file = ex_file,
+        lines = ex_lines
+      )
+
       ex <- append_test_rd(ex, test_rd)
     }
 
@@ -179,8 +198,17 @@ roxy_tag_parse.roxy_tag_expect <- function(x) {
     )
   }
 
-  test_lines <- as.character(attr(x$test, "srcref")[[1L]], useSource = TRUE)
+  # update parsed lines with actual lines
+  srcref <- attr(x$test, "srcref")[[1]]
+  attr(srcref, "srcfile") <- srcfile(x$file)
+  srcref[1] <- srcref[1] + x$line - 1L
+  srcref[3] <- srcref[3] + x$line - 1L
+  attr(x$test, "srcref") <- srcref
+
+  # find coding test lines, to determine trailing raw lines
+  test_lines <- as.character(attr(x$test, "srcref"), useSource = TRUE)
   test_loc <- c(length(test_lines), nchar(tail(test_lines, 1L)))
+
   x$remainder <- paste(collapse = "\n", c(
     substring(xlines[[test_loc[[1L]]]], test_loc[[2L]] + 1L),
     tail(xlines, -test_loc[[1L]])
@@ -223,10 +251,24 @@ format_tests <- function(tag, tests, ...) {
 }
 
 #' @rdname format_tests
-format_tests.expect <- function(tag, tests, ...) {
+format_tests.expect <- function(tag, tests, obj, file, lines) {
+  tests <- lapply(tests, `attributes<-`, NULL)
   tests <- vapply(tests, deparse_indent, character(1L), indent = 2L)
-  tests[-length(tests)] <- paste0(tests[-length(tests)], ",")
-  c("\\testonly{", "testex::testex(", escape_infotex(tests), ")}")
+
+  example_src <- paste0(
+    basename(file),
+    ":", lines[[1]],
+    ":", lines[[2]]
+  )
+
+  c(
+    "\\testonly{",
+    "testex::testex(",
+      sprintf("%s,", escape_infotex(tests)),
+      sprintf("  obj     = \"%s\",", obj),
+      sprintf("  example = \"%s\"", example_src),
+    ")}"
+  )
 }
 
 #' @param file The source file where the example test code originated
@@ -234,15 +276,30 @@ format_tests.expect <- function(tag, tests, ...) {
 #'   end lines of the example code block tested by the test code.
 #'
 #' @rdname format_tests
-format_tests.testthat <- function(tag, tests, file, lines) {
+format_tests.testthat <- function(tag, tests, obj, file, lines) {
+  srcs  <- vapply(tests, function(i) srcref_key(attr(i, "srcref"), nloc = 2L), character(1L))
   tests <- vapply(tests, deparse_indent, character(1L), indent = 2L)
-  desc <- sprintf("%s [%d:%d]", basename(file), lines[[1L]], lines[[2L]])
+
+  example_src <- paste0(
+    basename(file),
+    ":", lines[[1]],
+    ":", lines[[2]]
+  )
+
+  desc <- sprintf(
+    "`%s` example tests (%s)",
+    obj,
+    example_src
+  )
 
   c(
     "\\testonly{",
-    paste0("testex::testthat_block(test_that(", deparse(desc), ", {"),
-    escape_infotex(tests),
-    "}))}"
+      paste0("testex::testthat_block(test_that(", deparse(desc), ", {"),
+      paste0("  testex::with_srcref(\"", srcs, "\", ", trimws(escape_infotex(tests)), ")"),
+    "}),",
+    sprintf("  obj     = \"%s\",", obj),
+    sprintf("  example = \"%s\"", example_src),
+    ")}"
   )
 }
 
@@ -262,14 +319,21 @@ append_test <- function(tag, tests, test) {
 }
 
 append_test.expect <- function(tag, tests, test) {
-  if (!"." %in% all.names(test))
+  attrs <- attributes(test)
+  test <- test[[1L]]
+  if (!"." %in% all.names(test)) {
     test <- bquote(identical(., .(test)))
+  }
+  attributes(test) <- attrs
   append(tests, list(test))
 }
 
 append_test.testthat <- function(tag, tests, test) {
+  attrs <- attributes(test)
+  test <- test[[1L]]
   if (!"." %in% all.names(test))
     test <- as.call(append(as.list(test), quote(.), after = 1L))
+  attributes(test) <- attrs
   append(tests, list(test))
 }
 

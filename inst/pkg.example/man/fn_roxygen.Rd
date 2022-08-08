@@ -15,20 +15,26 @@ Test Function
 \examples{
 fn_roxygen("testing") \testonly{
 testex::testex(
-  identical(., "testing 1 2 3")
+  identical(., "testing 1 2 3"),
+  obj     = "fn_roxygen",
+  example = "fn.R:34:35"
 )}
 
 fn_roxygen("testing") \testonly{
 testex::testex(
   grepl("\\\\d", .),
-  startsWith(., "testing")
+  startsWith(., "testing"),
+  obj     = "fn_roxygen",
+  example = "fn.R:37:38"
 )}
 
 fn_roxygen("testing") \testonly{
 testex::testex(
   identical(., {
       "testing 1 2 3"
-  })
+  }),
+  obj     = "fn_roxygen",
+  example = "fn.R:41:42"
 )}
 
 fn_roxygen("testing")
