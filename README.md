@@ -222,7 +222,7 @@ tags that are offered in that package are used to generate `tinytest` and
 `testthat` tests from in-line tests but otherwise tests are effectively
 independent from the code that goes on to live in an example.
 
-For me, this didn't quite solve the problem of ensuring that package exampes
+For me, this didn't quite solve the problem of ensuring that package examples
 continue to function as expected.  I wanted to explore whether the code in the
 examples could be tested _directly_ with more extensive integration with the
 existing `examples` tools to decouple the testing from `roxygen2` (or any
