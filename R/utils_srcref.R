@@ -52,7 +52,11 @@ srclocs <- function(x, file) {
     line <- x[[2]]
     x[[3]] <- x[[2]]
     x[[2]] <- 0
-    x[[4]] <- nchar(scan(file, what = character(), skip = line - 1, n = 1, quiet = TRUE))
+    x[[4]] <- if (file.exists(file)) file_line_nchar(file, line) else 0
   }
   x
+}
+
+file_line_nchar <- function(file, line) {
+  nchar(scan(file, what = character(), skip = line - 1, n = 1, quiet = TRUE))
 }

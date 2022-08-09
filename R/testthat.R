@@ -114,7 +114,7 @@ expect_no_error <- function(object, ...) {
 #'
 #' @export
 test_examples_as_testthat <- function(package, path, ...,
-  test_dir = tempfile("testex"), clean = TRUE, overwrite = TRUE,
+  test_dir = tempfile("testex"), quiet = TRUE, clean = TRUE, overwrite = TRUE,
   reporter = testthat::get_reporter()) {
 
   requireNamespace("testthat")
@@ -154,8 +154,8 @@ test_examples_as_testthat <- function(package, path, ...,
     # write out test code to file in test dir
     path <- file.path(test_dir, paste0(tools::file_path_sans_ext(rd_filename), ".R"))
     example_code <- vcapply(exprs, deparse_pretty)
-    writeLines(paste(example_code, collapse = "\n\n"), path)
 
+    writeLines(paste(example_code, collapse = "\n\n"), path)
     path
   })
 

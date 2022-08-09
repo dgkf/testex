@@ -1,14 +1,25 @@
 find_package_rds <- function(package, path = getwd()) {
   if (!missing(package)) {
     package_path <- find.package(package, quiet = TRUE)
-    package_man <- file.path(package_path, "man")
-    if (isTRUE(dir.exists(package_man))) rds <- tools::Rd_db(dir = package_path)
-    else rds <- tools::Rd_db(package)
   } else {
-    desc <- file.path(find_package_root(path), "DESCRIPTION")
-    package <- read.dcf(desc, fields = "Package")[[1L]]
-    rds <- tools::Rd_db(dir = path)
+    package_path <- find_package_root(path)
   }
+
+  desc <- file.path(package_path, "DESCRIPTION")
+  package <- read.dcf(desc, fields = "Package")[[1L]]
+
+  has_R_dir <- isTRUE(dir.exists(file.path(package_path, "R")))
+  has_Meta_dir <- isTRUE(dir.exists(file.path(package_path, "Meta")))
+
+  if (has_R_dir && !has_Meta_dir) {
+    return(tools::Rd_db(dir = package_path))
+  }
+
+  if (has_Meta_dir) {
+    return(tools::Rd_db(package = package, lib.loc = dirname(package_path)))
+  }
+
+  tools::Rd_db(package)
 }
 
 rd_extract_examples <- function(rd) {

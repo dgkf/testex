@@ -59,11 +59,11 @@ fn_roxygen <- function(x) {
 #' @param x A thing
 #'
 #' @examples
-#' fn_roxygen("testing")
+#' fn_roxygen_testthat("testing")
 #' @testthat expect_equal("testing 1 2 3")
-#' @testthat expect_match("^tasting")
+#' @testthat expect_match("^testing")
 #'
-#' fn_roxygen(stop(3))
+#' fn_roxygen_testthat("testing")
 #' @testthat expect_equal("testing 1 2 3")
 #' @testthat expect_match("^testing")
 #'
