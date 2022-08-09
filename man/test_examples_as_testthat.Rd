@@ -6,11 +6,12 @@
 \usage{
 test_examples_as_testthat(
   package,
-  path = getwd(),
+  path,
   ...,
   test_dir = tempfile("testex"),
+  quiet = TRUE,
   clean = TRUE,
-  regenerate = TRUE,
+  overwrite = TRUE,
   reporter = testthat::get_reporter()
 )
 }
