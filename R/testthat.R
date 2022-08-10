@@ -1,45 +1,57 @@
-#' Helpers for using testex with testthat
+#' Support for `testthat` example expectations
 #'
-#' A flavor of \code{testex} that will inject \code{.Last.value} into the first
-#' argument of each expression - suitable for using the \code{expect_*} family
-#' of functions from \code{testthat}. Also handles temporarily attaching the
-#' \code{testthat} package.
+#' Various functions that are used to produce a more native `testthat`
+#' experience, automatically converting `testex` tests into `testthat` code and
+#' executing tests such that they produce informative messages on failure.
+#'
+#' `testex` operates on the previous value produced in example code. This is
+#' unlike `testthat` expectations, which expect a value to be provided as a
+#' first argument.
+#'
+#' To accommodate a more native `testthat` interface, `testex` provides a few
+#' convenience functions to make `testex` expectations run more natively within
+#' the style of `testthat`.
 #'
 #' @param ... Expectations to evaluate with \pkg{testthat}
+#' @param value A symbol or quote to use to refer to the subject of `testthat`
+#'   tests.
 #' @inheritParams testex
 #'
-#' @rdname testex_testthat
-#' @export
-testthat_expect <- function(..., value = get_example_value(),
-  envir = parent.frame()) {
-
-  if (!missing(value)) value <- substitute(value)
-
-  exprs <- substitute(...())
-  exprs <- lapply(exprs, function(expr) {
-    as.call(append(as.list(expr), list(quote(`.`)), after = 1L))
-  })
-
-  expr <- bquote({
-    . <- .(value)
-    invisible(.)
-  })
-
-  expr <- as.call(append(as.list(expr), exprs, after = 2L))
-  expr <- bquote(local(testex::with_attached("testthat", .(expr))))
-  eval(expr, envir = envir)
-}
-
-
-
-#' Helpers for using testex with testthat
+#' @examples
+#' \dontrun{library(testthat)
 #'
-#' A flavor of \code{testex} that will inject \code{.Last.value} into the first
-#' argument of each expression - suitable for using the \code{expect_*} family
-#' of functions from \code{testthat}. Also handles temporarily attaching the
-#' \code{testthat} package.
+#' # example code
+#' 1 + 2
 #'
-#' @rdname testex_testthat
+#' # within `testthat_block`, test code refers to previous result with `.`
+#' testthat_block(test_that("addition holds up", {
+#'   expect_equal(., 3)
+#' })
+#'
+#' # `with_srcref` to spoof the source of the code that caused the failure
+#' test_that("test failure is spoofed to report error at abc.R:1:0", {
+#'   with_srcref("abc.R:1:3", expect_equal(1, 2))
+#' })
+#'
+#' # `expect_no_error`
+#' test_that("expectation runs without error", {
+#'   expect_no_error(stop("whoops!"))
+#' })}
+#'
+#' @name testex-testthat
+NULL
+
+
+
+#' @describeIn testex-testthat
+#'
+#' A flavor of `testex` that will inject `.Last.value` into the first argument
+#' of each expression - suitable for using the `expect_*` family of functions
+#' from `testthat`. Also handles temporarily attaching the `testthat` package.
+#'
+#' @inheritParams testex
+#' @param envir An environment in which the expectations should be evaluated
+#'
 #' @export
 testthat_block <- function(..., value = get_example_value(), obj = NULL,
   example = NULL, tests = NULL, envir = parent.frame()) {
@@ -60,6 +72,18 @@ testthat_block <- function(..., value = get_example_value(), obj = NULL,
 
 
 
+#' @describeIn testex-testthat
+#'
+#' Retroactively assigns a source file and location to a expectation. This
+#' allows `testthat` to report an origin for any code that raised an example
+#' test failure from the source roxygen code, even though the test code is
+#' reconstructed from package documentation files.
+#'
+#' @param src A `srcref_key` which is parsed to produce an artificial srcref for
+#'   the expectation signaled messages.
+#' @param expr An expression to be evaluated. If an `expectation` condition is
+#'   raised during its evaluation, its srcref is converted to `src`.
+#'
 #' @export
 with_srcref <- function(src, expr, envir = parent.frame()) {
   expr <- substitute(expr)
@@ -75,7 +99,12 @@ with_srcref <- function(src, expr, envir = parent.frame()) {
 
 
 
-#' testthat expectation asserting that code executes without error
+#' @describeIn testex-testthat
+#'
+#' A `testthat` expectation that the provided code can be evaluated without
+#' producing an error. This is the most basic expectation one should expect of
+#' any example code. Further expectations are provided in subsequent `testthat`
+#' code.
 #'
 #' @param object An expression to evaluate
 #' @param ... Additional arguments unused
@@ -101,20 +130,28 @@ expect_no_error <- function(object, ...) {
 
 #' Execute examples from Rd files as testthat tests
 #'
-#' Reads examples from Rd files and constructs \pkg{testthat}-style tests. Each
-#' expression is expected to run without error and any in-line expectations
-#' naturally result in individual expectations.
+#' Reads examples from Rd files and constructs \pkg{testthat}-style tests.
+#' \pkg{testthat} expectations are built such that
+#'
+#' 1. Each example expression is expected to run without error
+#' 1. Any `testex` expectations are expected to pass
 #'
 #' @param package A package name whose examples should be tested
 #' @param path Optionally, a path to a source code directory to use. Will only
 #'   have an effect if parameter \code{package} is missing.
+#' @param test_dir An option directory where test files should be written.
+#'   Defaults to a temporary directory.
+#' @param clean Whether the `test_dir` should be removed upon completion of test
+#'   execution. Defaults to `TRUE`.
+#' @param overwrite Whether files should be overwritten if `test_dir` already
+#'   exists. Defaults to `TRUE`.
 #' @param ... Additional argument unused
 #' @param reporter A \pkg{testthat} reporter to use. Defaults to the active
 #'   reporter in the \pkg{testthat} environment or default reporter.
 #'
 #' @export
 test_examples_as_testthat <- function(package, path, ...,
-  test_dir = tempfile("testex"), quiet = TRUE, clean = TRUE, overwrite = TRUE,
+  test_dir = tempfile("testex"), clean = TRUE, overwrite = TRUE,
   reporter = testthat::get_reporter()) {
 
   requireNamespace("testthat")
@@ -164,13 +201,14 @@ test_examples_as_testthat <- function(package, path, ...,
 
 
 
-deparse_pretty <- function(expr) {
-  lines <- deparse(expr, width.cutoff = 120L)
-  paste0(gsub("^(  +)\\1", "\\1", lines), collapse = "\n")
-}
 
-
-
+#' Test a list of files
+#'
+#' @param files An iterable collection of file paths to test
+#' @param context An optional context message to display in testthat reporters
+#' @param ... Additional arguments passed to `testhat::source_file`
+#'
+#' @keywords internal
 test_files <- function(files, context, ...) {
   testthat::context_start_file(context)
   for (file in files) testthat::source_file(file, ...)
@@ -180,6 +218,7 @@ test_files <- function(files, context, ...) {
 
 #' Wraps an example expression in a testthat expectation to not error
 #'
+#' @keywords internal
 wrap_expect_no_error <- function(expr, value) {
   srckey <- srcref_key(expr, path = "root")
   bquote(testthat::test_that("example executes without error", {
@@ -193,6 +232,7 @@ wrap_expect_no_error <- function(expr, value) {
 
 #' Determine which symbol to use by default when testing examples
 #'
+#' @keywords internal
 get_example_value <- function() {
   if (testthat::is_testing()) quote(..Last.value)
   else quote(.Last.value)

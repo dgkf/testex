@@ -16,8 +16,8 @@ Determine the number of source code lines of a given srcref
 Other roclet_process_helpers: 
 \code{\link{append_test_rd}()},
 \code{\link{append_test}()},
-\code{\link{deparse_indent}()},
 \code{\link{escape_infotex}()},
 \code{\link{format_tests}()}
 }
 \concept{roclet_process_helpers}
+\keyword{internal}

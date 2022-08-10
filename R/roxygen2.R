@@ -222,21 +222,6 @@ roxy_tag_parse.roxy_tag_testthat <- roxy_tag_parse.roxy_tag_expect
 
 
 
-#' Deparse an expression and indent for pretty-printing
-#'
-#' @param x A \code{code} object
-#' @param indent An \code{integer} number of spaces or a string to prefix each
-#'   line of the deparsed output.
-#'
-#' @family roclet_process_helpers
-#'
-deparse_indent <- function(x, indent = 0L) {
-  if (is.numeric(indent)) indent <- strrep(" ", indent)
-  paste0(indent, deparse(x), collapse = "\n")
-}
-
-
-
 #' Format test for an Rd \\testonly block
 #'
 #' @param tag The roxygen tag that we are formatting
@@ -246,6 +231,7 @@ deparse_indent <- function(x, indent = 0L) {
 #'
 #' @rdname format_tests
 #' @family roclet_process_helpers
+#' @keywords internal
 format_tests <- function(tag, tests, ...) {
   UseMethod("format_tests", structure(1L, class = tag))
 }
@@ -254,12 +240,7 @@ format_tests <- function(tag, tests, ...) {
 format_tests.expect <- function(tag, tests, obj, file, lines) {
   tests <- lapply(tests, `attributes<-`, NULL)
   tests <- vapply(tests, deparse_indent, character(1L), indent = 2L)
-
-  example_src <- paste0(
-    basename(file),
-    ":", lines[[1]],
-    ":", lines[[2]]
-  )
+  example_src <- paste0(basename(file), ":", lines[[1]], ":", lines[[2]])
 
   c(
     "\\testonly{",
@@ -279,18 +260,8 @@ format_tests.expect <- function(tag, tests, obj, file, lines) {
 format_tests.testthat <- function(tag, tests, obj, file, lines) {
   srcs  <- vapply(tests, function(i) srcref_key(attr(i, "srcref"), nloc = 2L), character(1L))
   tests <- vapply(tests, deparse_indent, character(1L), indent = 2L)
-
-  example_src <- paste0(
-    basename(file),
-    ":", lines[[1]],
-    ":", lines[[2]]
-  )
-
-  desc <- sprintf(
-    "`%s` example tests (%s)",
-    obj,
-    example_src
-  )
+  example_src <- paste0(basename(file), ":", lines[[1]], ":", lines[[2]])
+  desc <- sprintf("`%s` example tests (%s)", obj, example_src)
 
   c(
     "\\testonly{",
@@ -314,6 +285,7 @@ format_tests.testthat <- function(tag, tests, obj, file, lines) {
 #'   necessary, the code will be modified to accommodate the testing style.
 #'
 #' @family roclet_process_helpers
+#' @keywords internal
 append_test <- function(tag, tests, test) {
   UseMethod("append_test", structure(1L, class = tag))
 }
@@ -344,21 +316,9 @@ append_test.testthat <- function(tag, tests, test) {
 #' @param x A \code{character} value
 #'
 #' @family roclet_process_helpers
+#' @keywords internal
 escape_infotex <- function(x) {
   gsub("\\\\", "\\\\\\\\", x)
-}
-
-
-
-#' Determine the number of source code lines of a given srcref
-#'
-#' @param x A \code{srcref} object
-#'
-#' @family roclet_process_helpers
-#'
-#' @importFrom utils getSrcLocation
-srcref_nlines <- function(x) {
-  getSrcLocation(x, "line", first = FALSE) - getSrcLocation(x, "line") + 1L
 }
 
 
@@ -374,6 +334,7 @@ srcref_nlines <- function(x) {
 #' @param test The additional test lines to add to the example
 #'
 #' @family roclet_process_helpers
+#' @keywords internal
 append_test_rd <- function(ex, test) {
   c(
     ex[-length(ex)],

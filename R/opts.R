@@ -2,6 +2,19 @@
 
 
 
+#' Cached retrieval of testex options from package DESCRIPTION
+#'
+#' As long as the `fingerprint` has not changed, the package `DESCRIPTION` will
+#' be read only once to parse and retrieve configuration options. If the
+#' `DESCRIPTION` file is modified or if run from a separate process, the config
+#' will be refreshed based on the most recent version of the file.
+#'
+#' @param path A path in which to search for a package `DESCRIPTION`
+#' @param fingerprint An object used to indicate when the cached values have
+#'   been invalidated
+#'
+#' @name testex-options
+#' @keywords internal
 update_testex_desc <- function(path, fingerprint) {
   if (identical(fingerprint, .testex_options$.fingerprint)) {
     return(invisible(.testex_options))
@@ -18,6 +31,7 @@ update_testex_desc <- function(path, fingerprint) {
 
 
 
+#' @name testex-options
 testex_options <- function(path = package_desc()) {
   if (is_r_cmd_check()) {
     fingerprint <- list(rcmdcheck = TRUE, pid = Sys.getpid())

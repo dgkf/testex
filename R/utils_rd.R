@@ -1,27 +1,18 @@
-find_package_rds <- function(package, path = getwd()) {
-  if (!missing(package)) {
-    package_path <- find.package(package, quiet = TRUE)
-  } else {
-    package_path <- find_package_root(path)
-  }
+#' Rd Example Parsing Helpers
+#'
+#' @param rd An Rd object
+#'
+#' @name testex-rd-example-helpers
+#' @keywords internal
+#'
+NULL
 
-  desc <- file.path(package_path, "DESCRIPTION")
-  package <- read.dcf(desc, fields = "Package")[[1L]]
 
-  has_R_dir <- isTRUE(dir.exists(file.path(package_path, "R")))
-  has_Meta_dir <- isTRUE(dir.exists(file.path(package_path, "Meta")))
 
-  if (has_R_dir && !has_Meta_dir) {
-    return(tools::Rd_db(dir = package_path))
-  }
-
-  if (has_Meta_dir) {
-    return(tools::Rd_db(package = package, lib.loc = dirname(package_path)))
-  }
-
-  tools::Rd_db(package)
-}
-
+#' @describeIn testex-rd-example-helpers
+#'
+#' Extract examples tag from an Rd file
+#'
 rd_extract_examples <- function(rd) {
   rd_tags <- vapply(rd, attr, character(1L), "Rd_tag")
   rd_ex <- which(rd_tags == "\\examples")
@@ -29,36 +20,24 @@ rd_extract_examples <- function(rd) {
   rd[[rd_ex]]
 }
 
+
+
+#' @describeIn testex-rd-example-helpers
+#'
+#' Convert an Rd example to string
+#'
 rd_example_as_string <- function(rd) {
   paste(unlist(rd), collapse = "")
 }
 
-string_line_count <- function(x) {
-  nchar(gsub("[^\n]", "", x))
-}
 
-split_srcref <- function(sr, where) {
-  if (is.null(sr)) return(rep_len(sr, length(where)))
-  file <- getSrcFilename(sr, full.names = TRUE)
 
-  # allocate a list of new srcrefs
-  refs <- list()
-  length(refs) <- length(where)
-
-  # starting from start of collective srcref, offset local lines
-  start <- getSrcLocation(sr)
-  where <- start + where
-
-  # create new srcrefs of regions, divided by "where" lines
-  for (i in seq_along(where)) {
-    locs <- srclocs(c(start, where[[i]]), file)
-    refs[[i]] <- srcref(srcfile(file), locs)
-    start <- where[[i]] + 1
-  }
-
-  refs
-}
-
+#' @describeIn testex-rd-example-helpers
+#'
+#' Split sections of an example into evaluated example code blocks and code
+#' blocks wrapped in testonly `Rd_tag`s, reassigning `srcref`s as the example
+#' code is split.
+#'
 split_testonly_as_expr <- function(rd) {
   rds <- split_testonly(rd)
 
@@ -73,13 +52,19 @@ split_testonly_as_expr <- function(rd) {
   code_exprs <- lapply(code_segments, str2lang)
 
   # split original srcref into srcrefs for individual expressions
-  code_srcrefs <- split_srcref(getSrcref(rds), cumsum(code_segments_lines))
+  code_srcrefs <- split_srcref(utils::getSrcref(rds), cumsum(code_segments_lines))
   for (i in seq_along(code_segments))
     attr(code_exprs[[i]], "srcref") <- code_srcrefs[[i]]
 
   code_exprs
 }
 
+
+
+#' @describeIn testex-rd-example-helpers
+#'
+#' Split sections of an example into lists of `Rd_tag`s
+#'
 split_testonly <- function(rd) {
   attrs <- attributes(rd)
   n <- length(rd)

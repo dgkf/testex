@@ -6,12 +6,17 @@
 #' @param ... Expressions to evaluated. \code{.} will be replaced with the
 #'   expression passed to \code{val}, and may be used as a shorthand for the
 #'   last example result.
-#' @param val A value to test against. By default, this will use the example's
+#' @param value A value to test against. By default, this will use the example's
 #'   \code{.Last.value}.
+#' @param obj An optional object name used to construct a more helpful error
+#'   message testthat failure message.
+#' @param example An option `srcref_key` string used to indicate where the
+#'   relevant example code originated from.
+#' @param tests An option `srcref_key` string used to indicate where the
+#'   relevant test code originated from.
 #' @param envir An environment in which tests should be evaluated. By default
 #'   the parent environment where tests are evaluated.
 #'
-#' @rdname testex
 #' @export
 testex <- function(..., value = get_example_value(), obj = NULL,
   example = NULL, tests = NULL, envir = parent.frame()) {

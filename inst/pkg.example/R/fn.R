@@ -10,10 +10,6 @@
 #'   startsWith(., "testing")
 #' )}
 #'
-#' \testonly{testex::testthat_expect(
-#'   expect_equal("testing 1 2 3")
-#' )}
-#'
 #' \testonly{testex::testthat_block(
 #'   test_that("fn gives expected results", {
 #'     expect_equal(., "testing 1 2 3")

@@ -32,8 +32,8 @@ Format test for an Rd \\testonly block
 Other roclet_process_helpers: 
 \code{\link{append_test_rd}()},
 \code{\link{append_test}()},
-\code{\link{deparse_indent}()},
 \code{\link{escape_infotex}()},
 \code{\link{srcref_nlines}()}
 }
 \concept{roclet_process_helpers}
+\keyword{internal}

@@ -21,9 +21,9 @@ Restructure and append tests to a test aggregating list
 \seealso{
 Other roclet_process_helpers: 
 \code{\link{append_test_rd}()},
-\code{\link{deparse_indent}()},
 \code{\link{escape_infotex}()},
 \code{\link{format_tests}()},
 \code{\link{srcref_nlines}()}
 }
 \concept{roclet_process_helpers}
+\keyword{internal}
