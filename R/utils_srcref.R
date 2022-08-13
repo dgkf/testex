@@ -1,3 +1,14 @@
+#' Convert a srcref to a character representation
+#'
+#' @param x A srcref object
+#' @param nloc The number of src locations to use. Defaults to 2, indicating
+#'   starting and ending line number.
+#' @param path A form of filepath to use for the key. One of `"base"` for only
+#'   the basename of the source filepath, `"root"` for a path relative to a
+#'   package root directory if found, or `"full"` for the full filepath.
+#'
+#' @keywords internal
+#' @importFrom utils getSrcref getSrcFilename
 srcref_key <- function(x, nloc = 2, path = c("base", "root", "full")) {
   path <- match.arg(path)
 
@@ -6,7 +17,7 @@ srcref_key <- function(x, nloc = 2, path = c("base", "root", "full")) {
   nloc <- match(nloc, c(2, 4, 6, 8))
   nloc <- nloc_indxs[[nloc]]
 
-  srcpath <- getSrcFilename(x, full.names = TRUE)
+  srcpath <- utils::getSrcFilename(x, full.names = TRUE)
   pkgroot <- file.path(find_package_root(srcpath), "")
 
   srcpath <- switch(path,
@@ -18,14 +29,28 @@ srcref_key <- function(x, nloc = 2, path = c("base", "root", "full")) {
   sprintf(
     "%s:%s",
     srcpath,
-    paste(as.numeric(getSrcref(x))[nloc], collapse = ":")
+    paste(as.numeric(utils::getSrcref(x))[nloc], collapse = ":")
   )
 }
 
+
+
+#' Convert to srcref
+#'
+#' @param x an object to coerce
+#'
+#' @name as.srcref
+#' @keywords internal
 as.srcref <- function(x) {
   UseMethod("as.srcref")
 }
 
+
+
+#' @describeIn as.srcref
+#'
+#' Convert from a `srcref_key` to a sourceref object
+#'
 as.srcref.character <- function(x) {
   m <- regexpr("(?<filename>[^:]*):(?<location>.*)", x, perl = TRUE)
   m <- matrix(
@@ -47,16 +72,69 @@ as.srcref.character <- function(x) {
   srcref(srcfile(filename), location)
 }
 
+
+
+#' Build srcLocation from a minimal numeric vector
+#'
+#' Build a length four source location from a length two source location. The
+#' starting column on the first line is assumed to be 1, and the final column is
+#' taken to be the length of the line if the source file exists, or 1 as a
+#' fallback.
+#'
+#' @param x A numeric vector of at least length 2
+#' @param file A file to use to determine the length of the final line
+#'
+#' @keywords internal
 srclocs <- function(x, file) {
   if (length(x) < 4) {
     line <- x[[2]]
     x[[3]] <- x[[2]]
-    x[[2]] <- 0
-    x[[4]] <- if (file.exists(file)) file_line_nchar(file, line) else 0
+    x[[2]] <- 1
+    x[[4]] <- if (file.exists(file)) file_line_nchar(file, line) else 1
   }
   x
 }
 
-file_line_nchar <- function(file, line) {
-  nchar(scan(file, what = character(), skip = line - 1, n = 1, quiet = TRUE))
+
+
+#' Split a srcref into separate srcrefs at specific lines
+#'
+#' @param sr An original srcref object
+#' @param where A numeric vector of line numbers where the srcref should be
+#'   split
+#'
+#' @importFrom utils getSrcFilename
+#' @keywords internal
+split_srcref <- function(sr, where) {
+  if (is.null(sr)) return(rep_len(sr, length(where)))
+  file <- utils::getSrcFilename(sr, full.names = TRUE)
+
+  # allocate a list of new srcrefs
+  refs <- list()
+  length(refs) <- length(where)
+
+  # starting from start of collective srcref, offset local lines
+  start <- getSrcLocation(sr)
+  where <- start + where
+
+  # create new srcrefs of regions, divided by "where" lines
+  for (i in seq_along(where)) {
+    locs <- srclocs(c(start, where[[i]]), file)
+    refs[[i]] <- srcref(srcfile(file), locs)
+    start <- where[[i]] + 1
+  }
+
+  refs
+}
+
+
+
+#' Determine the number of source code lines of a given srcref
+#'
+#' @param x A `srcref` object
+#'
+#' @importFrom utils getSrcLocation
+#' @keywords internal
+srcref_nlines <- function(x) {
+  getSrcLocation(x, "line", first = FALSE) - getSrcLocation(x, "line") + 1L
 }

@@ -63,95 +63,59 @@ rd <- function() {
 #' @importFrom utils tail
 #' @exportS3Method roxygen2::roclet_process roclet_rd
 roclet_process.roclet_rd <- function(x, blocks, env, base_path) {
-  testex_tags <- c("expect", "testthat")
-  rdname <- basename(base_path)
-  obj_locs <- eapply(env, getSrcLocation, which = "line")
-
   for (bi in seq_along(blocks)) {
-    block <- blocks[[bi]]
-    tags <- vapply(block$tags, `[[`, character(1L), "tag")
-
-    ti_ex_tag <- which(tags == "examples")
-    ti_ex_last_subtag <- tail(which(tags %in% c("examples", testex_tags)), 1L)
-    if (!length(ti_ex_tag)) break
-
-    ex_tag <- block$tags[[ti_ex_tag]]
-    ex <- ex_tag$val
-
-    # try to track lines of code through example for test descriptions
-    ex_file <- ex_tag$file
-    ex_lines <- rep_len(ex_tag$line, 2L)
-
-    # find next obj in source code
-    obj <- names(obj_locs)[Position(function(i) i > ex_tag$line, obj_locs)]
-
-    # stateful aggregators to collect consecutive tests into \testonly block
-    last_tag <- NULL
-    tests <- list()
-
-    for (ti in seq(from = ti_ex_tag, to = ti_ex_last_subtag)) {
-      tag <- block$tags[[ti]]
-
-      if (!is.null(last_tag) && last_tag != tag$tag) {
-        test_rd <- format_tests(
-          last_tag,
-          tests,
-          obj = obj,
-          file = ex_file,
-          lines = ex_lines
-        )
-
-        ex <- append_test_rd(ex, test_rd)
-        tests <- list()
-      }
-
-      switch(tag$tag,
-        examples = next,
-        expect =,
-        testthat = {
-          if (length(tests) == 0L) ex_lines[[2L]] <- tag$line - 1L
-          tests <- append_test(tag$tag, tests, tag$test)
-
-          if (nchar(trimws(tag$remainder)) > 0L) {
-            testonly <- format_tests(
-              last_tag %||% tag$tag,
-              tests,
-              obj = obj,
-              file = ex_file,
-              lines = ex_lines
-            )
-            remainder <- sub("^\n", "", tag$remainder)
-            ex <- append_test_rd(ex, c(testonly, remainder))
-            ex_lines <- rep_len(tag$line + srcref_nlines(tag$test), 2L)
-            tests <- list()
-          }
-        },
-        stop(paste0("Tag unexpected while building examples: ", tag$tag))
-      )
-
-      # now that we've merged the content into the example, flag for removal
-      blocks[[bi]]$tags[[ti]] <- NULL
-      last_tag <- tag$tag
-    }
-
-    if (!is.null(last_tag) && length(tests)) {
-      test_rd <- format_tests(
-        last_tag,
-        tests,
-        obj = obj,
-        file = ex_file,
-        lines = ex_lines
-      )
-
-      ex <- append_test_rd(ex, test_rd)
-    }
-
-    # filter out any tags that were merged into the example block
-    blocks[[bi]]$tags <- Filter(Negate(is.null), blocks[[bi]]$tags)
-    blocks[[bi]]$tags[[ti_ex_tag]]$val <- ex
+    blocks[[bi]] <- roclet_process_testex(blocks[[bi]])
   }
 
   .roxygen2()$roclet_process.roclet_rd(x, blocks, env, base_path)
+}
+
+roclet_process_testex <- function(block) {
+  testex_tags <- c("expect", "testthat")
+
+  idx_ex_tag <- roclet_which_example_tag(block$tags)
+  if (!length(idx_ex_tag)) return(block)
+
+  # initial example, to which we'll merge in formatted tests code
+  ex_tag <- block$tags[[idx_ex_tag]]
+  ex <- ex_tag$val
+
+  # aggregate expectations and srcref line ranges for consecutive test tags
+  expsloc <- rep_len(ex_tag$line, 2L)
+  exps <- list()
+
+  for (tag in block$tags[seq(i, length(block$tags))]) {
+    # read next tag, splitting content into example code and test code
+    tag <- block$tags[[i]]
+    if (!tag$tag %in% testex_tags) break
+
+    # update expectation line range to include next tag
+    if (length(exps) == 0L) expsloc[[2L]] <- tag$line - 1L
+    exps <- append_test(tag, exps)
+
+    # flush expects if back to example code (remainder) or last tag of test block
+    is_last <- !isTRUE(tag$tag == block$tags[[i + 1]]$tag)
+    if (roxy_test_has_remainder(tag) || is_last) {
+      rd <- format_tests(tag$tag, exps, file = block$file, lines = expsloc)
+      ex <- append_test_rd(ex, c(rd, sub("^\n", "", tag$remainder)))
+      expsloc <- rep_len(tag$line + !is_last * srcref_nlines(tag$test), 2L)
+      exps <- list()
+    }
+
+    # strip original tag from block
+    block$tags[i] <- list(NULL)
+  }
+
+  # filter out any tags that were merged into the example block
+  block$tags[[idx_ex_tag]]$val <- ex
+  block$tags <- Filter(Negate(is.null), block$tags)
+
+  block
+}
+
+roclet_which_example_tag <- function(tags) {
+  tags <- vcapply(tags, `[[`, "tag")
+  which(tags == "examples")
 }
 
 #' @exportS3Method roxygen2::roclet_output roclet_rd
@@ -162,57 +126,21 @@ roclet_output.roclet_rd <- function(...) {
 #' @importFrom utils head tail
 #' @exportS3Method roxygen2::roxy_tag_parse roxy_tag_expect
 roxy_tag_parse.roxy_tag_expect <- function(x) {
-  xlines <- strsplit(x$raw, "\n")[[1L]]
-
-  # try to parse first expression
-  status <- tryCatch({
-      x$test <- parse(text = x$raw, n = 1, keep.source = TRUE)
-      TRUE
-    },
-    error = function(e) e
-  )
-
-  # if parsing failed, use the error message to try to subset text before
-  # parsing error and try to parse first expression again
-  if (!isTRUE(status)) {
-    msg <- conditionMessage(status)
-    err_loc_re <- ":(\\d+):(\\d+):"
-    m <- regexec(err_loc_re, msg)[[1L]]
-    loc <- substring(msg, m[-1L], m[-1L] + attr(m, "match.length")[-1L] - 1L)
-    loc <- as.numeric(loc)
-    text <- head(xlines, loc[[1L]])
-    text[[length(text)]] <- substring(tail(text, 1L), 1L, loc[[2L]] - 1L)
-
-    status <- tryCatch({
-        x$test <- parse(text = text, n = 1, keep.source = TRUE)
-        TRUE
-      },
-      error = function(e) e
-    )
-  }
-
-  if (!isTRUE(status)) {
+  x$test <- roxy_test_try_parse(x$raw)
+  if (inherits(x$test, "error")) {
     warning(
       "Error encountered while parsing expectation. This will likely ",
       "cause an error when testing examples."
     )
   }
 
-  # update parsed lines with actual lines
-  srcref <- attr(x$test, "srcref")[[1]]
-  attr(srcref, "srcfile") <- srcfile(x$file)
-  srcref[1] <- srcref[1] + x$line - 1L
-  srcref[3] <- srcref[3] + x$line - 1L
-  attr(x$test, "srcref") <- srcref
+  x$test <- roxy_test_update_srcref(
+    x$test,
+    file = x$file,
+    offset_lines = x$line - 1L
+  )
 
-  # find coding test lines, to determine trailing raw lines
-  test_lines <- as.character(attr(x$test, "srcref"), useSource = TRUE)
-  test_loc <- c(length(test_lines), nchar(tail(test_lines, 1L)))
-
-  x$remainder <- paste(collapse = "\n", c(
-    substring(xlines[[test_loc[[1L]]]], test_loc[[2L]] + 1L),
-    tail(xlines, -test_loc[[1L]])
-  ))
+  x$remainder <- roxy_test_raw_remainder(x)
 
   x
 }
@@ -220,19 +148,68 @@ roxy_tag_parse.roxy_tag_expect <- function(x) {
 #' @exportS3Method roxygen2::roxy_tag_parse roxy_tag_testthat
 roxy_tag_parse.roxy_tag_testthat <- roxy_tag_parse.roxy_tag_expect
 
+roxy_test_try_parse <- function(x) {
+  # try to parse first expression
+  res <- tryCatch(
+    parse(text = x, n = 1, keep.source = TRUE),
+    error = function(e) e
+  )
+
+  # if parsing failed, use the error message to try to subset text before
+  # parsing error and try to parse first expression again
+  if (inherits(res, "error")) {
+    msg <- conditionMessage(res)
+    err_loc_re <- ":(\\d+):(\\d+):"
+    m <- regexec(err_loc_re, msg)[[1L]]
+    loc <- substring(msg, m[-1L], m[-1L] + attr(m, "match.length")[-1L] - 1L)
+    loc <- as.numeric(loc)
+    text <- head(strsplit(x, "\n")[[1L]], loc[[1L]])
+    text[[length(text)]] <- substring(tail(text, 1L), 1L, loc[[2L]] - 1L)
+
+    res <- tryCatch(
+      parse(text = text, n = 1, keep.source = TRUE),
+      error = function(e) e
+    )
+  }
+
+  res
+}
+
+roxy_test_has_remainder <- function(tag) {
+  nchar(trimws(tag$remainder)) > 0
+}
+
+roxy_test_update_srcref <- function(x, file, offset_lines) {
+  # update parsed lines with actual lines
+  srcref <- attr(x, "srcref")[[1]]
+  attr(srcref, "srcfile") <- srcfile(file)
+  srcref[1] <- srcref[1] + offset_lines
+  srcref[3] <- srcref[3] + offset_lines
+  srcref[4] <- file_line_nchar(file, srcref[3])
+  attr(x, "srcref") <- srcref
+  x
+}
 
 
-#' Deparse an expression and indent for pretty-printing
+
+#' Separate the remaining text following a parsed roxygen test
 #'
-#' @param x A \code{code} object
-#' @param indent An \code{integer} number of spaces or a string to prefix each
-#'   line of the deparsed output.
+#' @param x A processed roxy testex tag, including a `$test` field
+#' @return the string that follows the end of the test expression
 #'
-#' @family roclet_process_helpers
-#'
-deparse_indent <- function(x, indent = 0L) {
-  if (is.numeric(indent)) indent <- strrep(" ", indent)
-  paste0(indent, deparse(x), collapse = "\n")
+#' @name roxy_test_helpers
+#' @keywords internal
+roxy_test_raw_remainder <- function(x) {
+  xlines <- strsplit(x$raw, "\n")[[1L]]
+
+  # find coding test lines, to determine trailing raw lines
+  test_lines <- as.character(attr(x$test, "srcref"), useSource = TRUE)
+  test_loc <- c(length(test_lines), nchar(tail(test_lines, 1L)))
+
+  paste(collapse = "\n", c(
+    substring(xlines[[test_loc[[1L]]]], test_loc[[2L]] + 1L),
+    tail(xlines, -test_loc[[1L]])
+  ))
 }
 
 
@@ -246,26 +223,27 @@ deparse_indent <- function(x, indent = 0L) {
 #'
 #' @rdname format_tests
 #' @family roclet_process_helpers
+#' @keywords internal
 format_tests <- function(tag, tests, ...) {
+  if (!length(tests)) return(character(0L))
   UseMethod("format_tests", structure(1L, class = tag))
 }
 
 #' @rdname format_tests
-format_tests.expect <- function(tag, tests, obj, file, lines) {
-  tests <- lapply(tests, `attributes<-`, NULL)
-  tests <- vapply(tests, deparse_indent, character(1L), indent = 2L)
+format_tests.default <- function(tag, tests, file, lines) {
+  character(0L)
+}
 
-  example_src <- paste0(
-    basename(file),
-    ":", lines[[1]],
-    ":", lines[[2]]
-  )
+#' @rdname format_tests
+format_tests.expect <- function(tag, tests, file, lines) {
+  tests <- lapply(tests, `attributes<-`, NULL)
+  tests <- vcapply(tests, deparse_indent, indent = 2L)
+  example_src <- paste0(basename(file), ":", lines[[1]], ":", lines[[2]])
 
   c(
     "\\testonly{",
     "testex::testex(",
       sprintf("%s,", escape_infotex(tests)),
-      sprintf("  obj     = \"%s\",", obj),
       sprintf("  example = \"%s\"", example_src),
     ")}"
   )
@@ -276,28 +254,17 @@ format_tests.expect <- function(tag, tests, obj, file, lines) {
 #'   end lines of the example code block tested by the test code.
 #'
 #' @rdname format_tests
-format_tests.testthat <- function(tag, tests, obj, file, lines) {
-  srcs  <- vapply(tests, function(i) srcref_key(attr(i, "srcref"), nloc = 2L), character(1L))
+format_tests.testthat <- function(tag, tests, file, lines) {
+  srcs  <- vcapply(tests, function(i) srcref_key(attr(i, "srcref"), nloc = 2L))
   tests <- vapply(tests, deparse_indent, character(1L), indent = 2L)
-
-  example_src <- paste0(
-    basename(file),
-    ":", lines[[1]],
-    ":", lines[[2]]
-  )
-
-  desc <- sprintf(
-    "`%s` example tests (%s)",
-    obj,
-    example_src
-  )
+  example_src <- paste0(basename(file), ":", lines[[1]], ":", lines[[2]])
+  desc <- sprintf("example tests at `%s`", example_src)
 
   c(
     "\\testonly{",
       paste0("testex::testthat_block(test_that(", deparse(desc), ", {"),
       paste0("  testex::with_srcref(\"", srcs, "\", ", trimws(escape_infotex(tests)), ")"),
     "}),",
-    sprintf("  obj     = \"%s\",", obj),
     sprintf("  example = \"%s\"", example_src),
     ")}"
   )
@@ -314,13 +281,14 @@ format_tests.testthat <- function(tag, tests, obj, file, lines) {
 #'   necessary, the code will be modified to accommodate the testing style.
 #'
 #' @family roclet_process_helpers
-append_test <- function(tag, tests, test) {
-  UseMethod("append_test", structure(1L, class = tag))
+#' @keywords internal
+append_test <- function(tag, tests) {
+  UseMethod("append_test", structure(1L, class = tag$tag))
 }
 
-append_test.expect <- function(tag, tests, test) {
-  attrs <- attributes(test)
-  test <- test[[1L]]
+append_test.expect <- function(tag, tests) {
+  attrs <- attributes(tag$test)
+  test <- tag$test[[1L]]
   if (!"." %in% all.names(test)) {
     test <- bquote(identical(., .(test)))
   }
@@ -328,9 +296,9 @@ append_test.expect <- function(tag, tests, test) {
   append(tests, list(test))
 }
 
-append_test.testthat <- function(tag, tests, test) {
-  attrs <- attributes(test)
-  test <- test[[1L]]
+append_test.testthat <- function(tag, tests) {
+  attrs <- attributes(tag$test)
+  test <- tag$test[[1L]]
   if (!"." %in% all.names(test))
     test <- as.call(append(as.list(test), quote(.), after = 1L))
   attributes(test) <- attrs
@@ -344,21 +312,9 @@ append_test.testthat <- function(tag, tests, test) {
 #' @param x A \code{character} value
 #'
 #' @family roclet_process_helpers
+#' @keywords internal
 escape_infotex <- function(x) {
   gsub("\\\\", "\\\\\\\\", x)
-}
-
-
-
-#' Determine the number of source code lines of a given srcref
-#'
-#' @param x A \code{srcref} object
-#'
-#' @family roclet_process_helpers
-#'
-#' @importFrom utils getSrcLocation
-srcref_nlines <- function(x) {
-  getSrcLocation(x, "line", first = FALSE) - getSrcLocation(x, "line") + 1L
 }
 
 
@@ -374,11 +330,13 @@ srcref_nlines <- function(x) {
 #' @param test The additional test lines to add to the example
 #'
 #' @family roclet_process_helpers
+#' @keywords internal
 append_test_rd <- function(ex, test) {
+  if (!length(test)) return(ex)
   c(
     ex[-length(ex)],
     # \testonly on same line to prevent unintended linebreaks
-    paste(ex[[length(ex)]], test[[1L]]),
+    paste0(ex[[length(ex)]], test[[1L]]),
     test[-1L]
   )
 }

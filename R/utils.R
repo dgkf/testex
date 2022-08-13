@@ -15,6 +15,9 @@
 #' @param package A package name
 #' @param names A \code{character} vector of object names to select
 #'
+#' @name testex-private-imports
+#' @keywords internal
+#'
 priv <- function(package, names) {
   function() {
     if (requireNamespace(package, quietly = TRUE)) {
@@ -32,6 +35,10 @@ priv <- function(package, names) {
 
 
 #' Private roxygen2 functions
+#'
+#' @name testex-private-imports
+#' @keywords internal
+#'
 .roxygen2 <- priv("roxygen2", c(
   "roclet_process.roclet_rd",
   "roclet_output.roclet_rd"
@@ -61,12 +68,25 @@ with_attached <- function(ns, expr) {
 
 
 
+#' Test whether currently executing R CMD check
+#'
+#' @keywords internal
 is_r_cmd_check <- function() {
   !is.na(Sys.getenv("_R_CHECK_PACKAGE_NAME_", unset = NA_character_))
 }
 
 
 
+#' Package source file helpers
+#'
+#' Discover specific package related file paths
+#'
+#' @param path A path within a package source or install directory
+#' @param quiet Whether to suppress output
+#'
+#' @name package-file-helpers
+#' @keywords internal
+#'
 find_package_root <- function(path = ".", quiet = FALSE) {
   if (path == ".") path <- getwd()
   while (dirname(path) != path) {
@@ -81,37 +101,120 @@ find_package_root <- function(path = ".", quiet = FALSE) {
 
 
 
-package_name <- function() {
-  x <- Sys.getenv("_R_CHECK_PACKAGE_NAME_", unset = NA_character_)
-  if (!is.na(x)) return(x)
+#' Find and return a package's Rd db
+#'
+#' @param package A package name
+#' @param path A file path within a package's source code or installation
+#'   directory. Only considered if `package` is missing.
+#'
+#' @name package-file-helpers
+find_package_rds <- function(package, path = getwd()) {
+  if (!missing(package)) {
+    package_path <- find.package(package, quiet = TRUE)
+  } else {
+    package_path <- find_package_root(path)
+  }
 
-  x <- find_package_root(getwd(), quiet = TRUE)
-  if (!is.null(x)) return(read.dcf(file.path(x, "DESCRIPTION")[[1L, "Package"]]))
+  desc <- file.path(package_path, "DESCRIPTION")
+  package <- read.dcf(desc, fields = "Package")[[1L]]
 
-  invisible(NULL)
+  has_R_dir <- isTRUE(dir.exists(file.path(package_path, "R")))
+  has_Meta_dir <- isTRUE(dir.exists(file.path(package_path, "Meta")))
+
+  if (has_R_dir && !has_Meta_dir) {
+    return(tools::Rd_db(dir = package_path))
+  }
+
+  if (has_Meta_dir) {
+    return(tools::Rd_db(package = package, lib.loc = dirname(package_path)))
+  }
+
+  tools::Rd_db(package)
 }
 
 
 
+#' @name package-file-helpers
 package_desc <- function() {
   x <- Sys.getenv("_R_CHECK_PACKAGE_NAME_", unset = NA_character_)
   if (!is.na(x)) return(file.path(find.package(x), "DESCRIPTION"))
 
   x <- find_package_root(getwd(), quiet = TRUE)
-  if (!is.null(x)) return(file.path(x, "DESCRIPTION")[[1L, "Package"]])
+  if (!is.null(x)) return(file.path(x, "DESCRIPTION"))
 
   invisible(NULL)
 }
 
 
+
+#' `vapply` shorthands
+#'
+#' Simple wrappers around `vapply` for common data types
+#'
+#' @rdname vapplys
+#' @inheritParams base::vapply
+#' @keywords internal
 vlapply <- function(..., FUN.VALUE = logical(1L)) {
   vapply(..., FUN.VALUE = FUN.VALUE)
 }
 
+#' @rdname vapplys
 vcapply <- function(..., FUN.VALUE = character(1L)) {
   vapply(..., FUN.VALUE = FUN.VALUE)
 }
 
+#' @rdname vapplys
 vnapply <- function(..., FUN.VALUE = numeric(1L)) {
   vapply(..., FUN.VALUE = FUN.VALUE)
+}
+
+
+
+#' Deparse pretty
+#'
+#' Deparse to a single string with two spaces of indentation
+#'
+#' @param expr An expression to deparse
+#'
+#' @keywords internal
+deparse_pretty <- function(expr) {
+  lines <- deparse(expr, width.cutoff = 120L)
+  paste0(gsub("^(  +)\\1", "\\1", lines), collapse = "\n")
+}
+
+
+
+#' Deparse an expression and indent for pretty-printing
+#'
+#' @param x A \code{code} object
+#' @param indent An \code{integer} number of spaces or a string to prefix each
+#'   line of the deparsed output.
+#'
+#' @keywords internal
+deparse_indent <- function(x, indent = 0L) {
+  if (is.numeric(indent)) indent <- strrep(" ", indent)
+  paste0(indent, deparse(x), collapse = "\n")
+}
+
+
+
+#' Return the number of lines in a multi-line string
+#'
+#' @param x A character value
+#'
+#' @keywords internal
+string_line_count <- function(x) {
+  nchar(gsub("[^\n]", "", x))
+}
+
+
+
+#' Return the number of characters in a line of a file
+#'
+#' @param file A file to use as reference
+#' @param line A line number to retrieve the length of
+#'
+#' @keywords internal
+file_line_nchar <- function(file, line) {
+  nchar(scan(file, what = character(), skip = line - 1, n = 1, sep = "\n", quiet = TRUE))
 }

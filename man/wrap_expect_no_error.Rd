@@ -9,3 +9,4 @@ wrap_expect_no_error(expr, value)
 \description{
 Wraps an example expression in a testthat expectation to not error
 }
+\keyword{internal}

@@ -18,11 +18,20 @@ testex(
 expression passed to \code{val}, and may be used as a shorthand for the
 last example result.}
 
+\item{value}{A value to test against. By default, this will use the example's
+\code{.Last.value}.}
+
+\item{obj}{An optional object name used to construct a more helpful error
+message testthat failure message.}
+
+\item{example}{An option \code{srcref_key} string used to indicate where the
+relevant example code originated from.}
+
+\item{tests}{An option \code{srcref_key} string used to indicate where the
+relevant test code originated from.}
+
 \item{envir}{An environment in which tests should be evaluated. By default
 the parent environment where tests are evaluated.}
-
-\item{val}{A value to test against. By default, this will use the example's
-\code{.Last.value}.}
 }
 \description{
 A wrapper around \code{stopifnot} that allows you to use \code{.} to refer to

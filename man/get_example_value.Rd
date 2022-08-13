@@ -9,3 +9,4 @@ get_example_value()
 \description{
 Determine which symbol to use by default when testing examples
 }
+\keyword{internal}

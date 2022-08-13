@@ -2,15 +2,18 @@
 % Please edit documentation in R/roxygen2.R
 \name{format_tests}
 \alias{format_tests}
+\alias{format_tests.default}
 \alias{format_tests.expect}
 \alias{format_tests.testthat}
 \title{Format test for an Rd \\testonly block}
 \usage{
 format_tests(tag, tests, ...)
 
-\method{format_tests}{expect}(tag, tests, obj, file, lines)
+\method{format_tests}{default}(tag, tests, file, lines)
 
-\method{format_tests}{testthat}(tag, tests, obj, file, lines)
+\method{format_tests}{expect}(tag, tests, file, lines)
+
+\method{format_tests}{testthat}(tag, tests, file, lines)
 }
 \arguments{
 \item{tag}{The roxygen tag that we are formatting}
@@ -32,8 +35,7 @@ Format test for an Rd \\testonly block
 Other roclet_process_helpers: 
 \code{\link{append_test_rd}()},
 \code{\link{append_test}()},
-\code{\link{deparse_indent}()},
-\code{\link{escape_infotex}()},
-\code{\link{srcref_nlines}()}
+\code{\link{escape_infotex}()}
 }
 \concept{roclet_process_helpers}
+\keyword{internal}

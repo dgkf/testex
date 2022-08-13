@@ -23,11 +23,25 @@ have an effect if parameter \code{package} is missing.}
 
 \item{...}{Additional argument unused}
 
+\item{test_dir}{An option directory where test files should be written.
+Defaults to a temporary directory.}
+
+\item{clean}{Whether the \code{test_dir} should be removed upon completion of test
+execution. Defaults to \code{TRUE}.}
+
+\item{overwrite}{Whether files should be overwritten if \code{test_dir} already
+exists. Defaults to \code{TRUE}.}
+
 \item{reporter}{A \pkg{testthat} reporter to use. Defaults to the active
 reporter in the \pkg{testthat} environment or default reporter.}
 }
 \description{
-Reads examples from Rd files and constructs \pkg{testthat}-style tests. Each
-expression is expected to run without error and any in-line expectations
-naturally result in individual expectations.
+Reads examples from Rd files and constructs \pkg{testthat}-style tests.
+\pkg{testthat} expectations are built such that
+}
+\details{
+\enumerate{
+\item Each example expression is expected to run without error
+\item Any \code{testex} expectations are expected to pass
+}
 }

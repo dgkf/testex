@@ -4,7 +4,7 @@
 \alias{append_test}
 \title{Restructure and append tests to a test aggregating list}
 \usage{
-append_test(tag, tests, test)
+append_test(tag, tests)
 }
 \arguments{
 \item{tag}{The roxygen tag that we are formatting}
@@ -21,9 +21,8 @@ Restructure and append tests to a test aggregating list
 \seealso{
 Other roclet_process_helpers: 
 \code{\link{append_test_rd}()},
-\code{\link{deparse_indent}()},
 \code{\link{escape_infotex}()},
-\code{\link{format_tests}()},
-\code{\link{srcref_nlines}()}
+\code{\link{format_tests}()}
 }
 \concept{roclet_process_helpers}
+\keyword{internal}
