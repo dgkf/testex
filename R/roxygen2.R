@@ -84,7 +84,8 @@ roclet_process_testex <- function(block) {
   expsloc <- rep_len(ex_tag$line, 2L)
   exps <- list()
 
-  for (tag in block$tags[seq(i, length(block$tags))]) {
+  i <- idx_ex_tag + 1
+  while (i <= length(block$tags)) {
     # read next tag, splitting content into example code and test code
     tag <- block$tags[[i]]
     if (!tag$tag %in% testex_tags) break
@@ -104,6 +105,7 @@ roclet_process_testex <- function(block) {
 
     # strip original tag from block
     block$tags[i] <- list(NULL)
+    i <- i + 1
   }
 
   # filter out any tags that were merged into the example block
