@@ -1,8 +1,13 @@
 Package: testex
 Title: Add tests and assertions in-line in examples
 Version: 0.0.0.9000
-Authors@R: 
-  person("Doug", "Kelkhoff", email = "doug.kelkhoff@gmail.com", role = c("aut", "cre"))
+Authors@R: c(
+    person(
+      "Doug", "Kelkhoff", 
+      email = "doug.kelkhoff@gmail.com", 
+      role = c("aut", "cre")
+    )
+  )
 Description:
   Add tests and assertions in-line in examples.
 License: MIT + file LICENSE
@@ -19,6 +24,5 @@ RoxygenNote: 7.2.1
 Config/Notes:
   R version requirement needed to use namespaced delayed namespace registration,
   allowing roxygen2 methods to be added without requiring package. (From R 3.6
-  release notes)
-  "S3method() directives in NAMESPACE can now also be used to perform _delayed_
-  S3 method registration."
+  release notes) "S3method() directives in NAMESPACE can now also be used to
+  perform _delayed_ S3 method registration."

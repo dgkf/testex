@@ -16,8 +16,7 @@ Escape escaped Rd \\testonly strings
 Other roclet_process_helpers: 
 \code{\link{append_test_rd}()},
 \code{\link{append_test}()},
-\code{\link{format_tests}()},
-\code{\link{srcref_nlines}()}
+\code{\link{format_tests}()}
 }
 \concept{roclet_process_helpers}
 \keyword{internal}

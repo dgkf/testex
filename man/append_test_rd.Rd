@@ -23,8 +23,7 @@ test. Otherwise, an extra newline is printed when Rd is output as text.
 Other roclet_process_helpers: 
 \code{\link{append_test}()},
 \code{\link{escape_infotex}()},
-\code{\link{format_tests}()},
-\code{\link{srcref_nlines}()}
+\code{\link{format_tests}()}
 }
 \concept{roclet_process_helpers}
 \keyword{internal}

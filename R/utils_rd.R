@@ -53,8 +53,9 @@ split_testonly_as_expr <- function(rd) {
 
   # split original srcref into srcrefs for individual expressions
   code_srcrefs <- split_srcref(utils::getSrcref(rds), cumsum(code_segments_lines))
-  for (i in seq_along(code_segments))
+  for (i in seq_along(code_segments)) {
     attr(code_exprs[[i]], "srcref") <- code_srcrefs[[i]]
+  }
 
   code_exprs
 }

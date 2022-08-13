@@ -216,5 +216,5 @@ string_line_count <- function(x) {
 #'
 #' @keywords internal
 file_line_nchar <- function(file, line) {
-  nchar(scan(file, what = character(), skip = line - 1, n = 1, quiet = TRUE))
+  nchar(scan(file, what = character(), skip = line - 1, n = 1, sep = "\n", quiet = TRUE))
 }
