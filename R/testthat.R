@@ -151,7 +151,7 @@ expect_no_error <- function(object, ...) {
 #'
 #' @export
 test_examples_as_testthat <- function(package, path, ...,
-  test_dir = tempfile("testex"), clean = TRUE, overwrite = TRUE,
+  test_dir = tempfile("testex"), quiet = TRUE, clean = TRUE, overwrite = TRUE,
   reporter = testthat::get_reporter()) {
 
   requireNamespace("testthat")
