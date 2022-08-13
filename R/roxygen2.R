@@ -84,46 +84,26 @@ roclet_process_testex <- function(block) {
   expsloc <- rep_len(ex_tag$line, 2L)
   exps <- list()
 
-  last_tag <- ""
-  i <- idx_ex_tag + 1
-  while (i < length(block$tags)) {
+  for (tag in block$tags[seq(i, length(block$tags))]) {
     # read next tag, splitting content into example code and test code
     tag <- block$tags[[i]]
-    is_new_tag <- tag$tag != last_tag
-
-    # if we're onto a new test block tag, flush aggregated expectations
-    if (is_new_tag) {
-      rd <- format_tests(last_tag, exps, file = block$file, lines = expsloc)
-      ex <- append_test_rd(ex, rd)
-      expsloc <- rep_len(tag$line, 2L)
-      exps <- list()
-    }
-
     if (!tag$tag %in% testex_tags) break
 
     # update expectation line range to include next tag
     if (length(exps) == 0L) expsloc[[2L]] <- tag$line - 1L
-
-    # append expectation to exps aggregator
     exps <- append_test(tag, exps)
 
-    # if expectation tag contains more than one expression, remainder is the
-    # start of the next example code. split into expectation and example.
-    if (roxy_test_has_remainder(tag)) {
+    # flush expects if back to example code (remainder) or last tag of test block
+    is_last <- !isTRUE(tag$tag == block$tags[[i + 1]]$tag)
+    if (roxy_test_has_remainder(tag) || is_last) {
       rd <- format_tests(tag$tag, exps, file = block$file, lines = expsloc)
       ex <- append_test_rd(ex, c(rd, sub("^\n", "", tag$remainder)))
-
-      # update next expectations block with new srcref lines
-      expsloc <- rep_len(tag$line + srcref_nlines(tag$test), 2L)
+      expsloc <- rep_len(tag$line + !is_last * srcref_nlines(tag$test), 2L)
       exps <- list()
     }
 
     # strip original tag from block
     block$tags[i] <- list(NULL)
-
-    # now that we've merged the content into the example, flag for removal
-    last_tag <- tag$tag
-    i <- i + 1
   }
 
   # filter out any tags that were merged into the example block
