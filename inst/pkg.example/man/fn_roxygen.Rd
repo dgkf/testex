@@ -13,27 +13,24 @@ fn_roxygen(x)
 Test Function
 }
 \examples{
-fn_roxygen("testing") \testonly{
+fn_roxygen("testing")\testonly{
 testex::testex(
   identical(., "testing 1 2 3"),
-  obj     = "fn_roxygen",
   example = "fn.R:30:31"
 )}
 
-fn_roxygen("testing") \testonly{
+fn_roxygen("testing")\testonly{
 testex::testex(
   grepl("\\\\d", .),
   startsWith(., "testing"),
-  obj     = "fn_roxygen",
   example = "fn.R:33:34"
 )}
 
-fn_roxygen("testing") \testonly{
+fn_roxygen("testing")\testonly{
 testex::testex(
   identical(., {
       "testing 1 2 3"
   }),
-  obj     = "fn_roxygen",
   example = "fn.R:37:38"
 )}
 
