@@ -219,6 +219,7 @@ string_line_count <- function(x) {
 #'
 #' @keywords internal
 file_line_nchar <- function(file, line) {
-  if (!file.exists(file) || isTRUE(grepl("^<.*>$", basename(file)))) return(10000)
+  bn <- basename(file)
+  if (!file.exists(file) || (startsWith(bn, "<") && endsWith(bn, ">"))) return(10000)
   nchar(scan(file, what = character(), skip = line - 1, n = 1, sep = "\n", quiet = TRUE))
 }
