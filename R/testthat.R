@@ -67,6 +67,7 @@ testthat_block <- function(..., value = get_example_value(), obj = NULL,
 
   expr <- as.call(append(as.list(expr), exprs, after = 3L))
   expr <- bquote(local(testex::with_attached("testthat", .(expr))))
+
   eval(expr, envir = envir)
 }
 
@@ -90,7 +91,7 @@ with_srcref <- function(src, expr, envir = parent.frame()) {
   withCallingHandlers(
     eval(expr, envir = envir),
     expectation = function(e) {
-      e[["srcref"]] <-as.srcref(src)
+      e[["srcref"]] <- as.srcref(src)
       testthat::exp_signal(e)
       invokeRestart(computeRestarts()[[1L]])
     }
@@ -151,7 +152,7 @@ expect_no_error <- function(object, ...) {
 #'
 #' @export
 test_examples_as_testthat <- function(package, path, ...,
-  test_dir = tempfile("testex"), quiet = TRUE, clean = TRUE, overwrite = TRUE,
+  test_dir = tempfile("testex"), clean = TRUE, overwrite = TRUE,
   reporter = testthat::get_reporter()) {
 
   requireNamespace("testthat")
@@ -221,11 +222,13 @@ test_files <- function(files, context, ...) {
 #' @keywords internal
 wrap_expect_no_error <- function(expr, value) {
   srckey <- srcref_key(expr, path = "root")
+  # nocov start
   bquote(testthat::test_that("example executes without error", {
     testex::with_srcref(.(srckey), {
       .(value) <<- testex::expect_no_error(.(expr))
     })
   }))
+  # nocov end
 }
 
 

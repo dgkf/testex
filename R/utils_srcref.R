@@ -16,21 +16,19 @@ srcref_key <- function(x, nloc = 2, path = c("base", "root", "full")) {
   nloc_indxs <- list(c(1, 3), 1:4, 1:6, 1:8)
   nloc <- match(nloc, c(2, 4, 6, 8))
   nloc <- nloc_indxs[[nloc]]
+  loc <- paste(as.numeric(utils::getSrcref(x))[nloc], collapse = ":")
 
   srcpath <- utils::getSrcFilename(x, full.names = TRUE)
-  pkgroot <- file.path(find_package_root(srcpath), "")
+  pkgroot <- find_package_root(srcpath, quiet = TRUE)
+  if (!length(pkgroot)) pkgroot <- ""
 
   srcpath <- switch(path,
     "full" = srcpath,
     "base" = basename(srcpath),
-    "root" = gsub(pkgroot, "", srcpath)
+    "root" = gsub(paste0("^", file.path(pkgroot, "")), "", srcpath)
   )
 
-  sprintf(
-    "%s:%s",
-    srcpath,
-    paste(as.numeric(utils::getSrcref(x))[nloc], collapse = ":")
-  )
+  paste0(srcpath, ":", loc)
 }
 
 
@@ -66,7 +64,6 @@ as.srcref.character <- function(x) {
     if (file.exists(f <- file.path(pkgroot, filename))) filename <- f
     if (file.exists(f <- file.path(pkgroot, "R", filename))) filename <- f
   }
-
 
   location <- srclocs(as.numeric(strsplit(m[,"location"], ":")[[1]]), filename)
   srcref(srcfile(filename), location)

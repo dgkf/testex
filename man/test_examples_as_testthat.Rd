@@ -9,7 +9,6 @@ test_examples_as_testthat(
   path,
   ...,
   test_dir = tempfile("testex"),
-  quiet = TRUE,
   clean = TRUE,
   overwrite = TRUE,
   reporter = testthat::get_reporter()

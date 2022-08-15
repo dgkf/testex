@@ -3,14 +3,14 @@
 \name{testex-rd-example-helpers}
 \alias{testex-rd-example-helpers}
 \alias{rd_extract_examples}
-\alias{rd_example_as_string}
+\alias{rd_code_as_string}
 \alias{split_testonly_as_expr}
 \alias{split_testonly}
 \title{Rd Example Parsing Helpers}
 \usage{
 rd_extract_examples(rd)
 
-rd_example_as_string(rd)
+rd_code_as_string(rd)
 
 split_testonly_as_expr(rd)
 
@@ -26,13 +26,17 @@ Rd Example Parsing Helpers
 \itemize{
 \item \code{rd_extract_examples()}: Extract examples tag from an Rd file
 
-\item \code{rd_example_as_string()}: Convert an Rd example to string
+\item \code{rd_code_as_string()}: Convert an Rd example to string
 
 \item \code{split_testonly_as_expr()}: Split sections of an example into evaluated example code blocks and code
 blocks wrapped in testonly \code{Rd_tag}s, reassigning \code{srcref}s as the example
 code is split.
 
-\item \code{split_testonly()}: Split sections of an example into lists of \code{Rd_tag}s
+\item \code{split_testonly()}: Split sections of an example into lists of \code{Rd_tag}s. Note that srcrefs are
+split by line number. If a line is split between two sections, it is
+attributed to the first section. As this is used primarily for giving line
+numbers to test messages, this is sufficient for providing test failures
+locations.
 
 }}
 \keyword{internal}

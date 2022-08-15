@@ -53,6 +53,9 @@ priv <- function(package, names) {
 #'
 #' @export
 with_attached <- function(ns, expr) {
+  nsname <- if (isNamespace(ns)) getNamespaceName(ns) else ns
+  if (paste0("package:", nsname) %in% search()) return(eval(expr))
+
   if (is.character(ns)) {
     requireNamespace(ns)
   }
@@ -216,5 +219,6 @@ string_line_count <- function(x) {
 #'
 #' @keywords internal
 file_line_nchar <- function(file, line) {
+  if (!file.exists(file)) return(10000)
   nchar(scan(file, what = character(), skip = line - 1, n = 1, sep = "\n", quiet = TRUE))
 }
