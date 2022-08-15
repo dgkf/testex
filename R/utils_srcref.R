@@ -26,7 +26,15 @@ srcref_key <- function(x, nloc = 2, path = c("base", "root", "full")) {
     "full" = srcpath,
     "base" = basename(srcpath),
     "root" = {
-      stop(paste0(srcpath, "\n", pkgroot))
+      stop(paste0(
+        "DEBUG:\n",
+        srcpath,
+        "\n",
+        file.path(pkgroot, ""),
+        "\n",
+        startsWith(srcpath, prefix <- file.path(pkgroot, ""))
+      ))
+
       if (isTRUE(startsWith(srcpath, prefix <- file.path(pkgroot, "")))) {
         substring(srcpath, nchar(prefix) + 1)
       } else {
