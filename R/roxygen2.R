@@ -184,7 +184,10 @@ roxy_test_has_remainder <- function(tag) {
 roxy_test_update_srcref <- function(x, file, offset_lines) {
   # update parsed lines with actual lines
   srcref <- attr(x, "srcref")[[1]]
-  attr(srcref, "srcfile") <- srcfile(file)
+
+  if (file.exists(file))
+    attr(srcref, "srcfile") <- srcfile(file)
+
   srcref[1] <- srcref[1] + offset_lines
   srcref[3] <- srcref[3] + offset_lines
   srcref[4] <- file_line_nchar(file, srcref[3])

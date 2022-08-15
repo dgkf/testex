@@ -37,12 +37,16 @@ use_rd_roclet <- function(path = getwd(), check = NA) {
     desc[1L,"Suggests"]
   }
 
-  if (!grepl("\\btestex\\b", suggests)) {
+  if (!any(grepl("\\btestex\\b", suggests))) {
     suggests <- paste(c(suggests, "testex"), collapse = "\n")
   }
 
+  if (!"Roxygen" %in% colnames(desc)) desc <- cbind(desc, "Roxygen" = NA_character_)
+  if (!"Suggests" %in% colnames(desc)) desc <- cbind(desc, "Suggests" = NA_character_)
+
   desc[1L, "Roxygen"] <- paste0("\n    ", deparse(roxygen), collapse = "")
   desc[1L, "Suggests"] <- suggests
+
   write.dcf(
     desc,
     path,
@@ -78,7 +82,7 @@ use_testex_as_testthat <- function(path = getwd(), context = "testex") {
   }
 
   if (file.exists(test_file)) {
-    stop(sprintf("testthat test file '%s' already exists.", test_file))
+    stop(sprintf("testthat test file '%s' already exists.", basename(test_file)))
   }
 
   test_contents <- c(

@@ -1,1 +1,1 @@
-testex::test_examples_as_testthat(quiet = FALSE)
+testex::test_examples_as_testthat()

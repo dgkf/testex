@@ -28,8 +28,16 @@ fn <- function(x) {
 #' @param x A thing
 #'
 #' @examples
-#' fn_roxygen("testing")
+#' \dontshow{
+#'   value <- "testing"
+#' }
+#'
+#' fn_roxygen(value)
 #' @expect "testing 1 2 3"
+#'
+#' \dontrun{
+#'   stop("this won't work")
+#' }
 #'
 #' fn_roxygen("testing")
 #' @expect grepl("\\d", .)
