@@ -20,7 +20,7 @@ srcref_key <- function(x, nloc = 2, path = c("base", "root", "full")) {
 
   srcpath <- utils::getSrcFilename(x, full.names = TRUE)
   pkgroot <- find_package_root(srcpath, quiet = TRUE)
-  if (!length(pkgroot)) pkgroot <- NULL
+  if (!length(pkgroot)) pkgroot <- ""
   else pkgroot <- paste0(pkgroot, .Platform$file.sep)
 
   srcpath <- switch(path,
