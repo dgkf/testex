@@ -80,10 +80,17 @@ is_r_cmd_check <- function() {
 
 
 
-#' Test with path represents a file
-is_file <- function(x) {
-  file.exists(x) &&
-  !identical(tryCatch(file.info(x), error = function(e) FALSE), FALSE)
+#' Test whether path is valid on given platform
+#'
+#' @name package-file-helpers
+#' @keywords internal
+file_path_is_valid <- function(x) {
+  # this is a pretty naive approach to this, if this ever needs to be more
+  # robust, look into adopting fs::path_sanitize
+  switch(.Platform$OS.type,
+    windows = grepl("[<>:\"|?*]", x),
+    TRUE
+  )
 }
 
 
@@ -227,6 +234,6 @@ string_line_count <- function(x) {
 #'
 #' @keywords internal
 file_line_nchar <- function(file, line) {
-  if (!is_file(file)) return(10000)
+  if (!file.exists(file) || !file_path_is_valid(file)) return(10000)
   nchar(scan(file, what = character(), skip = line - 1, n = 1, sep = "\n", quiet = TRUE))
 }
