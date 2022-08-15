@@ -28,6 +28,8 @@ srcref_key <- function(x, nloc = 2, path = c("base", "root", "full")) {
     "root" =
       if (isTRUE(startsWith(srcpath, prefix <- file.path(pkgroot, "")))) {
         substring(srcpath, nchar(prefix) + 1)
+      } else if (startsWith(srcpath, .Platform$file.sep)) {
+        substring(srcpath, 1)
       } else {
         srcpath
       }
@@ -55,7 +57,7 @@ as.srcref <- function(x) {
 #' Convert from a `srcref_key` to a sourceref object
 #'
 as.srcref.character <- function(x) {
-  m <- regexpr("(?<filename>[^:]*):(?<location>.*)", x, perl = TRUE)
+  m <- regexpr("(?<filename>.*?)(?<location>(:\\d+)+)", x, perl = TRUE)
   m <- matrix(
     substring(x, s <- attr(m, "capture.start"), s + attr(m, "capture.length") - 1),
     nrow = length(x),
@@ -70,7 +72,7 @@ as.srcref.character <- function(x) {
     if (file.exists(f <- file.path(pkgroot, "R", filename))) filename <- f
   }
 
-  location <- srclocs(as.numeric(strsplit(m[,"location"], ":")[[1]]), filename)
+  location <- srclocs(as.numeric(strsplit(m[,"location"], ":")[[1]][-1]), filename)
   srcref(srcfile(filename), location)
 }
 
