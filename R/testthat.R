@@ -87,11 +87,11 @@ testthat_block <- function(..., value = get_example_value(), obj = NULL,
 #'
 #' @export
 with_srcref <- function(src, expr, envir = parent.frame()) {
+  stop("DEBUG: ", src)
   expr <- substitute(expr)
   withCallingHandlers(
     eval(expr, envir = envir),
     expectation = function(e) {
-      stop("DEBUG: ", src)
       e[["srcref"]] <- as.srcref(src)
       testthat::exp_signal(e)
       invokeRestart(computeRestarts()[[1L]])
