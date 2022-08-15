@@ -80,6 +80,14 @@ is_r_cmd_check <- function() {
 
 
 
+#' Test with path represents a file
+is_file <- function(x) {
+  file.exists(x) &&
+  !identical(tryCatch(file.info(x), error = function(e) FALSE), FALSE)
+}
+
+
+
 #' Package source file helpers
 #'
 #' Discover specific package related file paths
@@ -219,6 +227,6 @@ string_line_count <- function(x) {
 #'
 #' @keywords internal
 file_line_nchar <- function(file, line) {
-  if (!file.exists(file)) return(10000)
+  if (!is_file(file)) return(10000)
   nchar(scan(file, what = character(), skip = line - 1, n = 1, sep = "\n", quiet = TRUE))
 }

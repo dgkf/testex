@@ -21,7 +21,7 @@ test_that("srcrefs can round-trip through a string srcref key", {
 
 test_that("srcrefs for package files find actual file full path", {
   src_file <- file.path(find.package("testex"), "tests", "testthat", "test-srcref-key.R")
-  skip_if_not(exists(src_file), "tests not installed")
+  skip_if_not(file.exists(src_file), "tests not installed")
 
   exprs <- parse(src_file, n = 1, keep.source = TRUE)
   expr <- exprs[[1]]

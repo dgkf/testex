@@ -87,7 +87,6 @@ testthat_block <- function(..., value = get_example_value(), obj = NULL,
 #'
 #' @export
 with_srcref <- function(src, expr, envir = parent.frame()) {
-  stop("DEBUG: ", src)
   expr <- substitute(expr)
   withCallingHandlers(
     eval(expr, envir = envir),

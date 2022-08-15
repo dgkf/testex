@@ -69,7 +69,7 @@ as.srcref.character <- function(x) {
 
   if (!is.null(pkgroot)) {
     if (file.exists(f <- file.path(pkgroot, filename))) filename <- f
-    if (file.exists(f <- file.path(pkgroot, "R", filename))) filename <- f
+    else if (file.exists(f <- file.path(pkgroot, "R", filename))) filename <- f
   }
 
   location <- srclocs(as.numeric(strsplit(m[,"location"], ":")[[1]][-1]), filename)
