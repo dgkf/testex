@@ -21,7 +21,11 @@ update_testex_desc <- function(path, fingerprint) {
   }
 
   field <- "Config/testex/options"
-  desc_opts <- read.dcf(path, field, keep.white = field)[[1L]]
+  desc_opts <- read.dcf(file = path, fields = field, keep.white = field)[[1L]]
+
+  # the field name is erroneously parsed with the contents on R <4.1 in CMD check
+  desc_opts <- gsub(paste0(field, ": "), "", desc_opts, fixed = TRUE)
+
   desc_opts <- eval(parse(text = desc_opts), envir = baseenv())
   rm(list = names(.testex_options), envir = .testex_options)
   for (n in names(desc_opts)) .testex_options[[n]] <- desc_opts[[n]]
