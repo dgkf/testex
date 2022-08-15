@@ -25,14 +25,14 @@ srcref_key <- function(x, nloc = 2, path = c("base", "root", "full")) {
   srcpath <- switch(path,
     "full" = srcpath,
     "base" = basename(srcpath),
-    "root" =
+    "root" = {
+      stop(paste0(srcpath, "\n", pkgroot))
       if (isTRUE(startsWith(srcpath, prefix <- file.path(pkgroot, "")))) {
         substring(srcpath, nchar(prefix) + 1)
-      } else if (startsWith(srcpath, .Platform$file.sep)) {
-        substring(srcpath, 1)
       } else {
         srcpath
       }
+    }
   )
 
   paste0(srcpath, ":", loc)
