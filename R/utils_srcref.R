@@ -21,11 +21,18 @@ srcref_key <- function(x, nloc = 2, path = c("base", "root", "full")) {
   srcpath <- utils::getSrcFilename(x, full.names = TRUE)
   pkgroot <- find_package_root(srcpath, quiet = TRUE)
   if (!length(pkgroot)) pkgroot <- ""
+  else pkgroot <- paste0(pkgroot, .Platform$file.sep)
 
   srcpath <- switch(path,
     "full" = srcpath,
     "base" = basename(srcpath),
-    "root" = gsub(paste0("^", file.path(pkgroot, "")), "", srcpath)
+    "root" = {
+      if (isTRUE(startsWith(srcpath, pkgroot))) {
+        substring(srcpath, nchar(pkgroot) + 1)
+      } else {
+        srcpath
+      }
+    }
   )
 
   paste0(srcpath, ":", loc)
@@ -50,7 +57,7 @@ as.srcref <- function(x) {
 #' Convert from a `srcref_key` to a sourceref object
 #'
 as.srcref.character <- function(x) {
-  m <- regexpr("(?<filename>[^:]*):(?<location>.*)", x, perl = TRUE)
+  m <- regexpr("(?<filename>.*?)(?<location>(:\\d+)+)", x, perl = TRUE)
   m <- matrix(
     substring(x, s <- attr(m, "capture.start"), s + attr(m, "capture.length") - 1),
     nrow = length(x),
@@ -58,14 +65,14 @@ as.srcref.character <- function(x) {
   )
 
   filename <- m[,"filename"]
-  pkgroot <- tryCatch(find_package_root(), error = function(e) NULL)
+  pkgroot <- find_package_root(quiet = TRUE)
 
   if (!is.null(pkgroot)) {
     if (file.exists(f <- file.path(pkgroot, filename))) filename <- f
-    if (file.exists(f <- file.path(pkgroot, "R", filename))) filename <- f
+    else if (file.exists(f <- file.path(pkgroot, "R", filename))) filename <- f
   }
 
-  location <- srclocs(as.numeric(strsplit(m[,"location"], ":")[[1]]), filename)
+  location <- srclocs(as.numeric(strsplit(m[,"location"], ":")[[1]][-1]), filename)
   srcref(srcfile(filename), location)
 }
 

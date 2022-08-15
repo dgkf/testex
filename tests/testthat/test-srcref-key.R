@@ -14,14 +14,14 @@ test_that("srcrefs can round-trip through a string srcref key", {
 
   # srcref keys can be parsed back into srcrefs
   expect_equal(
-    as.srcref(srcref_key(expr)),
+    as.srcref.character(srcref_key(expr)),
     srcref(srcfile("test-srcref-key.R"), c(2, 1, 4, 1))
   )
 })
 
 test_that("srcrefs for package files find actual file full path", {
   src_file <- file.path(find.package("testex"), "tests", "testthat", "test-srcref-key.R")
-  skip_if_not(exists(src_file), "tests not installed")
+  skip_if_not(file.exists(src_file), "tests not installed")
 
   exprs <- parse(src_file, n = 1, keep.source = TRUE)
   expr <- exprs[[1]]
@@ -56,12 +56,18 @@ test_that("srcrefs using root package path produce full paths", {
   expr <- expression(1)
   attr(expr, "srcref") <- srcref(srcfile(src_file), 1:8)
 
-  expect_silent(src_key_file <- getSrcFilename(as.srcref(srcref_key(expr, path = "base")), full.names = TRUE))
+  expect_silent(src_key <- srcref_key(expr, path = "base"))
+  expect_equal(gsub(":.*", "", src_key), "file.R")
+  expect_silent(src_key_file <- getSrcFilename(as.srcref(src_key), full.names = TRUE))
   expect_equal(src_key_file, "file.R")
 
-  expect_silent(src_key_file <- getSrcFilename(as.srcref(srcref_key(expr, path = "root")), full.names = TRUE))
-  expect_equal(src_key_file, "fakedir/file.R")
+  expect_silent(src_key <- srcref_key(expr, path = "root"))
+  expect_equal(gsub(":.*", "", src_key), file.path("fakedir", "file.R"))
+  expect_silent(src_key_file <- getSrcFilename(as.srcref(src_key), full.names = TRUE))
+  expect_equal(src_key_file, file.path("fakedir", "file.R"))
 
-  expect_silent(src_key_file <- getSrcFilename(as.srcref(srcref_key(expr, path = "full")), full.names = TRUE))
+  expect_silent(src_key <- srcref_key(expr, path = "full"))
+  expect_match(src_key, src_file, fixed = TRUE)
+  expect_silent(src_key_file <- getSrcFilename(as.srcref(src_key), full.names = TRUE))
   expect_equal(src_key_file, src_file)
 })

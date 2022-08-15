@@ -7,6 +7,8 @@ test_that("with_attached temporarily attaches a packages", {
 })
 
 test_that("with_srcref binds srcref to testthat condition expectations", {
+  as.srcref("<test>:1:2")
+
   expect_match(
     paste(collapse = "\n", capture.output(
       with_reporter(LocationReporter$new(), {
