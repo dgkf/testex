@@ -1,2 +1,3 @@
 inst/pkg\.example/\.Rbuildignore
 LICENSE\.md
+.github

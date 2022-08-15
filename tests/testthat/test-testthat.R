@@ -66,7 +66,7 @@ test_that("testthat_block skips if example throws error", {
 test_that("test_examples_as_testthat converts examples to tests and executes test suite", {
   dir.create(test_lib <- tempfile("testex_test_lib"))
   ex_pkg_path <- system.file(package = "testex", "pkg.example")
-  install.packages(ex_pkg_path, lib = test_lib, repos = NULL, quiet = TRUE)
+  install.packages(ex_pkg_path, lib = test_lib, repos = NULL, type = "source", quiet = TRUE)
   withr::defer(unlink(test_lib, recursive = TRUE))
 
   expect_silent({
