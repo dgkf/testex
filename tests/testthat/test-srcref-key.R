@@ -56,12 +56,18 @@ test_that("srcrefs using root package path produce full paths", {
   expr <- expression(1)
   attr(expr, "srcref") <- srcref(srcfile(src_file), 1:8)
 
-  expect_silent(src_key_file <- getSrcFilename(as.srcref(srcref_key(expr, path = "base")), full.names = TRUE))
+  expect_silent(src_key <- srcref_key(expr, path = "base"))
+  expect_match(src_key, "^file\\.R")
+  expect_silent(src_key_file <- getSrcFilename(as.srcref(src_key), full.names = TRUE))
   expect_equal(src_key_file, "file.R")
 
+  expect_silent(src_key <- srcref_key(expr, path = "root"))
+  expect_match(src_key, "^fakedir/file\\.R")
   expect_silent(src_key_file <- getSrcFilename(as.srcref(srcref_key(expr, path = "root")), full.names = TRUE))
   expect_equal(src_key_file, "fakedir/file.R")
 
+  expect_silent(src_key <- srcref_key(expr, path = "full"))
+  expect_match(src_key, src_file, fixed = TRUE)
   expect_silent(src_key_file <- getSrcFilename(as.srcref(srcref_key(expr, path = "full")), full.names = TRUE))
   expect_equal(src_key_file, src_file)
 })
