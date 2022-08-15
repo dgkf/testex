@@ -65,7 +65,7 @@ as.srcref.character <- function(x) {
   )
 
   filename <- m[,"filename"]
-  pkgroot <- tryCatch(find_package_root(), error = function(e) NULL)
+  pkgroot <- find_package_root(quiet = TRUE)
 
   if (!is.null(pkgroot)) {
     if (file.exists(f <- file.path(pkgroot, filename))) filename <- f

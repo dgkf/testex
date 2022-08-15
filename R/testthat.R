@@ -91,6 +91,7 @@ with_srcref <- function(src, expr, envir = parent.frame()) {
   withCallingHandlers(
     eval(expr, envir = envir),
     expectation = function(e) {
+      stop("DEBUG: ", src)
       e[["srcref"]] <- as.srcref(src)
       testthat::exp_signal(e)
       invokeRestart(computeRestarts()[[1L]])
