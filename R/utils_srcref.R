@@ -21,22 +21,14 @@ srcref_key <- function(x, nloc = 2, path = c("base", "root", "full")) {
   srcpath <- utils::getSrcFilename(x, full.names = TRUE)
   pkgroot <- find_package_root(srcpath, quiet = TRUE)
   if (!length(pkgroot)) pkgroot <- NULL
+  else pkgroot <- paste0(pkgroot, .Platform$file.sep)
 
   srcpath <- switch(path,
     "full" = srcpath,
     "base" = basename(srcpath),
     "root" = {
-      stop(paste0(
-        "DEBUG:\n",
-        srcpath,
-        "\n",
-        file.path(pkgroot, ""),
-        "\n",
-        startsWith(srcpath, prefix <- file.path(pkgroot, ""))
-      ))
-
-      if (isTRUE(startsWith(srcpath, prefix <- file.path(pkgroot, "")))) {
-        substring(srcpath, nchar(prefix) + 1)
+      if (isTRUE(startsWith(srcpath, pkgroot))) {
+        substring(srcpath, nchar(pkgroot) + 1)
       } else {
         srcpath
       }
