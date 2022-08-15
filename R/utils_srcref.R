@@ -20,12 +20,17 @@ srcref_key <- function(x, nloc = 2, path = c("base", "root", "full")) {
 
   srcpath <- utils::getSrcFilename(x, full.names = TRUE)
   pkgroot <- find_package_root(srcpath, quiet = TRUE)
-  if (!length(pkgroot)) pkgroot <- ""
+  if (!length(pkgroot)) pkgroot <- NULL
 
   srcpath <- switch(path,
     "full" = srcpath,
     "base" = basename(srcpath),
-    "root" = gsub(paste0("^", file.path(pkgroot, "")), "", srcpath)
+    "root" =
+      if (isTRUE(startsWith(srcpath, prefix <- file.path(pkgroot, "")))) {
+        substring(srcpath, nchar(prefix) + 1)
+      } else {
+        srcpath
+      }
   )
 
   paste0(srcpath, ":", loc)
