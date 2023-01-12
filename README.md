@@ -1,4 +1,4 @@
-# `testex` _**test** **ex**amples_
+# `testex` _**test** **ex**amples_ <img src="https://user-images.githubusercontent.com/18220321/211960830-8c969bee-8c80-4984-8132-b5993911f179.png" align="right" width="134px"/>
 
 [![CRAN](https://img.shields.io/cran/v/testex.svg)](https://cran.r-project.org/package=testex)
 [![R CMD
