@@ -3,7 +3,7 @@
 [![CRAN](https://img.shields.io/cran/v/testex.svg)](https://cran.r-project.org/package=testex)
 [![R CMD
 check](https://github.com/dgkf/testex/workflows/R-CMD-check/badge.svg)](https://github.com/dgkf/testex/actions?query=workflow%3AR-CMD-check)
-[![Codecov](https://img.shields.io/codecov/c/github/dgkf/testex/main.svg)](https://app.codecov.io/gh/dgkf/testex)
+[![Codecov](https://img.shields.io/codecov/c/github/dgkf/testex/main.svg)](https://app.codecov.io/gh/dgkf/testex) 
 
 Add tests and assertions in-line in examples
 
