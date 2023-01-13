@@ -1,0 +1,38 @@
+development:
+  mode: auto
+
+url: ~
+template:
+  bootstrap: 5
+  theme: arrow-light #atom-one-light
+  bslib: 
+    fg: "#404040"
+    bg: "#F4F4F4"
+    primary: "#9A1FF4"
+
+navbar:
+  bg: primary
+
+reference:
+  - title: Accessing Options
+  - contents:
+      - opt
+  - title: Defining Options
+  - contents:
+      - define_option
+      - define_options
+      - option_spec
+  - title: "`roxygen2` Docs"
+  - desc: Autogenerate documentation your package options
+  - contents:
+      - has_keyword("roxygen2")
+  - title: Customize
+  - subtitle: Naming Conventions
+  - desc: Customize how global R options or environment variables are named
+  - contents:
+      - has_keyword("naming")
+      - has_keyword("naming_formats")
+  - subtitle: Environment Variable Parsing
+  - desc: Control how environment variables are parsed into useful R data
+  - contents:
+      - has_keyword("envvar_parsers")

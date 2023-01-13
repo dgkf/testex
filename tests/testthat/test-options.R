@@ -17,6 +17,7 @@ Config/testex/options: list(a = 1)
 
   # during R CMD check, process ID is used for fingerprint instead of mtime
   skip_if(is_r_cmd_check(), "on R CMD check")
+  Sys.sleep(1)  # give time for mtime to update
 
   # without updating file, cache fingerprint unchanged
   expect_silent(testex_options(desc_path))

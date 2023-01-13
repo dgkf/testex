@@ -7,7 +7,7 @@ test_that("with_attached temporarily attaches a packages", {
 })
 
 test_that("with_srcref binds srcref to testthat condition expectations", {
-  as.srcref("<test>:1:2")
+  as.srcref.character("<test>:1:2")
 
   expect_match(
     paste(collapse = "\n", capture.output(
@@ -15,7 +15,7 @@ test_that("with_srcref binds srcref to testthat condition expectations", {
         test_that("example", with_srcref("<test>:1:2", expect_true(FALSE)))
       })
     )),
-    "<test>:1:1"  # error reported at "start" of srcref
+    "<test>:1"  # error reported at "start" of srcref
   )
 })
 
