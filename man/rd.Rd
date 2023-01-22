@@ -6,6 +6,9 @@
 \usage{
 rd()
 }
+\value{
+A new \code{roxygen2} \code{"rd"} roclet.
+}
 \description{
 This roclet aims to be feature compatible with \pkg{roxygen2}'s \code{"rd"}
 roclet. In addition it supports two new \code{roxygen} tags, \code{@expect}

@@ -7,6 +7,8 @@
 #'   the basename of the source filepath, `"root"` for a path relative to a
 #'   package root directory if found, or `"full"` for the full filepath.
 #'
+#' @return A string hash of a `srcref`
+#'
 #' @keywords internal
 #' @importFrom utils getSrcref getSrcFilename
 srcref_key <- function(x, nloc = 2, path = c("base", "root", "full")) {
@@ -44,6 +46,8 @@ srcref_key <- function(x, nloc = 2, path = c("base", "root", "full")) {
 #'
 #' @param x an object to coerce
 #'
+#' @return A `srcref`
+#'
 #' @name as.srcref
 #' @keywords internal
 as.srcref <- function(x) {
@@ -72,7 +76,11 @@ as.srcref.character <- function(x) {
     else if (file.exists(f <- file.path(pkgroot, "R", filename))) filename <- f
   }
 
-  location <- srclocs(as.numeric(strsplit(m[,"location"], ":")[[1]][-1]), filename)
+  location <- srclocs(
+    as.numeric(strsplit(m[, "location"], ":")[[1]][-1]),
+    filename
+  )
+
   srcref(srcfile(filename), location)
 }
 
@@ -87,6 +95,8 @@ as.srcref.character <- function(x) {
 #'
 #' @param x A numeric vector of at least length 2
 #' @param file A file to use to determine the length of the final line
+#'
+#' @return A numeric vector similar to a `srcLocation` object
 #'
 #' @keywords internal
 srclocs <- function(x, file) {
@@ -106,6 +116,8 @@ srclocs <- function(x, file) {
 #' @param sr An original srcref object
 #' @param where A numeric vector of line numbers where the srcref should be
 #'   split
+#'
+#' @return A list of `srcref`
 #'
 #' @importFrom utils getSrcFilename
 #' @keywords internal
@@ -136,6 +148,8 @@ split_srcref <- function(sr, where) {
 #' Determine the number of source code lines of a given srcref
 #'
 #' @param x A `srcref` object
+#'
+#' @return The number of lines in the original source of a `srcref`
 #'
 #' @importFrom utils getSrcLocation
 #' @keywords internal

@@ -11,6 +11,9 @@ file_line_nchar(file, line)
 
 \item{line}{A line number to retrieve the length of}
 }
+\value{
+The number of characters in line \code{line}.
+}
 \description{
 Return the number of characters in a line of a file
 }

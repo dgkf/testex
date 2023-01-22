@@ -10,10 +10,13 @@ append_test(tag, tests)
 \item{tag}{The roxygen tag that we are formatting}
 
 \item{tests}{A \code{list} of test \code{code} objects to be formatted into a
-\code{\\testonly} block.}
+\verb{\testonly} block.}
 
 \item{test}{A new test \code{code} object to append to the list. If
 necessary, the code will be modified to accommodate the testing style.}
+}
+\value{
+An appended \code{tests} \code{list}
 }
 \description{
 Restructure and append tests to a test aggregating list

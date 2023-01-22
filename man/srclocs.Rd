@@ -11,6 +11,9 @@ srclocs(x, file)
 
 \item{file}{A file to use to determine the length of the final line}
 }
+\value{
+A numeric vector similar to a \code{srcLocation} object
+}
 \description{
 Build a length four source location from a length two source location. The
 starting column on the first line is assumed to be 1, and the final column is

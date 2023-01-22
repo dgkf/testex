@@ -10,7 +10,7 @@ Suggests:
   roxygen2
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, roclets = c("namespace", "testex::rd"))
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 License: MIT + file LICENSE
 Config/testthat/edition: 3
 Config/testex/options: list(check = FALSE)

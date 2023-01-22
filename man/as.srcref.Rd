@@ -12,6 +12,9 @@ as.srcref(x)
 \arguments{
 \item{x}{an object to coerce}
 }
+\value{
+A \code{srcref}
+}
 \description{
 Convert to srcref
 }

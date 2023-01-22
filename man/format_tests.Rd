@@ -28,6 +28,9 @@ format_tests(tag, tests, ...)
 \item{lines}{A \code{numeric} vector of length two indicating the start and
 end lines of the example code block tested by the test code.}
 }
+\value{
+A formatted block of code for an Rd section
+}
 \description{
 Format test for an Rd \\testonly block
 }

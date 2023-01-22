@@ -9,8 +9,13 @@ fn(x)
 \arguments{
 \item{x}{A thing}
 }
+\value{
+The pasted thing
+}
 \description{
-Test Function
+This example showcases how you might write "raw" tests within your examples.
+You could use \verb{\testonly} directly, or use \code{testex::testex()} to use
+\code{.}-syntax.
 }
 \examples{
 fn("testing")

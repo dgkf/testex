@@ -13,6 +13,8 @@
 #' @param fingerprint An object used to indicate when the cached values have
 #'   been invalidated
 #'
+#' @return The test options environment, invisibly.
+#'
 #' @name testex-options
 #' @keywords internal
 update_testex_desc <- function(path, fingerprint) {
@@ -35,7 +37,10 @@ update_testex_desc <- function(path, fingerprint) {
 
 
 
-#' @name testex-options
+#' @describeIn testex-options
+#'
+#' @return The test options environemnt as a list
+#'
 testex_options <- function(path = package_desc()) {
   if (is_r_cmd_check()) {
     fingerprint <- list(rcmdcheck = TRUE, pid = Sys.getpid())

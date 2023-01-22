@@ -34,6 +34,10 @@ exists. Defaults to \code{TRUE}.}
 \item{reporter}{A \pkg{testthat} reporter to use. Defaults to the active
 reporter in the \pkg{testthat} environment or default reporter.}
 }
+\value{
+The result of \code{\link[testthat:source_file]{testthat::source_file()}}, after iterating over
+generated test files.
+}
 \description{
 Reads examples from Rd files and constructs \pkg{testthat}-style tests.
 \pkg{testthat} expectations are built such that

@@ -9,6 +9,9 @@ escape_infotex(x)
 \arguments{
 \item{x}{A \code{character} value}
 }
+\value{
+An escaped string, where any \verb{\\} is converted to \verb{\\\\}
+}
 \description{
 Escape escaped Rd \\testonly strings
 }

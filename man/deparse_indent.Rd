@@ -12,6 +12,9 @@ deparse_indent(x, indent = 0L)
 \item{indent}{An \code{integer} number of spaces or a string to prefix each
 line of the deparsed output.}
 }
+\value{
+An indented version of the deparsed string from \code{x}.
+}
 \description{
 Deparse an expression and indent for pretty-printing
 }

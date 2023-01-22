@@ -13,6 +13,10 @@ test_files(files, context, ...)
 
 \item{...}{Additional arguments passed to \code{testhat::source_file}}
 }
+\value{
+The result of \code{\link[testthat:source_file]{testthat::source_file()}}, after iterating over
+generated test files.
+}
 \description{
 Test a list of files
 }

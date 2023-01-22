@@ -13,6 +13,8 @@ NULL
 #'
 #' Extract examples tag from an Rd file
 #'
+#' @return The examples section of an Rd object
+#'
 rd_extract_examples <- function(rd) {
   rd_tags <- vapply(rd, attr, character(1L), "Rd_tag")
   rd_ex <- which(rd_tags == "\\examples")
@@ -25,6 +27,8 @@ rd_extract_examples <- function(rd) {
 #' @describeIn testex-rd-example-helpers
 #'
 #' Convert an Rd example to string
+#'
+#' @return A formatted Rd example
 #'
 rd_code_as_string <- function(rd) {
   if (inherits(rd, "\\dontrun"))
@@ -41,6 +45,10 @@ rd_code_as_string <- function(rd) {
 #' blocks wrapped in testonly `Rd_tag`s, reassigning `srcref`s as the example
 #' code is split.
 #'
+#' @return An interlaced list of expressions, either representing evaluable code
+#'   or tests. The names of the list are either `\\testonly` or `RDCODE`
+#'   depending on the originating source of the expression.
+#'
 split_testonly_as_expr <- function(rd) {
   rds <- split_testonly(rd)
 
@@ -56,7 +64,12 @@ split_testonly_as_expr <- function(rd) {
 
   # preserver \testonly names, everything else can now be considered RCODE
   names(code_seg) <- names(all_seg)[!duplicated(resegment)]
-  names(code_seg) <- ifelse(names(code_seg) == "\\testonly", "\\testonly", "RCODE")
+  names(code_seg) <- ifelse(
+    names(code_seg) == "\\testonly",
+    "\\testonly",
+    "RCODE"
+  )
+
   code_seg <- lapply(code_seg, rd_code_as_string)
   code_seg_lines <- vnapply(code_seg, string_line_count)
 
@@ -88,6 +101,8 @@ split_testonly_as_expr <- function(rd) {
 #' attributed to the first section. As this is used primarily for giving line
 #' numbers to test messages, this is sufficient for providing test failures
 #' locations.
+#'
+#' @return A list of Rd tag contents
 #'
 split_testonly <- function(rd) {
   attrs <- attributes(rd)

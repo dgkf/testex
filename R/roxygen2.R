@@ -4,6 +4,8 @@
 #' roclet. In addition it supports two new \code{roxygen} tags, \code{@expect}
 #' and \code{@testthat}.
 #'
+#' @return A new `roxygen2` `"rd"` roclet.
+#'
 #' @section tags:
 #' \code{testex} tags are all sub-tags meant to be used within an
 #' \code{@examples} block. They should be considered as tags \emph{within} the
@@ -226,6 +228,8 @@ roxy_test_raw_remainder <- function(x) {
 #'   \code{\\testonly} block.
 #' @param ... Additional arguments used by methods
 #'
+#' @return A formatted block of code for an Rd section
+#'
 #' @rdname format_tests
 #' @family roclet_process_helpers
 #' @keywords internal
@@ -280,10 +284,12 @@ format_tests.testthat <- function(tag, tests, file, lines) {
 #' Restructure and append tests to a test aggregating list
 #'
 #' @param tag The roxygen tag that we are formatting
-#' @param tests A \code{list} of test \code{code} objects to be formatted into a
-#'   \code{\\testonly} block.
-#' @param test A new test \code{code} object to append to the list. If
+#' @param tests A `list` of test `code` objects to be formatted into a
+#'   `\testonly` block.
+#' @param test A new test `code` object to append to the list. If
 #'   necessary, the code will be modified to accommodate the testing style.
+#'
+#' @return An appended `tests` `list`
 #'
 #' @family roclet_process_helpers
 #' @keywords internal
@@ -316,6 +322,8 @@ append_test.testthat <- function(tag, tests) {
 #'
 #' @param x A \code{character} value
 #'
+#' @return An escaped string, where any `\` is converted to `\\`
+#'
 #' @family roclet_process_helpers
 #' @keywords internal
 escape_infotex <- function(x) {
@@ -328,11 +336,13 @@ escape_infotex <- function(x) {
 #'
 #' @note
 #' Because of how newlines are formatted when rendering Rd contents,
-#' \code{\\testonly} blocks must starts on the last line of the code that they
+#' `\testonly` blocks must starts on the last line of the code that they
 #' test. Otherwise, an extra newline is printed when Rd is output as text.
 #'
 #' @param ex The existing character vector of example Rd section lines
 #' @param test The additional test lines to add to the example
+#'
+#' @return The result of concatenating `test` into `ex`
 #'
 #' @family roclet_process_helpers
 #' @keywords internal

@@ -9,24 +9,28 @@ fn_roxygen_testthat(x)
 \arguments{
 \item{x}{A thing}
 }
+\value{
+The pasted thing
+}
 \description{
-Test Function
+This example introduces \code{testthat}-style tests using in-line \verb{@testthat}
+roxygen tags.
 }
 \examples{
 fn_roxygen_testthat("testing")\testonly{
-testex::testthat_block(test_that("example tests at `fn.R:65:66`", {
-  testex::with_srcref("fn.R:67:67", expect_equal(., "testing 1 2 3"))
-  testex::with_srcref("fn.R:68:68", expect_match(., "^testing"))
+testex::testthat_block(test_that("example tests at `fn.R:81:82`", {
+  testex::with_srcref("fn.R:83:83", expect_equal(., "testing 1 2 3"))
+  testex::with_srcref("fn.R:84:84", expect_match(., "^testing"))
 }),
-  example = "fn.R:65:66"
+  example = "fn.R:81:82"
 )}
 
 fn_roxygen_testthat("testing")\testonly{
-testex::testthat_block(test_that("example tests at `fn.R:69:70`", {
-  testex::with_srcref("fn.R:71:71", expect_equal(., "testing 1 2 3"))
-  testex::with_srcref("fn.R:72:72", expect_match(., "^testing"))
+testex::testthat_block(test_that("example tests at `fn.R:85:86`", {
+  testex::with_srcref("fn.R:87:87", expect_equal(., "testing 1 2 3"))
+  testex::with_srcref("fn.R:88:88", expect_match(., "^testing"))
 }),
-  example = "fn.R:69:70"
+  example = "fn.R:85:86"
 )}
 
 }

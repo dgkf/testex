@@ -6,6 +6,9 @@
 \usage{
 is_r_cmd_check()
 }
+\value{
+A logical indicating whether \verb{R CMD check} is currently running
+}
 \description{
 Test whether currently executing R CMD check
 }

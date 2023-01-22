@@ -11,12 +11,15 @@ append_test_rd(ex, test)
 
 \item{test}{The additional test lines to add to the example}
 }
+\value{
+The result of concatenating \code{test} into \code{ex}
+}
 \description{
 Append a test to the examples Rd section
 }
 \note{
 Because of how newlines are formatted when rendering Rd contents,
-\code{\\testonly} blocks must starts on the last line of the code that they
+\verb{\testonly} blocks must starts on the last line of the code that they
 test. Otherwise, an extra newline is printed when Rd is output as text.
 }
 \seealso{

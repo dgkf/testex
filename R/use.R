@@ -9,6 +9,9 @@
 #' @param check A \code{logical} value indicating whether tests should be
 #'   executing during \code{R CMD check}.
 #'
+#' @return The result of [`write.dcf()`] upon modifying the package
+#'   `DESCRIPTION` file.
+#'
 #' @export
 use_rd_roclet <- function(path = getwd(), check = NA) {
   path <- file.path(find_package_root(path), "DESCRIPTION")
@@ -64,6 +67,8 @@ use_rd_roclet <- function(path = getwd(), check = NA) {
 #' @param context A testthat test context to use as the basis for a new test
 #'   filename.
 #'
+#' @return The result of [`writeLines()`] after writing a new `testthat` file.
+#'
 #' @family use
 #'
 #' @importFrom utils packageName
@@ -82,7 +87,10 @@ use_testex_as_testthat <- function(path = getwd(), context = "testex") {
   }
 
   if (file.exists(test_file)) {
-    stop(sprintf("testthat test file '%s' already exists.", basename(test_file)))
+    stop(sprintf(
+      "testthat test file '%s' already exists.",
+      basename(test_file)
+    ))
   }
 
   test_contents <- c(

@@ -15,6 +15,9 @@ priv(package, names)
 
 \item{names}{A \code{character} vector of object names to select}
 }
+\value{
+A list of specified private namespace objects
+}
 \description{
 Extract select unexported objects from a package namespace
 

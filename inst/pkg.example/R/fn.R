@@ -1,6 +1,12 @@
 #' Test Function
 #'
+#' This example showcases how you might write "raw" tests within your examples.
+#' You could use `\testonly` directly, or use `testex::testex()` to use
+#' `.`-syntax.
+#'
 #' @param x A thing
+#'
+#' @return The pasted thing
 #'
 #' @examples
 #' fn("testing")
@@ -25,7 +31,12 @@ fn <- function(x) {
 
 #' Test Function
 #'
+#' This example introduces the `@expect` tag, either a value or an expression
+#' using the `.`-syntax to test the last example result.
+#'
 #' @param x A thing
+#'
+#' @return The pasted thing
 #'
 #' @examples
 #' \dontshow{
@@ -60,7 +71,12 @@ fn_roxygen <- function(x) {
 
 #' Test Function
 #'
+#' This example introduces `testthat`-style tests using in-line `@testthat`
+#' roxygen tags.
+#'
 #' @param x A thing
+#'
+#' @return The pasted thing
 #'
 #' @examples
 #' fn_roxygen_testthat("testing")

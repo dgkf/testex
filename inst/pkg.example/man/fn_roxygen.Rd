@@ -9,8 +9,12 @@ fn_roxygen(x)
 \arguments{
 \item{x}{A thing}
 }
+\value{
+The pasted thing
+}
 \description{
-Test Function
+This example introduces the \verb{@expect} tag, either a value or an expression
+using the \code{.}-syntax to test the last example result.
 }
 \examples{
 \dontshow{
@@ -20,7 +24,7 @@ Test Function
 fn_roxygen(value)\testonly{
 testex::testex(
   identical(., "testing 1 2 3"),
-  example = "fn.R:30:35"
+  example = "fn.R:41:46"
 )}
 
 \dontrun{
@@ -31,7 +35,7 @@ fn_roxygen("testing")\testonly{
 testex::testex(
   grepl("\\\\d", .),
   startsWith(., "testing"),
-  example = "fn.R:37:42"
+  example = "fn.R:48:53"
 )}
 
 fn_roxygen("testing")\testonly{
@@ -39,7 +43,7 @@ testex::testex(
   identical(., {
       "testing 1 2 3"
   }),
-  example = "fn.R:45:46"
+  example = "fn.R:56:57"
 )}
 
 fn_roxygen("testing")

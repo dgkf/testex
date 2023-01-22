@@ -6,6 +6,9 @@
 \usage{
 get_example_value()
 }
+\value{
+The value of the last test expression
+}
 \description{
 Determine which symbol to use by default when testing examples
 }

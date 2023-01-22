@@ -19,6 +19,17 @@ split_testonly(rd)
 \arguments{
 \item{rd}{An Rd object}
 }
+\value{
+The examples section of an Rd object
+
+A formatted Rd example
+
+An interlaced list of expressions, either representing evaluable code
+or tests. The names of the list are either \verb{\\\testonly} or \code{RDCODE}
+depending on the originating source of the expression.
+
+A list of Rd tag contents
+}
 \description{
 Rd Example Parsing Helpers
 }

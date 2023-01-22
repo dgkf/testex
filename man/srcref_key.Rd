@@ -16,6 +16,9 @@ starting and ending line number.}
 the basename of the source filepath, \code{"root"} for a path relative to a
 package root directory if found, or \code{"full"} for the full filepath.}
 }
+\value{
+A string hash of a \code{srcref}
+}
 \description{
 Convert a srcref to a character representation
 }

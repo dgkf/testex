@@ -9,6 +9,9 @@ srcref_nlines(x)
 \arguments{
 \item{x}{A \code{srcref} object}
 }
+\value{
+The number of lines in the original source of a \code{srcref}
+}
 \description{
 Determine the number of source code lines of a given srcref
 }

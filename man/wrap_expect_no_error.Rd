@@ -6,6 +6,14 @@
 \usage{
 wrap_expect_no_error(expr, value)
 }
+\arguments{
+\item{expr}{An expr to wrap in a \code{\link[=expect_no_error]{expect_no_error()}} expectation}
+
+\item{value}{A symbol to use to store the result of \code{expr}}
+}
+\value{
+A \code{\link[testthat:test_that]{testthat::test_that()}} call
+}
 \description{
 Wraps an example expression in a testthat expectation to not error
 }

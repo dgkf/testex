@@ -68,7 +68,10 @@ test_that("split_testonly splits examples block into components", {
   expect_silent(rd_example_sections <- split_testonly(rd))
   expect_length(rd_example_sections, 5)
   expect_named(rd_example_sections)
-  expect_equal(names(rd_example_sections), c("RCODE", "\\testonly", "RCODE", "\\testonly", "RCODE"))
+  expect_equal(
+    names(rd_example_sections),
+    c("RCODE", "\\testonly", "RCODE", "\\testonly", "RCODE")
+  )
 })
 
 test_that("split_testonly_as_expr parses example components and preserves srcrefs", {

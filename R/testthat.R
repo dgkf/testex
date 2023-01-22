@@ -52,6 +52,8 @@ NULL
 #' @inheritParams testex
 #' @param envir An environment in which the expectations should be evaluated
 #'
+#' @return The result of evaluating provided expressions
+#'
 #' @export
 testthat_block <- function(..., value = get_example_value(), obj = NULL,
   example = NULL, tests = NULL, envir = parent.frame()) {
@@ -85,6 +87,9 @@ testthat_block <- function(..., value = get_example_value(), obj = NULL,
 #' @param expr An expression to be evaluated. If an `expectation` condition is
 #'   raised during its evaluation, its srcref is converted to `src`.
 #'
+#' @return The result of evaluating `expr`, or an expectation with appended
+#'   `srcref` information if an expectation is raised.
+#'
 #' @export
 with_srcref <- function(src, expr, envir = parent.frame()) {
   expr <- substitute(expr)
@@ -110,6 +115,8 @@ with_srcref <- function(src, expr, envir = parent.frame()) {
 #' @param object An expression to evaluate
 #' @param ... Additional arguments unused
 #'
+#' @return The value produced by the expectation code
+#'
 #' @export
 expect_no_error <- function(object, ...) {
   object <- substitute(object)
@@ -120,7 +127,10 @@ expect_no_error <- function(object, ...) {
 
   testthat::expect(
     !inherits(act$val, "error"),
-    failure_message = sprintf("Example %s threw an error during execution.", act$lab),
+    failure_message = sprintf(
+      "Example %s threw an error during execution.",
+      act$lab
+    ),
     ...
   )
 
@@ -149,6 +159,9 @@ expect_no_error <- function(object, ...) {
 #' @param ... Additional argument unused
 #' @param reporter A \pkg{testthat} reporter to use. Defaults to the active
 #'   reporter in the \pkg{testthat} environment or default reporter.
+#'
+#' @return The result of [`testthat::source_file()`], after iterating over
+#'   generated test files.
 #'
 #' @export
 test_examples_as_testthat <- function(package, path, ...,
@@ -202,12 +215,14 @@ test_examples_as_testthat <- function(package, path, ...,
 
 
 
-
 #' Test a list of files
 #'
 #' @param files An iterable collection of file paths to test
 #' @param context An optional context message to display in testthat reporters
 #' @param ... Additional arguments passed to `testhat::source_file`
+#'
+#' @return The result of [`testthat::source_file()`], after iterating over
+#'   generated test files.
 #'
 #' @keywords internal
 test_files <- function(files, context, ...) {
@@ -218,6 +233,11 @@ test_files <- function(files, context, ...) {
 
 
 #' Wraps an example expression in a testthat expectation to not error
+#'
+#' @param expr An expr to wrap in a [`testex::expect_no_error()`] expectation
+#' @param value A symbol to use to store the result of `expr`
+#'
+#' @return A [`testthat::test_that()`] call
 #'
 #' @keywords internal
 wrap_expect_no_error <- function(expr, value) {
@@ -234,6 +254,8 @@ wrap_expect_no_error <- function(expr, value) {
 
 
 #' Determine which symbol to use by default when testing examples
+#'
+#' @return The value of the last test expression
 #'
 #' @keywords internal
 get_example_value <- function() {

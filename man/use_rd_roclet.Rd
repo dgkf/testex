@@ -12,6 +12,10 @@ use_rd_roclet(path = getwd(), check = NA)
 \item{check}{A \code{logical} value indicating whether tests should be
 executing during \code{R CMD check}.}
 }
+\value{
+The result of \code{\link[=write.dcf]{write.dcf()}} upon modifying the package
+\code{DESCRIPTION} file.
+}
 \description{
 Replace default rd roclet with testex rd roclet
 }

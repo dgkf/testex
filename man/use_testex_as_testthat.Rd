@@ -12,6 +12,9 @@ use_testex_as_testthat(path = getwd(), context = "testex")
 \item{context}{A testthat test context to use as the basis for a new test
 filename.}
 }
+\value{
+The result of \code{\link[=writeLines]{writeLines()}} after writing a new \code{testthat} file.
+}
 \description{
 Run examples as testthat expectations
 }

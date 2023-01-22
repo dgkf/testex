@@ -2,14 +2,17 @@
 % Please edit documentation in R/utils.R
 \name{string_line_count}
 \alias{string_line_count}
-\title{Return the number of lines in a multi-line string}
+\title{Get String Line Count}
 \usage{
 string_line_count(x)
 }
 \arguments{
 \item{x}{A character value}
 }
+\value{
+The number of lines in a mult-line string
+}
 \description{
-Return the number of lines in a multi-line string
+Get String Line Count
 }
 \keyword{internal}

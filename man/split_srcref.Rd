@@ -12,6 +12,9 @@ split_srcref(sr, where)
 \item{where}{A numeric vector of line numbers where the srcref should be
 split}
 }
+\value{
+A list of \code{srcref}
+}
 \description{
 Split a srcref into separate srcrefs at specific lines
 }

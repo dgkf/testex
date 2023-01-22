@@ -45,6 +45,14 @@ raised during its evaluation, its srcref is converted to \code{src}.}
 
 \item{object}{An expression to evaluate}
 }
+\value{
+The result of evaluating provided expressions
+
+The result of evaluating \code{expr}, or an expectation with appended
+\code{srcref} information if an expectation is raised.
+
+The value produced by the expectation code
+}
 \description{
 Various functions that are used to produce a more native \code{testthat}
 experience, automatically converting \code{testex} tests into \code{testthat} code and

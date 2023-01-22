@@ -11,6 +11,9 @@ with_attached(ns, expr)
 
 \item{expr}{An expression to evaluate while the namespace is attached}
 }
+\value{
+The result of evaluating \code{expr}
+}
 \description{
 Temporarily attach a namespace
 }

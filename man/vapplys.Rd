@@ -13,10 +13,14 @@ vcapply(..., FUN.VALUE = character(1L))
 vnapply(..., FUN.VALUE = numeric(1L))
 }
 \arguments{
-\item{...}{optional arguments to \code{FUN}.}
+\item{...}{Arguments passed to \code{\link{vapply}}}
 
-\item{FUN.VALUE}{a (generalized) vector; a template for the return
-    value from FUN.  See \sQuote{Details}.}
+\item{FUN.VALUE}{A preset signature for the flavor of \code{\link{vapply}}. This is
+exposed for transparency, but modifying it would break the implicit
+contract in the function name about the return type.}
+}
+\value{
+The result of \code{\link{vapply}}
 }
 \description{
 Simple wrappers around \code{vapply} for common data types

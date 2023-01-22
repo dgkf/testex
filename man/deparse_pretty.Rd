@@ -9,6 +9,9 @@ deparse_pretty(expr)
 \arguments{
 \item{expr}{An expression to deparse}
 }
+\value{
+A pretty-formatted string representation of \code{expr}.
+}
 \description{
 Deparse to a single string with two spaces of indentation
 }
