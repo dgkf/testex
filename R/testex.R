@@ -16,6 +16,8 @@
 #'   relevant test code originated from.
 #' @param envir An environment in which tests should be evaluated. By default
 #'   the parent environment where tests are evaluated.
+#' @return invisibly returns the `.Last.value` as it existed prior to evaluating
+#'   the test
 #'
 #' @export
 testex <- function(..., value = get_example_value(), obj = NULL,

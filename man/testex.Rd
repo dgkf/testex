@@ -33,6 +33,10 @@ relevant test code originated from.}
 \item{envir}{An environment in which tests should be evaluated. By default
 the parent environment where tests are evaluated.}
 }
+\value{
+invisibly returns the \code{.Last.value} as it existed prior to evaluating
+the test
+}
 \description{
 A wrapper around \code{stopifnot} that allows you to use \code{.} to refer to
 \code{.Last.value} and preserve the last non-test output from an example.
