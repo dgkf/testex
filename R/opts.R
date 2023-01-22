@@ -43,12 +43,21 @@ update_testex_desc <- function(path, fingerprint) {
 #'
 testex_options <- function(path = package_desc()) {
   if (is_r_cmd_check()) {
-    fingerprint <- list(rcmdcheck = TRUE, pid = Sys.getpid())
+    fingerprint <- list(
+      rcmdcheck = TRUE,
+      pid = Sys.getpid()
+    )
+
     return(as.list(update_testex_desc(path, fingerprint)))
   }
 
   if (file.exists(path)) {
-    fingerprint <- list(desc = TRUE, path = path, mtime = file.info(path)[["mtime"]])
+    fingerprint <- list(
+      desc = TRUE,
+      path = path,
+      mtime = file.info(path)[["mtime"]]
+    )
+
     return(as.list(update_testex_desc(path, fingerprint)))
   }
 

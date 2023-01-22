@@ -15,5 +15,7 @@ with_attached(ns, expr)
 The result of evaluating \code{expr}
 }
 \description{
-Temporarily attach a namespace
+This function is primarily for managing attaching of namespaces needed for
+testing internally. It is exported only because it is needed in code
+generated within \code{Rd} files, but is otherwise unlikely to be needed.
 }

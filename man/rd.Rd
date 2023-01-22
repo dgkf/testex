@@ -28,17 +28,17 @@ example. If \code{.} is used within the expecation, it will be used to
 refer to the output of the previous example command. Otherwise, the
 result of the expression is expected to be identical to the previous
 output.
-}
-}
 
-\preformatted{
-#' @examples
+\if{html}{\out{<div class="sourceCode">}}\preformatted{#' @examples
 #' 1 + 2
 #' @expect 3
 #' @expect . == 3
 #'
 #' 3 + 4
 #' @expect identical(., 7)
+}\if{html}{\out{</div>}}
+
+}
 }
 
 \describe{
@@ -50,22 +50,20 @@ against an expected value or characteristic. Since the value will always
 be the result of the previous example, this part of the code is
 implicitly constructed for you.
 
-\if{html}{\out{<div class="sourceCode">}}\preformatted{If you want to use the example result elsewhere in your expectation, you
+If you want to use the example result elsewhere in your expectation, you
 can refer to it with a \code{.}. When used in this way, \pkg{testex} will
 not do any further implicit modification of your expectation.
-}\if{html}{\out{</div>}}
 
-}
-}
-
-\preformatted{
-#' @examples
+\if{html}{\out{<div class="sourceCode">}}\preformatted{#' @examples
 #' 1 + 2
 #' @testthat expect_equal(3)
 #' @testthat expect_gt(0)
 #'
 #' 3 + 4
 #' @testthat expect_equal(., 7)
+}\if{html}{\out{</div>}}
+
+}
 }
 }
 

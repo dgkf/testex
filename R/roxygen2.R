@@ -14,47 +14,43 @@
 #'
 #' \describe{
 #'   \item{\code{@expect}: }{
-#'     In-line expectations to test the output of the previous command within an
-#'     example. If \code{.} is used within the expecation, it will be used to
-#'     refer to the output of the previous example command. Otherwise, the
-#'     result of the expression is expected to be identical to the previous
-#'     output.
-#'   }
-#' }
+#' In-line expectations to test the output of the previous command within an
+#' example. If \code{.} is used within the expecation, it will be used to
+#' refer to the output of the previous example command. Otherwise, the
+#' result of the expression is expected to be identical to the previous
+#' output.
 #'
-#' \preformatted{
-#' #' @examples
-#' #' 1 + 2
-#' #' @expect 3
-#' #' @expect . == 3
-#' #'
-#' #' 3 + 4
-#' #' @expect identical(., 7)
+#'     #' @examples
+#'     #' 1 + 2
+#'     #' @expect 3
+#'     #' @expect . == 3
+#'     #'
+#'     #' 3 + 4
+#'     #' @expect identical(., 7)
+#'   }
 #' }
 #'
 #' \describe{
 #'   \item{\code{@testthat}: }{
-#'     Similar to \code{@expect}, \code{@testthat} can be used to make in-line
-#'     assertions using \pkg{testthat} expectations. \pkg{testthat} expectations
-#'     follow a convention where the first argument is an object to compare
-#'     against an expected value or characteristic. Since the value will always
-#'     be the result of the previous example, this part of the code is
-#'     implicitly constructed for you.
+#' Similar to \code{@expect}, \code{@testthat} can be used to make in-line
+#' assertions using \pkg{testthat} expectations. \pkg{testthat} expectations
+#' follow a convention where the first argument is an object to compare
+#' against an expected value or characteristic. Since the value will always
+#' be the result of the previous example, this part of the code is
+#' implicitly constructed for you.
 #'
-#'     If you want to use the example result elsewhere in your expectation, you
-#'     can refer to it with a \code{.}. When used in this way, \pkg{testex} will
-#'     not do any further implicit modification of your expectation.
+#' If you want to use the example result elsewhere in your expectation, you
+#' can refer to it with a \code{.}. When used in this way, \pkg{testex} will
+#' not do any further implicit modification of your expectation.
+#'
+#'     #' @examples
+#'     #' 1 + 2
+#'     #' @testthat expect_equal(3)
+#'     #' @testthat expect_gt(0)
+#'     #'
+#'     #' 3 + 4
+#'     #' @testthat expect_equal(., 7)
 #'   }
-#' }
-#'
-#' \preformatted{
-#' #' @examples
-#' #' 1 + 2
-#' #' @testthat expect_equal(3)
-#' #' @testthat expect_gt(0)
-#' #'
-#' #' 3 + 4
-#' #' @testthat expect_equal(., 7)
 #' }
 #'
 #' @export

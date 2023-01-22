@@ -41,3 +41,44 @@ the test.
 A wrapper around \code{stopifnot} that allows you to use \code{.} to refer to
 \code{.Last.value} and preserve the last non-test output from an example.
 }
+\section{Documenting with \code{testex}}{
+
+
+\code{testex} is a simple wrapper around execution that propegates the
+\code{.Last.value} returned before running, allowing you to chain expectations
+more easily.
+\subsection{Use in \code{Rd} files:}{
+
+\preformatted{
+\examples{
+  f <- function(a, b) a + b
+  f(3, 4)
+  \testonly{
+    testex::testex(
+      is.numeric(.),
+      identical(., 7)
+    )
+  }
+}
+}
+
+But \code{Rd} files are generally regarded as being a bit cumbersome to author
+directly. Instead, \code{testex} provide helpers that generate this style of
+documentation, which use this function internally.
+}
+
+\subsection{Use with \code{roxygen2}}{
+
+Within a \code{roxygen2} \verb{@examples} block you can instead use the \verb{@expect} tag
+which will generate Rd code as shown above.
+
+\preformatted{
+#' @examples
+#' f <- function(a, b) a + b
+#' f(3, 4)
+#' @expect is.numeric(.)
+#' @expect identical(., 7)
+}
+}
+}
+
