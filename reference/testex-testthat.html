@@ -59,7 +59,7 @@ executing tests such that they produce informative messages on failure.</p>
 <span></span>
 <span><span class="fu">with_srcref</span><span class="op">(</span><span class="va">src</span>, <span class="va">expr</span>, envir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sys.parent.html" class="external-link">parent.frame</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">expect_no_error</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">fallback_expect_no_error</span><span class="op">(</span><span class="va">object</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -138,7 +138,7 @@ from <code>testthat</code>. Also handles temporarily attaching the <code>testtha
 allows <code>testthat</code> to report an origin for any code that raised an example
 test failure from the source roxygen code, even though the test code is
 reconstructed from package documentation files.</p></li>
-<li><p><code>expect_no_error()</code>: A <code>testthat</code> expectation that the provided code can be evaluated without
+<li><p><code>fallback_expect_no_error()</code>: A <code>testthat</code> expectation that the provided code can be evaluated without
 producing an error. This is the most basic expectation one should expect of
 any example code. Further expectations are provided in subsequent <code>testthat</code>
 code.</p></li>

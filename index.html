@@ -86,10 +86,14 @@
 </h3>
 <p>To enable this roclet, you’ll also need to modify your package’s <code>DESCRIPTION</code> to include the <code>testex::rd</code> roclet. Adding it is as easy as calling:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">testex</span><span class="fu">::</span><span class="fu"><a href="reference/use_rd_roclet.html">use_rd_roclet</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>This will modify your existing roclets, replacing the default <code>roxygen2</code> <code>"rd"</code> roclet with <code>testex</code>’s:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode diff"><code class="sourceCode diff"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="st">- Roxygen: list(markdown = TRUE, roclets = c("namespace", "rd"))</span></span>
-<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="va">+ Roxygen: list(markdown = TRUE, roclets = c("namespace", "testex::rd"))</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">testex</span><span class="fu">::</span><span class="fu"><a href="reference/use_testex.html">use_testex</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p>This will take a few steps to set up your package:</p>
+<ul class="task-list">
+<li><label><input type="checkbox" checked>Adds <code>packages = "testex"</code> to the <code>Roxygen</code> field in <code>DESCRIPTION</code></label></li>
+<li><label><input type="checkbox" checked>Adds <code>testex</code> as a <code>Suggests</code> dependency</label></li>
+<li><label><input type="checkbox" checked>Adds settings to the <code>Config/testex/options</code> field in <code>DESCRIPTION</code></label></li>
+<li><label><input type="checkbox" checked>Adds a <code>test-testex.R</code> test file if you’re using <code>testthat</code></label></li>
+</ul>
 </div>
 <div class="section level3">
 <h3 id="id_3-configure-how-you-want-to-run-your-tests">3. Configure how you want to run your tests<a class="anchor" aria-label="anchor" href="#id_3-configure-how-you-want-to-run-your-tests"></a>
@@ -100,7 +104,7 @@
 <a class="anchor" aria-label="anchor" href="#running-tests-with-testthat"></a>
 </h4>
 <p>If you’d like to automatically test your examples when you test your package, <code>testex</code> can generate tests for you that will automatically contribute to <code>testthat</code> results. Simply run:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">testex</span><span class="fu">::</span><span class="fu"><a href="reference/use_testex_as_testthat.html">use_testex_as_testthat</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>This will add a <code>tests/testthat/test-testex.R</code> file to your <code>testthat</code> directory which will re-build and run testthat tests based on examples each time you run your testing suite. Tests are created to expect that examples execute successfully and that each example expectation is fulfilled.</p>
 </div>
@@ -144,27 +148,27 @@ Choose whether you want to treat example tests as tests during <code>R CMD check
 <h3 id="base-building-blocks">Base building-blocks<a class="anchor" aria-label="anchor" href="#base-building-blocks"></a>
 </h3>
 <p>If you’d like to add testing code to examples in your documentation, you can use the <code>\testonly</code> block to add code which only executes when testing examples. Pretty neat!</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode latex"><code class="sourceCode latex"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">\examples</span>{</span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>identity("hello, world")</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="fu">\testonly</span>{</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  stopifnot(.Last.value == "hello, world")</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>}</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>}</span></code></pre></div>
+<p>Here we use <code>.Last.value</code> to grab the result of our last example and test it against an expected value. Though, as you might expect, you can’t easily add <em>another</em> test because <code>.Last.value</code> will have changed. This is where <code>testex</code> comes in to help simplify things.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode latex"><code class="sourceCode latex"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">\examples</span>{</span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>identity("hello, world")</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="fu">\testonly</span>{</span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  stopifnot(.Last.value == "hello, world")</span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>}</span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>}</span></code></pre></div>
-<p>Here we use <code>.Last.value</code> to grab the result of our last example and test it against an expected value. Though, as you might expect, you can’t easily add <em>another</em> test because <code>.Last.value</code> will have changed. This is where <code>testex</code> comes in to help simplify things.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode latex"><code class="sourceCode latex"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">\examples</span>{</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>identity("hello, world")</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="fu">\testonly</span>{testex::testex(</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  is.character(.),</span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  . == "hello, world")</span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>)}</span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>}</span></code></pre></div>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="fu">\testonly</span>{testex::testex(</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  is.character(.),</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  . == "hello, world")</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>)}</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>}</span></code></pre></div>
 <p>Already <code>testex</code> is doing a bit of work to make our lives easier. The <code>.Last.value</code> is propegated to each of the tests and we can use the convenient shorthand <code>.</code> to refer to the value we want to test.</p>
 </div>
 <div class="section level3">
 <h3 id="use-a-roclet">Use a <code>roclet</code>!<a class="anchor" aria-label="anchor" href="#use-a-roclet"></a>
 </h3>
 <p>If you’re already using <code>roxygen2</code>, then things get even easier! You can add in the <code>"testex::rd"</code> roclet (replacing the default <code>roxygen2</code> <code>"rd"</code> roclet) and make use of the <code>@expect</code> tag.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' Hello, World!</span></span>
 <span><span class="co">#' </span></span>
 <span><span class="co">#' @examples</span></span>
@@ -185,7 +189,7 @@ Choose whether you want to treat example tests as tests during <code>R CMD check
 <h3 id="leverage-testthat-expectations">Leverage <code>testthat</code> expectations<a class="anchor" aria-label="anchor" href="#leverage-testthat-expectations"></a>
 </h3>
 <p>A convenience tag is also provide for those that prefer the <code>testthat</code> style of testing. <code>testthat</code> provides a wealth of expectation functions, which can be used in conjunction with <code>testex</code> to write more familiar tests.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' Hello, World!</span></span>
 <span><span class="co">#' </span></span>
 <span><span class="co">#' @examples</span></span>
