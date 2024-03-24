@@ -128,3 +128,4 @@ s3_register <- function(generic, class, method = NULL) {
 
   invisible()
 }
+#nocov end
