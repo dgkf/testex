@@ -118,7 +118,7 @@ with_srcref <- function(src, expr, envir = parent.frame()) {
 #' @return The value produced by the expectation code
 #'
 #' @export
-expect_no_error <- function(object, ...) {
+fallback_expect_no_error <- function(object, ...) {
   object <- substitute(object)
   act <- list(
     val = tryCatch(eval(object, envir = parent.frame()), error = identity),
@@ -264,9 +264,15 @@ test_files <- function(files, context, ...) {
 wrap_expect_no_error <- function(expr, value) {
   srckey <- srcref_key(expr, path = "root")
   # nocov start
+  expect_no_error <- if (packageVersion("testthat") >= "3.1.5") {
+    quote(testthat::expect_no_error)
+  } else {
+    quote(testex::fallback_expect_no_error)
+  }
+
   bquote(testthat::test_that("example executes without error", {
     testex::with_srcref(.(srckey), {
-      .(value) <<- testex::expect_no_error(.(expr))
+      .(value) <<- .(expect_no_error)(.(expr))
     })
   }))
   # nocov end

@@ -4,7 +4,7 @@
 \alias{use_testex_as_testthat}
 \title{Run examples as testthat expectations}
 \usage{
-use_testex_as_testthat(path = getwd(), context = "testex")
+use_testex_as_testthat(path = getwd(), context = "testex", quiet = FALSE)
 }
 \arguments{
 \item{path}{A package source code working directory}

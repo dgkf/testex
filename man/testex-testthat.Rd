@@ -4,7 +4,7 @@
 \alias{testex-testthat}
 \alias{testthat_block}
 \alias{with_srcref}
-\alias{expect_no_error}
+\alias{fallback_expect_no_error}
 \title{Support for \code{testthat} example expectations}
 \usage{
 testthat_block(
@@ -18,7 +18,7 @@ testthat_block(
 
 with_srcref(src, expr, envir = parent.frame())
 
-expect_no_error(object, ...)
+fallback_expect_no_error(object, ...)
 }
 \arguments{
 \item{...}{Additional arguments unused}
@@ -78,7 +78,7 @@ allows \code{testthat} to report an origin for any code that raised an example
 test failure from the source roxygen code, even though the test code is
 reconstructed from package documentation files.
 
-\item \code{expect_no_error()}: A \code{testthat} expectation that the provided code can be evaluated without
+\item \code{fallback_expect_no_error()}: A \code{testthat} expectation that the provided code can be evaluated without
 producing an error. This is the most basic expectation one should expect of
 any example code. Further expectations are provided in subsequent \code{testthat}
 code.
