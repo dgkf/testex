@@ -5,12 +5,13 @@ Authors@R:
   person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
 Description: What the package does (one paragraph).
 Suggests: 
-  testex,
   testthat (>= 3.0.0),
-  roxygen2
+  roxygen2,
+  testex
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE, packages = "testex")
 RoxygenNote: 7.3.1
 License: MIT + file LICENSE
 Config/testthat/edition: 3
-Config/testex/options: list(check = TRUE)
+Config/testex/options: 
+    list(check = TRUE)

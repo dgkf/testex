@@ -35,16 +35,15 @@ To enable this roclet, you'll also need to modify your package's `DESCRIPTION`
 to include the `testex::rd` roclet. Adding it is as easy as calling:
 
 ```r
-testex::use_rd_roclet()
+testex::use_testex()
 ```
 
-This will modify your existing roclets, replacing the default `roxygen2` `"rd"`
-roclet with `testex`'s:
+This will take a few steps to set up your package:
 
-```diff
-- Roxygen: list(markdown = TRUE, roclets = c("namespace", "rd"))
-+ Roxygen: list(markdown = TRUE, roclets = c("namespace", "testex::rd"))
-```
+- [x] Adds `packages = "testex"` to the `Roxygen` field in `DESCRIPTION`
+- [x] Adds `testex` as a `Suggests` dependency
+- [x] Adds settings to the `Config/testex/options` field in `DESCRIPTION`
+- [x] Adds a `test-testex.R` test file if you're using `testthat`
 
 ### 3. Configure how you want to run your tests
 
