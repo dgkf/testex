@@ -9,8 +9,8 @@
   Add tests and assertions in-line in examples.">
 <title>Add tests and assertions in-line in examples • testex</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Add tests and assertions in-line in examples">
 <meta property="og:description" content="
@@ -84,12 +84,12 @@
 <h3 id="id_2-add-the-roclet">2. Add the <code>roclet</code>
 <a class="anchor" aria-label="anchor" href="#id_2-add-the-roclet"></a>
 </h3>
-<p>To enable this roclet, you’ll also need to modify your package’s <code>DESCRIPTION</code> to include the <code><a href="reference/rd.html">testex::rd</a></code> roclet. Adding it is as easy as calling:</p>
+<p>To enable this roclet, you’ll also need to modify your package’s <code>DESCRIPTION</code> to include the <code>testex::rd</code> roclet. Adding it is as easy as calling:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">testex</span><span class="fu">::</span><span class="fu"><a href="reference/use_rd_roclet.html">use_rd_roclet</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>This will modify your existing roclets, replacing the default <code>roxygen2</code> <code>"rd"</code> roclet with <code>testex</code>’s:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode diff"><code class="sourceCode diff"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="st">- Roxygen: list(markdown = TRUE, roclets = c("namespace", "rd"))</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="va">+ Roxygen: list(markdown = TRUE, roclets = c("namespace", "testex::rd"))</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode diff"><code class="sourceCode diff"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="st">- Roxygen: list(markdown = TRUE, roclets = c("namespace", "rd"))</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="va">+ Roxygen: list(markdown = TRUE, roclets = c("namespace", "testex::rd"))</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="id_3-configure-how-you-want-to-run-your-tests">3. Configure how you want to run your tests<a class="anchor" aria-label="anchor" href="#id_3-configure-how-you-want-to-run-your-tests"></a>
@@ -144,20 +144,20 @@ Choose whether you want to treat example tests as tests during <code>R CMD check
 <h3 id="base-building-blocks">Base building-blocks<a class="anchor" aria-label="anchor" href="#base-building-blocks"></a>
 </h3>
 <p>If you’d like to add testing code to examples in your documentation, you can use the <code>\testonly</code> block to add code which only executes when testing examples. Pretty neat!</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode latex"><code class="sourceCode latex"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">\examples</span>{</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>identity("hello, world")</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">\testonly</span>{</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  stopifnot(.Last.value == "hello, world")</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode latex"><code class="sourceCode latex"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">\examples</span>{</span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>identity("hello, world")</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="fu">\testonly</span>{</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  stopifnot(.Last.value == "hello, world")</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>}</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>}</span></code></pre></div>
 <p>Here we use <code>.Last.value</code> to grab the result of our last example and test it against an expected value. Though, as you might expect, you can’t easily add <em>another</em> test because <code>.Last.value</code> will have changed. This is where <code>testex</code> comes in to help simplify things.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode latex"><code class="sourceCode latex"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">\examples</span>{</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>identity("hello, world")</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">\testonly</span>{testex::testex(</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  is.character(.),</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  . == "hello, world")</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)}</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode latex"><code class="sourceCode latex"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">\examples</span>{</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>identity("hello, world")</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a><span class="fu">\testonly</span>{testex::testex(</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  is.character(.),</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  . == "hello, world")</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>)}</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>}</span></code></pre></div>
 <p>Already <code>testex</code> is doing a bit of work to make our lives easier. The <code>.Last.value</code> is propegated to each of the tests and we can use the convenient shorthand <code>.</code> to refer to the value we want to test.</p>
 </div>
 <div class="section level3">

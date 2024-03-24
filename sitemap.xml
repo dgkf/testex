@@ -16,12 +16,6 @@
     <loc>/index.html</loc>
   </url>
   <url>
-    <loc>/reference/append_test.html</loc>
-  </url>
-  <url>
-    <loc>/reference/append_test_rd.html</loc>
-  </url>
-  <url>
     <loc>/reference/as.srcref.html</loc>
   </url>
   <url>
@@ -31,13 +25,7 @@
     <loc>/reference/deparse_pretty.html</loc>
   </url>
   <url>
-    <loc>/reference/escape_infotex.html</loc>
-  </url>
-  <url>
     <loc>/reference/file_line_nchar.html</loc>
-  </url>
-  <url>
-    <loc>/reference/format_tests.html</loc>
   </url>
   <url>
     <loc>/reference/get_example_value.html</loc>
@@ -50,12 +38,6 @@
   </url>
   <url>
     <loc>/reference/package-file-helpers.html</loc>
-  </url>
-  <url>
-    <loc>/reference/rd.html</loc>
-  </url>
-  <url>
-    <loc>/reference/roxy_test_helpers.html</loc>
   </url>
   <url>
     <loc>/reference/s3_register.html</loc>
@@ -85,10 +67,10 @@
     <loc>/reference/testex-options.html</loc>
   </url>
   <url>
-    <loc>/reference/testex-private-imports.html</loc>
+    <loc>/reference/testex-rd-example-helpers.html</loc>
   </url>
   <url>
-    <loc>/reference/testex-rd-example-helpers.html</loc>
+    <loc>/reference/testex-roclets.html</loc>
   </url>
   <url>
     <loc>/reference/testex-testthat.html</loc>
