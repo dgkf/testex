@@ -31,7 +31,7 @@ test_that("wrap_expect_no_error adds srcref, wraps code in expect_no_error expec
   expect_match(res_str, "testthat::test_that")
   expect_match(res_str, "testex::with_srcref(\"<text>:1:3\"", fixed = TRUE)
   expect_match(res_str, "..Last.value\\s+<<-\\s+")
-  expect_match(res_str, "testex::expect_no_error\\(\\s*1\\s+\\+\\s+2")
+  expect_match(res_str, "testthat::expect_no_error\\(\\s*1\\s+\\+\\s+2")
 })
 
 test_that("expect_no_error reports when testthat errors occurs while evaluating an expression", {

@@ -1,5 +1,5 @@
 test_that(paste0(
-  "use_rd_roclet adds testex to Suggests and Roxygen roclets specification ",
+  "use_testex adds testex to Suggests and Roxygen roclets specification ",
   "if it does not yet exist"
 ), {
   ex_pkg_inst <- system.file(package = "testex", "pkg.example")
@@ -18,9 +18,9 @@ Version: 1.2.3
   withr::defer(unlink(test_dir, recursive = TRUE))
 
   expect_equal(read.dcf(desc_path, fields = "Roxygen")[1,][[1]], NA_character_)
-  expect_silent(use_rd_roclet(ex_pkg_path))
+  expect_silent(use_testex(ex_pkg_path, quiet = TRUE))
   expect_match(read.dcf(desc_path, fields = "Roxygen")[1,][[1]], "^list\\(")
-  expect_match(read.dcf(desc_path, fields = "Roxygen")[1,][[1]], "\\btestex::rd\\b")
+  expect_match(read.dcf(desc_path, fields = "Roxygen")[1,][[1]], "packages = \"testex\"")
   expect_match(read.dcf(desc_path, fields = "Suggests")[1,][[1]], "\\btestex\\b")
 })
 

@@ -11,6 +11,8 @@ use_testex_as_testthat(path = getwd(), context = "testex", quiet = FALSE)
 
 \item{context}{A testthat test context to use as the basis for a new test
 filename.}
+
+\item{quiet}{Whether to emit output messages.}
 }
 \value{
 The result of \code{\link[=writeLines]{writeLines()}} after writing a new \code{testthat} file.

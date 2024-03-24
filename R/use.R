@@ -9,6 +9,7 @@
 #' @param path A package source code working directory
 #' @param check A \code{logical} value indicating whether tests should be
 #'   executing during \code{R CMD check}.
+#' @param quiet Whether output should be suppressed
 #'
 #' @return The result of [`write.dcf()`] upon modifying the package
 #'   `DESCRIPTION` file.
@@ -104,7 +105,7 @@ update_desc_roxygen <- function(desc, report) {
 update_desc_suggests <- function(desc, report) {
   # add testex to Suggests
   suggests <- if (!"Suggests" %in% colnames(desc)) {
-    character(0L)
+    ""
   } else {
     desc[1L, "Suggests"]
   }
@@ -112,9 +113,9 @@ update_desc_suggests <- function(desc, report) {
   package_re <- paste0("\\b", packageName(), "\\b")
   if (!any(grepl(package_re, suggests))) {
     lines <- Filter(nchar, strsplit(suggests, "\n")[[1]])
-    ws <- min(nchar(gsub("[^ ].*", "", lines)))
+    ws <- min(nchar(gsub("[^ ].*", "", lines)), 4)
     package <- paste0(strrep(" ", ws), packageName())
-    suggests <- paste(c(suggests, package), collapse = ",\n")
+    suggests <- paste0("\n", paste(c(lines, package), collapse = ",\n"))
     report$add("Adding {.code Suggests} package {.pkg {packageName()}}")
   }
 
@@ -258,6 +259,7 @@ cliless <- function(..., .envir = parent.frame(), .less = FALSE) {
 #' @param path A package source code working directory
 #' @param context A testthat test context to use as the basis for a new test
 #'   filename.
+#' @param quiet Whether to emit output messages.
 #'
 #' @return The result of [`writeLines()`] after writing a new `testthat` file.
 #'

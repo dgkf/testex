@@ -7,7 +7,9 @@
 wrap_expect_no_error(expr, value)
 }
 \arguments{
-\item{expr}{An expr to wrap in a \code{\link[=expect_no_error]{expect_no_error()}} expectation}
+\item{expr}{An expr to wrap in a \code{expect_no_error()} expectation. Uses
+'testthat's version if recent enough version is available, or provides
+a fallback otherwise.}
 
 \item{value}{A symbol to use to store the result of \code{expr}}
 }

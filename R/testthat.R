@@ -255,11 +255,14 @@ test_files <- function(files, context, ...) {
 
 #' Wraps an example expression in a testthat expectation to not error
 #'
-#' @param expr An expr to wrap in a [`testex::expect_no_error()`] expectation
+#' @param expr An expr to wrap in a `expect_no_error()` expectation. Uses
+#'   'testthat's version if recent enough version is available, or provides
+#'   a fallback otherwise.
 #' @param value A symbol to use to store the result of `expr`
 #'
 #' @return A [`testthat::test_that()`] call
 #'
+#' @importFrom utils packageVersion
 #' @keywords internal
 wrap_expect_no_error <- function(expr, value) {
   srckey <- srcref_key(expr, path = "root")

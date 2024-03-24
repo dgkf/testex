@@ -11,6 +11,8 @@ use_testex(path = getwd(), check = TRUE, quiet = FALSE)
 
 \item{check}{A \code{logical} value indicating whether tests should be
 executing during \code{R CMD check}.}
+
+\item{quiet}{Whether output should be suppressed}
 }
 \value{
 The result of \code{\link[=write.dcf]{write.dcf()}} upon modifying the package
