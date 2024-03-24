@@ -4,7 +4,7 @@
 \alias{use_testex}
 \title{Add \code{testex} tags and configure package to fully use \code{testex} features}
 \usage{
-use_testex(path = getwd(), check = NA, quiet = FALSE)
+use_testex(path = getwd(), check = TRUE, quiet = FALSE)
 }
 \arguments{
 \item{path}{A package source code working directory}
