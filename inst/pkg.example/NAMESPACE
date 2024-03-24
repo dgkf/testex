@@ -2,4 +2,6 @@
 
 export(fn)
 export(fn_roxygen)
+export(fn_roxygen_multiple1)
+export(fn_roxygen_multiple2)
 export(fn_roxygen_testthat)

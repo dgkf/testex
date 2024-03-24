@@ -10,44 +10,6 @@
 
 
 
-#' Extract select unexported objects from a package namespace
-#'
-#' @param package A package name
-#' @param names A \code{character} vector of object names to select
-#'
-#' @return A list of specified private namespace objects
-#'
-#' @name testex-private-imports
-#' @keywords internal
-#'
-priv <- function(package, names) {
-  function() {
-    if (requireNamespace(package, quietly = TRUE)) {
-      ns <- as.list(getNamespace(package))
-      if (any(!names %in% names(ns))) {
-        stop(sprintf("required objects not found in %s", package))
-      }
-      ns[names]
-    } else {
-      message(sprintf("%s needed to use this functionality", package))
-    }
-  }
-}
-
-
-
-#' Private roxygen2 functions
-#'
-#' @name testex-private-imports
-#' @keywords internal
-#'
-.roxygen2 <- priv("roxygen2", c(
-  "roclet_process.roclet_rd",
-  "roclet_output.roclet_rd"
-))
-
-
-
 #' Temporarily attach a namespace
 #'
 #' This function is primarily for managing attaching of namespaces needed for
@@ -68,10 +30,10 @@ with_attached <- function(ns, expr) {
     requireNamespace(ns)
   }
 
-  try({
+  try(silent = TRUE, {
     attached <- attachNamespace(ns)
     on.exit(detach(attr(attached, "name"), character.only = TRUE))
-  }, silent = TRUE)
+  })
 
   expr <- substitute(expr)
   eval(expr)
@@ -105,8 +67,15 @@ is_r_cmd_check <- function() {
 find_package_root <- function(path = ".", quiet = FALSE) {
   if (path == ".") path <- getwd()
   while (dirname(path) != path) {
-    if (file.exists(file.path(path, "DESCRIPTION")))
+    if (file.exists(file.path(path, "DESCRIPTION"))) {
+      # package source directory
       return(path)
+    } else if (endsWith(basename(path), ".Rcheck")) {
+      # installed package, as during R CMD check
+      file <- basename(path)
+      package <- substring(file, 1, nchar(file) - nchar(".Rcheck"))
+      return(file.path(path, package))
+    }
     path <- dirname(path)
   }
 
@@ -220,7 +189,7 @@ deparse_pretty <- function(expr) {
 #' @keywords internal
 deparse_indent <- function(x, indent = 0L) {
   if (is.numeric(indent)) indent <- strrep(" ", indent)
-  paste0(indent, deparse(x), collapse = "\n")
+  paste0(indent, deparse(unclass(x)), collapse = "\n")
 }
 
 

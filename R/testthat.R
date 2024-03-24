@@ -180,18 +180,19 @@ expect_no_error <- function(object, ...) {
 #' }
 #'
 #' @export
-test_examples_as_testthat <- function(package, path, ...,
-  test_dir = tempfile("testex"), clean = TRUE, overwrite = TRUE,
-  reporter = testthat::get_reporter()) {
-
+test_examples_as_testthat <- function(
+  package, path, ..., test_dir = tempfile("testex"), clean = TRUE,
+  overwrite = TRUE, reporter = testthat::get_reporter()
+) {
   requireNamespace("testthat")
 
   testthat_envvar_val <- Sys.getenv("TESTTHAT")
   Sys.setenv(TESTTHAT = "true")
   on.exit(Sys.setenv(TESTTHAT = testthat_envvar_val))
 
-  if (missing(path))
+  if (missing(path)) {
     path <- find_package_root(testthat::test_path())
+  }
 
   rds <- find_package_rds(package, path)
   test_dir_exists <- dir.exists(test_dir)
@@ -207,7 +208,7 @@ test_examples_as_testthat <- function(package, path, ...,
     return()
   }
 
-  # find example sections and conver them to tests
+  # find example sections and convert them to tests
   rd_examples <- Filter(Negate(is.null), lapply(rds, rd_extract_examples))
   test_files <- lapply(seq_along(rd_examples), function(i) {
     rd_filename <- names(rd_examples[i])
@@ -223,7 +224,7 @@ test_examples_as_testthat <- function(package, path, ...,
     )
 
     # write out test code to file in test dir
-    path <- file.path(test_dir, paste0(tools::file_path_sans_ext(rd_filename), ".R"))
+    path <- file.path(test_dir, rd_filename)
     example_code <- vcapply(exprs, deparse_pretty)
 
     writeLines(paste(example_code, collapse = "\n\n"), path)

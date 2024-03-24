@@ -15,16 +15,12 @@ test_that("@expect tags produce \\testonly blocks", {
   "
 
   block <- roxygen2::parse_text(roxy_text)[[1]]
+  expect_tag <- block$tags[[5]]
 
-  expect_silent({
-    block <- roclet_process_testex(block)
-    ex_idx <- which(vcapply(block$tags, `[[`, "tag") == "examples")
-    ex_tag <- block$tags[[ex_idx]]
-    ex_val <- ex_tag$val
-  })
+  expect_equal(expect_tag$tag, "expect")
+  expect_s3_class(expect_tag, "roxy_tag_examples")
 
-  expect_true(any(grepl("\\\\testonly\\{", ex_tag$val)))
-  expect_true(any(grepl("testex::testex\\(", ex_tag$val)))
-  expect_true(any(grepl("identical\\(\\., 3\\)", ex_tag$val)))
-  expect_true(any(grepl("example = \".*:.:.\"", ex_tag$val)))
+  expect_true(any(grepl("\\\\testonly\\{", expect_tag$val)))
+  expect_true(any(grepl("testex::testex\\(", expect_tag$val)))
+  expect_true(any(grepl("identical\\(\\., 3\\)", expect_tag$val)))
 })

@@ -21,30 +21,19 @@ using the \code{.}-syntax to test the last example result.
   value <- "testing"
 }
 
-fn_roxygen(value)\testonly{
-testex::testex(
-  identical(., "testing 1 2 3"),
-  example = "fn.R:41:46"
-)}
-
+fn_roxygen(value)
+\testonly{testex::testex(identical(., "testing 1 2 3"))}
 \dontrun{
   stop("this won't work")
 }
 
-fn_roxygen("testing")\testonly{
-testex::testex(
-  grepl("\\\\d", .),
-  startsWith(., "testing"),
-  example = "fn.R:48:53"
-)}
-
-fn_roxygen("testing")\testonly{
-testex::testex(
-  identical(., {
-      "testing 1 2 3"
-  }),
-  example = "fn.R:56:57"
-)}
+fn_roxygen("testing")
+\testonly{testex::testex(grepl("\\\\d", .))}
+\testonly{testex::testex(startsWith(., "testing"))}
+fn_roxygen("testing")
+\testonly{testex::testex(identical(., {
+  "testing 1 2 3"
+}))}
 
 fn_roxygen("testing")
 # untested trailing example

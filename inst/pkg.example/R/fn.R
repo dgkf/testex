@@ -83,11 +83,51 @@ fn_roxygen <- function(x) {
 #' @testthat expect_equal("testing 1 2 3")
 #' @testthat expect_match("^testing")
 #'
+#' @examples
 #' fn_roxygen_testthat("testing")
 #' @testthat expect_equal("testing 1 2 3")
 #' @testthat expect_match("^testing")
 #'
 #' @export
 fn_roxygen_testthat <- function(x) {
+  paste(x, "1 2 3")
+}
+
+
+
+
+#' Test Topic Covering Multiple Functions
+#'
+#' This example composes an examples section from multiple blocks.
+#'
+#' @param x A thing
+#' @return The pasted thing
+#'
+#' @name fn_roxygen_multiple
+NULL
+
+#' @describeIn fn_roxygen_multiple
+#' Ensure multiple objects' examples are combined into a single topic
+#'
+#' @examples
+#' fn_roxygen_multiple1("testing")
+#' @expect grepl("\\d", .)
+#' @expect startsWith(., "testing")
+#'
+#' @export
+fn_roxygen_multiple1 <- function(x) {
+  paste(x, "1 2 3")
+}
+
+#' @describeIn fn_roxygen_multiple
+#' Ensure multiple objects' examples are combined into a single topic
+#'
+#' @examples
+#' fn_roxygen_multiple2("testing")
+#' @expect grepl("\\d", .)
+#' @expect startsWith(., "testing")
+#'
+#' @export
+fn_roxygen_multiple2 <- function(x) {
   paste(x, "1 2 3")
 }
