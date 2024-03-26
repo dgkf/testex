@@ -42,7 +42,7 @@ executing tests such that they produce informative messages on failure."><!-- ma
 
     <div class="ref-description section level2">
     <p>Various functions that are used to produce a more native <code>testthat</code>
-experience, automatically converting <code>testex</code> tests into <code>testthat</code> code and
+experience, automatically converting <a href="testex.html">testex</a> tests into <code>testthat</code> code and
 executing tests such that they produce informative messages on failure.</p>
     </div>
 
@@ -75,7 +75,7 @@ tests.</p></dd>
 
 <dt>obj</dt>
 <dd><p>An optional object name used to construct a more helpful error
-message testthat failure message.</p></dd>
+message <code>testthat</code> failure message.</p></dd>
 
 
 <dt>example</dt>
@@ -93,13 +93,13 @@ relevant test code originated from.</p></dd>
 
 
 <dt>src</dt>
-<dd><p>A <code>srcref_key</code> which is parsed to produce an artificial srcref for
-the expectation signaled messages.</p></dd>
+<dd><p>A <code>srcref_key</code> which is parsed to produce an artificial <code><a href="https://rdrr.io/r/base/srcfile.html" class="external-link">srcref</a></code>
+for the expectation signaled messages.</p></dd>
 
 
 <dt>expr</dt>
 <dd><p>An expression to be evaluated. If an <code>expectation</code> condition is
-raised during its evaluation, its srcref is converted to <code>src</code>.</p></dd>
+raised during its evaluation, its <code><a href="https://rdrr.io/r/base/srcfile.html" class="external-link">srcref</a></code> is converted to <code>src</code>.</p></dd>
 
 
 <dt>object</dt>
@@ -114,29 +114,29 @@ raised during its evaluation, its srcref is converted to <code>src</code>.</p></
 
 
 <p>The result of evaluating <code>expr</code>, or an expectation with appended
-<code>srcref</code> information if an expectation is raised.</p>
+<code><a href="https://rdrr.io/r/base/srcfile.html" class="external-link">srcref</a></code> information if an expectation is raised.</p>
 
 
 <p>The value produced by the expectation code</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
-    <p><code>testex</code> operates on the previous value produced in example code. This is
+    <p><a href="testex.html">testex</a> operates on the previous value produced in example code. This is
 unlike <code>testthat</code> expectations, which expect a value to be provided as a
 first argument.</p>
-<p>To accommodate a more native <code>testthat</code> interface, <code>testex</code> provides a few
-convenience functions to make <code>testex</code> expectations run more natively within
-the style of <code>testthat</code>.</p>
+<p>To accommodate a more native <code>testthat</code> interface, <a href="testex.html">testex</a> provides a few
+convenience functions to make <a href="testex.html">testex</a> expectations run more idiomatically
+in the style of <code>testthat</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="functions">Functions<a class="anchor" aria-label="anchor" href="#functions"></a></h2>
     
-<ul><li><p><code>testthat_block()</code>: A flavor of <code>testex</code> that will inject <code>.Last.value</code> into the first argument
+<ul><li><p><code>testthat_block()</code>: A flavor of <a href="testex.html">testex</a> that will inject <a href="https://rdrr.io/r/base/Last.value.html" class="external-link">.Last.value</a> into the first argument
 of each expression - suitable for using the <code>expect_*</code> family of functions
 from <code>testthat</code>. Also handles temporarily attaching the <code>testthat</code> package.</p></li>
 <li><p><code>with_srcref()</code>: Retroactively assigns a source file and location to a expectation. This
 allows <code>testthat</code> to report an origin for any code that raised an example
-test failure from the source roxygen code, even though the test code is
+test failure from the source <code>roxygen2</code> code, even though the test code is
 reconstructed from package documentation files.</p></li>
 <li><p><code>fallback_expect_no_error()</code>: A <code>testthat</code> expectation that the provided code can be evaluated without
 producing an error. This is the most basic expectation one should expect of

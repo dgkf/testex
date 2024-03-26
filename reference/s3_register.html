@@ -51,7 +51,7 @@ a method only if the generic's package is loaded."><!-- mathjax --><script src="
     <div class="ref-description section level2">
     <p>Generally, the recommend way to register an S3 method is to use the
 <code>S3Method()</code> namespace directive (often generated automatically by the
-<code>@export</code> roxygen2 tag). However, this technique requires that the generic
+<code>@export</code> <code>roxygen2</code> tag). However, this technique requires that the generic
 be in an imported package, and sometimes you want to suggest a package,
 and only provide a method when that package is loaded. <code>s3_register()</code>
 can be called from your package's <code>.onLoad()</code> to dynamically register
@@ -74,7 +74,7 @@ a method only if the generic's package is loaded.</p>
 this will be found by looking for a function called <code>generic.class</code>
 in the package environment.</p>
 <p>Note that providing <code>method</code> can be dangerous if you use
-devtools. When the namespace of the method is reloaded by
+<code>devtools</code>. When the namespace of the method is reloaded by
 <code>devtools::load_all()</code>, the function will keep inheriting from
 the old namespace. This might cause crashes because of dangling
 <code><a href="https://rdrr.io/r/base/CallExternal.html" class="external-link">.Call()</a></code> pointers.</p></dd>
@@ -95,10 +95,10 @@ by using "delayed method registration", i.e. placing the following in your
     <h2 id="usage-in-other-packages">Usage in other packages<a class="anchor" aria-label="anchor" href="#usage-in-other-packages"></a></h2>
     
 
-<p>To avoid taking a dependency on vctrs, you copy the source of
+<p>To avoid taking a dependency on <code>vctrs</code>, you copy the source of
 <a href="https://github.com/r-lib/vctrs/blob/main/R/register-s3.R" class="external-link"><code>s3_register()</code></a>
 into your own package. It is licensed under the permissive
-<a href="https://choosealicense.com/licenses/unlicense/" class="external-link">unlicense</a> to make it
+<a href="https://choosealicense.com/licenses/unlicense/" class="external-link"><code>unlicense</code></a> to make it
 crystal clear that we're happy for you to do this. There's no need to include
 the license or even credit us when using this function.</p>
     </div>

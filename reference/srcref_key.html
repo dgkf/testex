@@ -31,13 +31,13 @@
 </nav><div class="container template-reference-topic">
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Convert a srcref to a character representation</h1>
+      <img src="" class="logo" alt=""><h1>Convert a <code><a href="https://rdrr.io/r/base/srcfile.html" class="external-link">srcref</a></code> to a <code><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></code> representation</h1>
       
       <div class="d-none name"><code>srcref_key.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
-    <p>Convert a srcref to a character representation</p>
+    <p>Convert a <code><a href="https://rdrr.io/r/base/srcfile.html" class="external-link">srcref</a></code> to a <code><a href="https://rdrr.io/r/base/character.html" class="external-link">character</a></code> representation</p>
     </div>
 
     <div class="section level2">
@@ -48,25 +48,25 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>A srcref object</p></dd>
+<dd><p>A <code><a href="https://rdrr.io/r/base/srcfile.html" class="external-link">srcref</a></code> object</p></dd>
 
 
 <dt>nloc</dt>
-<dd><p>The number of src locations to use. Defaults to 2, indicating
-starting and ending line number.</p></dd>
+<dd><p>The number of locations (<code><a href="https://rdrr.io/r/utils/sourceutils.html" class="external-link">utils::getSrcLocation</a></code>) to use.
+Defaults to 2, indicating starting and ending line number.</p></dd>
 
 
 <dt>path</dt>
-<dd><p>A form of filepath to use for the key. One of <code>"base"</code> for only
-the basename of the source filepath, <code>"root"</code> for a path relative to a
-package root directory if found, or <code>"full"</code> for the full filepath.</p></dd>
+<dd><p>A form of file path to use for the key. One of <code>"base"</code> for only
+the basename of the source file path, <code>"root"</code> for a path relative to a
+package root directory if found, or <code>"full"</code> for the full file path.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A string hash of a <code>srcref</code></p>
+<p>A string hash of a <a href="https://rdrr.io/r/base/srcfile.html" class="external-link">srcref</a></p>
 
 
     </div>

@@ -55,7 +55,7 @@
     <loc>/reference/srcref_nlines.html</loc>
   </url>
   <url>
-    <loc>/reference/string_line_count.html</loc>
+    <loc>/reference/string_newline_count.html</loc>
   </url>
   <url>
     <loc>/reference/test_examples_as_testthat.html</loc>
@@ -70,7 +70,7 @@
     <loc>/reference/testex-rd-example-helpers.html</loc>
   </url>
   <url>
-    <loc>/reference/testex-roclets.html</loc>
+    <loc>/reference/testex-roxygen-tags.html</loc>
   </url>
   <url>
     <loc>/reference/testex-testthat.html</loc>

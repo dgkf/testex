@@ -54,26 +54,26 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="testex-test-examples-">
-<code>testex</code> <em><strong>test</strong> <strong>ex</strong>amples</em> <img src="https://user-images.githubusercontent.com/18220321/211960830-8c969bee-8c80-4984-8132-b5993911f179.png" align="right" width="134px"><a class="anchor" aria-label="anchor" href="#testex-test-examples-"></a>
+<code>testex</code> <strong><em>test examples</em></strong> <img src="https://user-images.githubusercontent.com/18220321/211960830-8c969bee-8c80-4984-8132-b5993911f179.png" align="right" width="134px"><a class="anchor" aria-label="anchor" href="#testex-test-examples-"></a>
 </h1></div>
-<p><a href="https://cran.r-project.org/package=testex" class="external-link"><img src="https://img.shields.io/cran/v/testex.svg" alt="CRAN"></a> <a href="https://github.com/dgkf/testex/actions?query=workflow%3AR-CMD-check" class="external-link"><img src="https://github.com/dgkf/testex/workflows/R-CMD-check/badge.svg" alt="R CMD check"></a> <a href="https://app.codecov.io/gh/dgkf/testex" class="external-link"><img src="https://img.shields.io/codecov/c/github/dgkf/testex/main.svg" alt="Codecov"></a></p>
+<p><a href="https://cran.r-project.org/package=testex" class="external-link"><img src="https://img.shields.io/cran/v/testex.svg" alt="CRAN"></a> <a href="https://github.com/dgkf/testex/actions?query=workflow%3AR-CMD-check" class="external-link"><img src="https://github.com/dgkf/testex/workflows/R-CMD-check/badge.svg" alt="R CMD check"></a> <a href="https://app.codecov.io/gh/dgkf/testex" class="external-link"><img src="https://img.shields.io/codecov/c/github/dgkf/testex/main.svg" alt="coverage"></a></p>
 <p>Add tests and assertions in-line in examples</p>
 <div class="section level2">
 <h2 id="quick-start">Quick Start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
 </h2>
 <div class="section level3">
-<h3 id="id_1-add-some-expectations">1. Add some expectations<a class="anchor" aria-label="anchor" href="#id_1-add-some-expectations"></a>
+<h3 id="id_1-add-some-tests">1. Add some tests!<a class="anchor" aria-label="anchor" href="#id_1-add-some-tests"></a>
 </h3>
-<p>Adding tests right next to your examples using the roxygen <code>@expect</code> tag.</p>
+<p>Adding tests right next to your examples using the <code>roxygen2</code> <code>@test</code> tag.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' Hello, World!</span></span>
 <span><span class="co">#' </span></span>
 <span><span class="co">#' @examples</span></span>
 <span><span class="co">#' hello("World")</span></span>
-<span><span class="co">#' @expect "Hello, World!"</span></span>
+<span><span class="co">#' @test "Hello, World!"</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' hello("darkness my old friend")</span></span>
-<span><span class="co">#' @expect grepl("darkness", .)</span></span>
+<span><span class="co">#' @test grepl("darkness", .)</span></span>
 <span><span class="co">#' </span></span>
 <span><span class="co">#' @export</span></span>
 <span><span class="va">hello</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">who</span><span class="op">)</span> <span class="op">{</span></span>
@@ -81,10 +81,9 @@
 <span><span class="op">}</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="id_2-add-the-roclet">2. Add the <code>roclet</code>
-<a class="anchor" aria-label="anchor" href="#id_2-add-the-roclet"></a>
+<h3 id="id_2-add-the-roxygen2-tags">2. Add the <code>roxygen2</code> tags<a class="anchor" aria-label="anchor" href="#id_2-add-the-roxygen2-tags"></a>
 </h3>
-<p>To enable this roclet, you’ll also need to modify your package’s <code>DESCRIPTION</code> to include the <code>testex::rd</code> roclet. Adding it is as easy as calling:</p>
+<p>To enable the new <code>roxygen2</code> tags, you’ll also need to modify your package’s <code>DESCRIPTION</code>. Adding it is as easy as calling:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">testex</span><span class="fu">::</span><span class="fu"><a href="reference/use_testex.html">use_testex</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>This will take a few steps to set up your package:</p>
@@ -98,7 +97,7 @@
 <div class="section level3">
 <h3 id="id_3-configure-how-you-want-to-run-your-tests">3. Configure how you want to run your tests<a class="anchor" aria-label="anchor" href="#id_3-configure-how-you-want-to-run-your-tests"></a>
 </h3>
-<p>You could call it a day there if you’d like, but there are a few options if you’d like to tune your testing workflow.</p>
+<p>Alternatively, you can configure how <code>testex</code> works yourself.</p>
 <div class="section level4">
 <h4 id="running-tests-with-testthat">Running tests with <code>testthat</code>
 <a class="anchor" aria-label="anchor" href="#running-tests-with-testthat"></a>
@@ -106,7 +105,7 @@
 <p>If you’d like to automatically test your examples when you test your package, <code>testex</code> can generate tests for you that will automatically contribute to <code>testthat</code> results. Simply run:</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">testex</span><span class="fu">::</span><span class="fu"><a href="reference/use_testex_as_testthat.html">use_testex_as_testthat</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p>This will add a <code>tests/testthat/test-testex.R</code> file to your <code>testthat</code> directory which will re-build and run testthat tests based on examples each time you run your testing suite. Tests are created to expect that examples execute successfully and that each example expectation is fulfilled.</p>
+<p>This will add a <code>tests/testthat/test-testex.R</code> file to your <code>testthat</code> directory which will re-build and run <code>testthat</code> tests based on examples each time you run your testing suite. Tests are created, expecting that examples execute successfully and that each example test is fulfilled.</p>
 </div>
 <div class="section level4">
 <h4 id="disabling-example-checks-during-r-cmd-check">Disabling example checks during <code>R CMD check</code>
@@ -162,22 +161,22 @@ Choose whether you want to treat example tests as tests during <code>R CMD check
 <span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  . == "hello, world")</span>
 <span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>)}</span>
 <span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>}</span></code></pre></div>
-<p>Already <code>testex</code> is doing a bit of work to make our lives easier. The <code>.Last.value</code> is propegated to each of the tests and we can use the convenient shorthand <code>.</code> to refer to the value we want to test.</p>
+<p>Already <code>testex</code> is doing a bit of work to make our lives easier. The <code>.Last.value</code> is propagated to each of the tests and we can use the convenient shorthand <code>.</code> to refer to the value we want to test.</p>
 </div>
 <div class="section level3">
-<h3 id="use-a-roclet">Use a <code>roclet</code>!<a class="anchor" aria-label="anchor" href="#use-a-roclet"></a>
+<h3 id="use-a-roxygen2-tag">Use a <code>roxygen2</code> tag!<a class="anchor" aria-label="anchor" href="#use-a-roxygen2-tag"></a>
 </h3>
-<p>If you’re already using <code>roxygen2</code>, then things get even easier! You can add in the <code>"testex::rd"</code> roclet (replacing the default <code>roxygen2</code> <code>"rd"</code> roclet) and make use of the <code>@expect</code> tag.</p>
+<p>If you’re already using <code>roxygen2</code>, then things get even easier! <code>roxygen2</code> can make use of new tags provided by <code>testex</code>:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#' Hello, World!</span></span>
 <span><span class="co">#' </span></span>
 <span><span class="co">#' @examples</span></span>
 <span><span class="co">#' </span></span>
 <span><span class="co">#' hello("World")</span></span>
-<span><span class="co">#' @expect "Hello, World!"</span></span>
+<span><span class="co">#' @test "Hello, World!"</span></span>
 <span><span class="co">#'</span></span>
 <span><span class="co">#' hello("darkness my old friend")</span></span>
-<span><span class="co">#' @expect grepl("darkness", .)</span></span>
+<span><span class="co">#' @test grepl("darkness", .)</span></span>
 <span><span class="co">#' </span></span>
 <span><span class="co">#' @export</span></span>
 <span><span class="va">hello</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">who</span><span class="op">)</span> <span class="op">{</span></span>
@@ -204,11 +203,11 @@ Choose whether you want to treat example tests as tests during <code>R CMD check
 <span><span class="va">hello</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">who</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"Hello, "</span>, <span class="va">who</span>, <span class="st">"!"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>The <code>@testthat</code> tag will automatically insert the <code>.Last.value</code> from the previous example into the first argument of each expectation. Multiple consecutive <code>@testthat</code> expecations will all test the previous example output.</p>
+<p>The <code>@testthat</code> tag will automatically insert the <code>.Last.value</code> from the previous example into the first argument of each expectation. Multiple consecutive <code>@testthat</code> expectations will all test the previous example output.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="roadmap">Roadmap<a class="anchor" aria-label="anchor" href="#roadmap"></a>
+<h2 id="planned-features">Planned Features<a class="anchor" aria-label="anchor" href="#planned-features"></a>
 </h2>
 <table class="table">
 <colgroup>
@@ -217,7 +216,7 @@ Choose whether you want to treat example tests as tests during <code>R CMD check
 </colgroup>
 <tbody>
 <tr class="odd">
-<td>Example result propegation using <code><a href="reference/testex.html">testex::testex()</a></code>
+<td>Example result propagation using <code><a href="reference/testex.html">testex::testex()</a></code>
 </td>
 <td><span class="emoji" data-emoji="ballot_box_with_check">☑️</span></td>
 </tr>
@@ -229,7 +228,7 @@ Choose whether you want to treat example tests as tests during <code>R CMD check
 </tr>
 <tr class="odd">
 <td>
-<code>roxygen2</code> tag <code>@expect</code>
+<code>roxygen2</code> tag <code>@test</code>
 </td>
 <td><span class="emoji" data-emoji="ballot_box_with_check">☑️</span></td>
 </tr>

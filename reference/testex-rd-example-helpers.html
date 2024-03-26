@@ -67,8 +67,8 @@
 <p>A formatted Rd example</p>
 
 
-<p>An interlaced list of expressions, either representing evaluable code
-or tests. The names of the list are either <code>\\testonly</code> or <code>RDCODE</code></p>
+<p>An interlaced list of expressions, either representing example
+code or tests. The names of the list are either <code>\testonly</code> or <code>RDCODE</code></p>
 
 
 <p>depending on the originating source of the expression.</p>
@@ -82,10 +82,10 @@ or tests. The names of the list are either <code>\\testonly</code> or <code>RDCO
 <ul><li><p><code>rd_extract_examples()</code>: Extract examples tag from an Rd file</p></li>
 <li><p><code>rd_code_as_string()</code>: Convert an Rd example to string</p></li>
 <li><p><code>split_testonly_as_expr()</code>: Split sections of an example into evaluated example code blocks and code
-blocks wrapped in testonly <code>Rd_tag</code>s, reassigning <code>srcref</code>s as the example
-code is split.</p></li>
-<li><p><code>split_testonly()</code>: Split sections of an example into lists of <code>Rd_tag</code>s. Note that srcrefs are
-split by line number. If a line is split between two sections, it is
+blocks wrapped in <code>\testonly</code> <code>Rd_tag</code>s, reassigning <code><a href="https://rdrr.io/r/base/srcfile.html" class="external-link">srcref</a></code>s as the
+example code is split.</p></li>
+<li><p><code>split_testonly()</code>: Split sections of an example into lists of <code>Rd_tag</code>s. Note that <code><a href="https://rdrr.io/r/base/srcfile.html" class="external-link">srcref</a></code>s
+are split by line number. If a line is split between two sections, it is
 attributed to the first section. As this is used primarily for giving line
 numbers to test messages, this is sufficient for providing test failures
 locations.</p></li>

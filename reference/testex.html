@@ -70,7 +70,7 @@ last example result.</p></dd>
 
 <dt>obj</dt>
 <dd><p>An optional object name used to construct a more helpful error
-message testthat failure message.</p></dd>
+message <code>testthat</code> failure message.</p></dd>
 
 
 <dt>example</dt>
@@ -100,8 +100,8 @@ the test.</p>
     
 
 
-<p><code>testex</code> is a simple wrapper around execution that propegates the
-<code>.Last.value</code> returned before running, allowing you to chain expectations
+<p><code>testex</code> is a simple wrapper around execution that propagates the
+<code>.Last.value</code> returned before running, allowing you to chain tests
 more easily.</p><div class="section">
 <h3 id="use-in-rd-files-">Use in <code>Rd</code> files:<a class="anchor" aria-label="anchor" href="#use-in-rd-files-"></a></h3>
 
@@ -128,14 +128,14 @@ documentation, which use this function internally.</p>
 <h3 id="use-with-roxygen-">Use with <code>roxygen2</code><a class="anchor" aria-label="anchor" href="#use-with-roxygen-"></a></h3>
 
 
-<p>Within a <code>roxygen2</code> <code>@examples</code> block you can instead use the <code>@expect</code> tag
+<p>Within a <code>roxygen2</code> <code>@examples</code> block you can instead use the <code>@test</code> tag
 which will generate Rd code as shown above.</p>
 <div class="sourceCode"><pre><code><span></span>
 <span><span class="co">#' @examples</span></span>
 <span><span class="co">#' f &lt;- function(a, b) a + b</span></span>
 <span><span class="co">#' f(3, 4)</span></span>
-<span><span class="co">#' @expect is.numeric(.)</span></span>
-<span><span class="co">#' @expect identical(., 7)</span></span></code></pre></div>
+<span><span class="co">#' @test is.numeric(.)</span></span>
+<span><span class="co">#' @test identical(., 7)</span></span></code></pre></div>
 
 </div>
 
