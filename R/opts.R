@@ -6,8 +6,9 @@
 #'
 #' As long as the `fingerprint` has not changed, the package `DESCRIPTION` will
 #' be read only once to parse and retrieve configuration options. If the
-#' `DESCRIPTION` file is modified or if run from a separate process, the config
-#' will be refreshed based on the most recent version of the file.
+#' `DESCRIPTION` file is modified or if run from a separate process, the
+#' configured settings will be refreshed based on the most recent version of 
+#' the file.
 #'
 #' @param path A path in which to search for a package `DESCRIPTION`
 #' @param fingerprint An object used to indicate when the cached values have
@@ -39,7 +40,7 @@ update_testex_desc <- function(path, fingerprint) {
 
 #' @describeIn testex-options
 #'
-#' @return The test options environemnt as a list
+#' @return The test options environment as a list
 #'
 testex_options <- function(path = package_desc()) {
   if (is_r_cmd_check()) {

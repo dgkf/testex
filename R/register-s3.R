@@ -1,11 +1,11 @@
-# This source code file is licensed under the unlicense license
+# This source code file is licensed under the `unlicense` license
 # https://unlicense.org
 
 #' Register a method for a suggested dependency
 #'
 #' Generally, the recommend way to register an S3 method is to use the
 #' `S3Method()` namespace directive (often generated automatically by the
-#' `@export` roxygen2 tag). However, this technique requires that the generic
+#' `@export` `roxygen2` tag). However, this technique requires that the generic
 #' be in an imported package, and sometimes you want to suggest a package,
 #' and only provide a method when that package is loaded. `s3_register()`
 #' can be called from your package's `.onLoad()` to dynamically register
@@ -24,10 +24,10 @@
 #' ```
 #'
 #' @section Usage in other packages:
-#' To avoid taking a dependency on vctrs, you copy the source of
+#' To avoid taking a dependency on `vctrs`, you copy the source of
 #' [`s3_register()`](https://github.com/r-lib/vctrs/blob/main/R/register-s3.R)
 #' into your own package. It is licensed under the permissive
-#' [unlicense](https://choosealicense.com/licenses/unlicense/) to make it
+#' [`unlicense`](https://choosealicense.com/licenses/unlicense/) to make it
 #' crystal clear that we're happy for you to do this. There's no need to include
 #' the license or even credit us when using this function.
 #'
@@ -39,7 +39,7 @@
 #'   in the package environment.
 #'
 #'   Note that providing `method` can be dangerous if you use
-#'   devtools. When the namespace of the method is reloaded by
+#'   `devtools`. When the namespace of the method is reloaded by
 #'   `devtools::load_all()`, the function will keep inheriting from
 #'   the old namespace. This might cause crashes because of dangling
 #'   `.Call()` pointers.

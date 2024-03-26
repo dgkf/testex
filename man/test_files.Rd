@@ -7,9 +7,9 @@
 test_files(files, context, ...)
 }
 \arguments{
-\item{files}{An iterable collection of file paths to test}
+\item{files}{A collection of file paths to test}
 
-\item{context}{An optional context message to display in testthat reporters}
+\item{context}{An optional context message to display in \code{testthat} reporters}
 
 \item{...}{Additional arguments passed to \code{testhat::source_file}}
 }

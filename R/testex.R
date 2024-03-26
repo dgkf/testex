@@ -5,8 +5,8 @@
 #'
 #' @section Documenting with `testex`:
 #'
-#' `testex` is a simple wrapper around execution that propegates the
-#' `.Last.value` returned before running, allowing you to chain expectations
+#' `testex` is a simple wrapper around execution that propagates the
+#' `.Last.value` returned before running, allowing you to chain tests
 #' more easily.
 #'
 #' ## Use in `Rd` files:
@@ -30,24 +30,24 @@
 #'
 #' ## Use with `roxygen2`
 #'
-#' Within a `roxygen2` `@examples` block you can instead use the `@expect` tag
+#' Within a `roxygen2` `@examples` block you can instead use the `@test` tag
 #' which will generate Rd code as shown above.
 #'
 #' \preformatted{
 #' #' @examples
 #' #' f <- function(a, b) a + b
 #' #' f(3, 4)
-#' #' @expect is.numeric(.)
-#' #' @expect identical(., 7)
+#' #' @test is.numeric(.)
+#' #' @test identical(., 7)
 #' }
 #'
-#' @param ... Expressions to evaluated. \code{.} will be replaced with the
-#'   expression passed to \code{val}, and may be used as a shorthand for the
+#' @param ... Expressions to evaluated. `.` will be replaced with the
+#'   expression passed to `val`, and may be used as a shorthand for the
 #'   last example result.
 #' @param value A value to test against. By default, this will use the example's
-#'   \code{.Last.value}.
+#'   `.Last.value`.
 #' @param obj An optional object name used to construct a more helpful error
-#'   message testthat failure message.
+#'   message `testthat` failure message.
 #' @param example An option `srcref_key` string used to indicate where the
 #'   relevant example code originated from.
 #' @param tests An option `srcref_key` string used to indicate where the

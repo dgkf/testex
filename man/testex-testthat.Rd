@@ -27,7 +27,7 @@ fallback_expect_no_error(object, ...)
 tests.}
 
 \item{obj}{An optional object name used to construct a more helpful error
-message testthat failure message.}
+message \code{testthat} failure message.}
 
 \item{example}{An option \code{srcref_key} string used to indicate where the
 relevant example code originated from.}
@@ -37,11 +37,11 @@ relevant test code originated from.}
 
 \item{envir}{An environment in which the expectations should be evaluated}
 
-\item{src}{A \code{srcref_key} which is parsed to produce an artificial srcref for
-the expectation signaled messages.}
+\item{src}{A \code{srcref_key} which is parsed to produce an artificial \code{\link{srcref}}
+for the expectation signaled messages.}
 
 \item{expr}{An expression to be evaluated. If an \code{expectation} condition is
-raised during its evaluation, its srcref is converted to \code{src}.}
+raised during its evaluation, its \code{\link{srcref}} is converted to \code{src}.}
 
 \item{object}{An expression to evaluate}
 }
@@ -49,33 +49,33 @@ raised during its evaluation, its srcref is converted to \code{src}.}
 The result of evaluating provided expressions
 
 The result of evaluating \code{expr}, or an expectation with appended
-\code{srcref} information if an expectation is raised.
+\code{\link{srcref}} information if an expectation is raised.
 
 The value produced by the expectation code
 }
 \description{
 Various functions that are used to produce a more native \code{testthat}
-experience, automatically converting \code{testex} tests into \code{testthat} code and
+experience, automatically converting \link{testex} tests into \code{testthat} code and
 executing tests such that they produce informative messages on failure.
 }
 \details{
-\code{testex} operates on the previous value produced in example code. This is
+\link{testex} operates on the previous value produced in example code. This is
 unlike \code{testthat} expectations, which expect a value to be provided as a
 first argument.
 
-To accommodate a more native \code{testthat} interface, \code{testex} provides a few
-convenience functions to make \code{testex} expectations run more natively within
-the style of \code{testthat}.
+To accommodate a more native \code{testthat} interface, \link{testex} provides a few
+convenience functions to make \link{testex} expectations run more idiomatically
+in the style of \code{testthat}.
 }
 \section{Functions}{
 \itemize{
-\item \code{testthat_block()}: A flavor of \code{testex} that will inject \code{.Last.value} into the first argument
+\item \code{testthat_block()}: A flavor of \link{testex} that will inject \link{.Last.value} into the first argument
 of each expression - suitable for using the \verb{expect_*} family of functions
 from \code{testthat}. Also handles temporarily attaching the \code{testthat} package.
 
 \item \code{with_srcref()}: Retroactively assigns a source file and location to a expectation. This
 allows \code{testthat} to report an origin for any code that raised an example
-test failure from the source roxygen code, even though the test code is
+test failure from the source \code{roxygen2} code, even though the test code is
 reconstructed from package documentation files.
 
 \item \code{fallback_expect_no_error()}: A \code{testthat} expectation that the provided code can be evaluated without

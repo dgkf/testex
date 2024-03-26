@@ -2,13 +2,13 @@
 % Please edit documentation in R/testthat.R
 \name{wrap_expect_no_error}
 \alias{wrap_expect_no_error}
-\title{Wraps an example expression in a testthat expectation to not error}
+\title{Wraps an example expression in a \code{testthat} expectation to not error}
 \usage{
 wrap_expect_no_error(expr, value)
 }
 \arguments{
-\item{expr}{An expr to wrap in a \code{expect_no_error()} expectation. Uses
-'testthat's version if recent enough version is available, or provides
+\item{expr}{An expression to wrap in a \code{expect_no_error()} expectation. Uses
+\code{testthat}s version if recent enough version is available, or provides
 a fallback otherwise.}
 
 \item{value}{A symbol to use to store the result of \code{expr}}
@@ -17,6 +17,6 @@ a fallback otherwise.}
 A \code{\link[testthat:test_that]{testthat::test_that()}} call
 }
 \description{
-Wraps an example expression in a testthat expectation to not error
+Wraps an example expression in a \code{testthat} expectation to not error
 }
 \keyword{internal}

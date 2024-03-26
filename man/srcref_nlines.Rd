@@ -2,17 +2,17 @@
 % Please edit documentation in R/utils_srcref.R
 \name{srcref_nlines}
 \alias{srcref_nlines}
-\title{Determine the number of source code lines of a given srcref}
+\title{Determine the number of source code lines of a given \link{srcref}}
 \usage{
 srcref_nlines(x)
 }
 \arguments{
-\item{x}{A \code{srcref} object}
+\item{x}{A \link{srcref} object}
 }
 \value{
-The number of lines in the original source of a \code{srcref}
+The number of lines in the original source of a \link{srcref}
 }
 \description{
-Determine the number of source code lines of a given srcref
+Determine the number of source code lines of a given \link{srcref}
 }
 \keyword{internal}

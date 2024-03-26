@@ -1,18 +1,18 @@
 #' Support for `testthat` example expectations
 #'
 #' Various functions that are used to produce a more native `testthat`
-#' experience, automatically converting `testex` tests into `testthat` code and
+#' experience, automatically converting [testex] tests into `testthat` code and
 #' executing tests such that they produce informative messages on failure.
 #'
-#' `testex` operates on the previous value produced in example code. This is
+#' [testex] operates on the previous value produced in example code. This is
 #' unlike `testthat` expectations, which expect a value to be provided as a
 #' first argument.
 #'
-#' To accommodate a more native `testthat` interface, `testex` provides a few
-#' convenience functions to make `testex` expectations run more natively within
-#' the style of `testthat`.
+#' To accommodate a more native `testthat` interface, [testex] provides a few
+#' convenience functions to make [testex] expectations run more idiomatically
+#' in the style of `testthat`.
 #'
-#' @param ... Expectations to evaluate with \pkg{testthat}
+#' @param ... Expectations to evaluate with `testthat`
 #' @param value A symbol or quote to use to refer to the subject of `testthat`
 #'   tests.
 #' @inheritParams testex
@@ -45,7 +45,7 @@ NULL
 
 #' @describeIn testex-testthat
 #'
-#' A flavor of `testex` that will inject `.Last.value` into the first argument
+#' A flavor of [testex] that will inject [.Last.value] into the first argument
 #' of each expression - suitable for using the `expect_*` family of functions
 #' from `testthat`. Also handles temporarily attaching the `testthat` package.
 #'
@@ -79,16 +79,16 @@ testthat_block <- function(..., value = get_example_value(), obj = NULL,
 #'
 #' Retroactively assigns a source file and location to a expectation. This
 #' allows `testthat` to report an origin for any code that raised an example
-#' test failure from the source roxygen code, even though the test code is
+#' test failure from the source `roxygen2` code, even though the test code is
 #' reconstructed from package documentation files.
 #'
-#' @param src A `srcref_key` which is parsed to produce an artificial srcref for
-#'   the expectation signaled messages.
+#' @param src A `srcref_key` which is parsed to produce an artificial [`srcref`]
+#'   for the expectation signaled messages.
 #' @param expr An expression to be evaluated. If an `expectation` condition is
-#'   raised during its evaluation, its srcref is converted to `src`.
+#'   raised during its evaluation, its [`srcref`] is converted to `src`.
 #'
 #' @return The result of evaluating `expr`, or an expectation with appended
-#'   `srcref` information if an expectation is raised.
+#'   [`srcref`] information if an expectation is raised.
 #'
 #' @export
 with_srcref <- function(src, expr, envir = parent.frame()) {
@@ -139,10 +139,10 @@ fallback_expect_no_error <- function(object, ...) {
 
 
 
-#' Execute examples from Rd files as testthat tests
+#' Execute examples from Rd files as `testthat` tests
 #'
-#' Reads examples from Rd files and constructs \pkg{testthat}-style tests.
-#' \pkg{testthat} expectations are built such that
+#' Reads examples from Rd files and constructs `testthat`-style tests.
+#' `testthat` expectations are built such that
 #'
 #' 1. Each example expression is expected to run without error
 #' 1. Any `testex` expectations are expected to pass
@@ -157,7 +157,7 @@ fallback_expect_no_error <- function(object, ...) {
 #'
 #' @param package A package name whose examples should be tested
 #' @param path Optionally, a path to a source code directory to use. Will only
-#'   have an effect if parameter \code{package} is missing.
+#'   have an effect if parameter `package` is missing.
 #' @param test_dir An option directory where test files should be written.
 #'   Defaults to a temporary directory.
 #' @param clean Whether the `test_dir` should be removed upon completion of test
@@ -165,8 +165,8 @@ fallback_expect_no_error <- function(object, ...) {
 #' @param overwrite Whether files should be overwritten if `test_dir` already
 #'   exists. Defaults to `TRUE`.
 #' @param ... Additional argument unused
-#' @param reporter A \pkg{testthat} reporter to use. Defaults to the active
-#'   reporter in the \pkg{testthat} environment or default reporter.
+#' @param reporter A `testthat` reporter to use. Defaults to the active
+#'   reporter in the `testthat` environment or default reporter.
 #'
 #' @return The result of [`testthat::source_file()`], after iterating over
 #'   generated test files.
@@ -238,11 +238,11 @@ test_examples_as_testthat <- function(
 
 #' Test a list of files
 #'
-#' @param files An iterable collection of file paths to test
-#' @param context An optional context message to display in testthat reporters
+#' @param files A collection of file paths to test
+#' @param context An optional context message to display in `testthat` reporters
 #' @param ... Additional arguments passed to `testhat::source_file`
 #'
-#' @return The result of [`testthat::source_file()`], after iterating over
+#' @return The result of [testthat::source_file()], after iterating over
 #'   generated test files.
 #'
 #' @keywords internal
@@ -253,14 +253,14 @@ test_files <- function(files, context, ...) {
 
 
 
-#' Wraps an example expression in a testthat expectation to not error
+#' Wraps an example expression in a `testthat` expectation to not error
 #'
-#' @param expr An expr to wrap in a `expect_no_error()` expectation. Uses
-#'   'testthat's version if recent enough version is available, or provides
+#' @param expr An expression to wrap in a `expect_no_error()` expectation. Uses
+#'   `testthat`s version if recent enough version is available, or provides
 #'   a fallback otherwise.
 #' @param value A symbol to use to store the result of `expr`
 #'
-#' @return A [`testthat::test_that()`] call
+#' @return A [testthat::test_that()] call
 #'
 #' @importFrom utils packageVersion
 #' @keywords internal

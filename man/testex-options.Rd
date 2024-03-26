@@ -19,13 +19,14 @@ been invalidated}
 \value{
 The test options environment, invisibly.
 
-The test options environemnt as a list
+The test options environment as a list
 }
 \description{
 As long as the \code{fingerprint} has not changed, the package \code{DESCRIPTION} will
 be read only once to parse and retrieve configuration options. If the
-\code{DESCRIPTION} file is modified or if run from a separate process, the config
-will be refreshed based on the most recent version of the file.
+\code{DESCRIPTION} file is modified or if run from a separate process, the
+configured settings will be refreshed based on the most recent version of
+the file.
 }
 \section{Functions}{
 \itemize{

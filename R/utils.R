@@ -41,7 +41,7 @@ with_attached <- function(ns, expr) {
 
 
 
-#' Test whether currently executing R CMD check
+#' Test whether currently executing R checks
 #'
 #' @return A logical indicating whether `R CMD check` is currently running
 #'
@@ -59,7 +59,7 @@ is_r_cmd_check <- function() {
 #' @param path A path within a package source or install directory
 #' @param quiet Whether to suppress output
 #'
-#' @return NULl, invisibly
+#' @return NULL, invisibly
 #'
 #' @name package-file-helpers
 #' @keywords internal
@@ -133,7 +133,7 @@ package_desc <- function() {
 
 
 
-#' `vapply` shorthands
+#' `vapply` shorthand alternatives
 #'
 #' Simple wrappers around `vapply` for common data types
 #'
@@ -180,8 +180,8 @@ deparse_pretty <- function(expr) {
 
 #' Deparse an expression and indent for pretty-printing
 #'
-#' @param x A \code{code} object
-#' @param indent An \code{integer} number of spaces or a string to prefix each
+#' @param x A `code` object
+#' @param indent An `integer` number of spaces or a string to prefix each
 #'   line of the deparsed output.
 #'
 #' @return An indented version of the deparsed string from `x`.
@@ -198,10 +198,10 @@ deparse_indent <- function(x, indent = 0L) {
 #'
 #' @param x A character value
 #'
-#' @return The number of lines in a mult-line string
+#' @return The number of newline characters in a multiline string
 #'
 #' @keywords internal
-string_line_count <- function(x) {
+string_newline_count <- function(x) {
   nchar(gsub("[^\n]", "", x))
 }
 

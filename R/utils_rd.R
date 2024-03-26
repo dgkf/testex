@@ -10,7 +10,6 @@ NULL
 
 
 #' @describeIn testex-rd-example-helpers
-#'
 #' Extract examples tag from an Rd file
 #'
 #' @return The examples section of an Rd object
@@ -25,7 +24,6 @@ rd_extract_examples <- function(rd) {
 
 
 #' @describeIn testex-rd-example-helpers
-#'
 #' Convert an Rd example to string
 #'
 #' @return A formatted Rd example
@@ -40,13 +38,12 @@ rd_code_as_string <- function(rd) {
 
 
 #' @describeIn testex-rd-example-helpers
-#'
 #' Split sections of an example into evaluated example code blocks and code
-#' blocks wrapped in testonly `Rd_tag`s, reassigning `srcref`s as the example
-#' code is split.
+#' blocks wrapped in `\testonly` `Rd_tag`s, reassigning [`srcref`]s as the 
+#' example code is split.
 #'
-#' @return An interlaced list of expressions, either representing evaluable code
-#'   or tests. The names of the list are either `\\testonly` or `RDCODE`
+#' @return An interlaced list of expressions, either representing example
+#'   code or tests. The names of the list are either `\testonly` or `RDCODE`
 #'   depending on the originating source of the expression.
 #'
 split_testonly_as_expr <- function(rd) {
@@ -71,7 +68,7 @@ split_testonly_as_expr <- function(rd) {
   )
 
   code_seg <- lapply(code_seg, rd_code_as_string)
-  code_seg_lines <- vnapply(code_seg, string_line_count)
+  code_seg_lines <- vnapply(code_seg, string_newline_count)
 
   # filter out any unused lines
   segment_has_expr <- grepl("\\S", code_seg)
@@ -95,9 +92,8 @@ split_testonly_as_expr <- function(rd) {
 
 
 #' @describeIn testex-rd-example-helpers
-#'
-#' Split sections of an example into lists of `Rd_tag`s. Note that srcrefs are
-#' split by line number. If a line is split between two sections, it is
+#' Split sections of an example into lists of `Rd_tag`s. Note that [`srcref`]s
+#' are split by line number. If a line is split between two sections, it is
 #' attributed to the first section. As this is used primarily for giving line
 #' numbers to test messages, this is sufficient for providing test failures
 #' locations.

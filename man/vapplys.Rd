@@ -4,7 +4,7 @@
 \alias{vlapply}
 \alias{vcapply}
 \alias{vnapply}
-\title{\code{vapply} shorthands}
+\title{\code{vapply} shorthand alternatives}
 \usage{
 vlapply(..., FUN.VALUE = logical(1L))
 

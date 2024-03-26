@@ -3,7 +3,7 @@
 \name{as.srcref}
 \alias{as.srcref}
 \alias{as.srcref.character}
-\title{Convert to srcref}
+\title{Convert to \link{srcref}}
 \usage{
 as.srcref(x)
 
@@ -13,14 +13,14 @@ as.srcref(x)
 \item{x}{an object to coerce}
 }
 \value{
-A \code{srcref}
+A \link{srcref}
 }
 \description{
-Convert to srcref
+Convert to \link{srcref}
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{as.srcref(character)}: Convert from a \code{srcref_key} to a sourceref object
+\item \code{as.srcref(character)}: Convert from a \code{srcref_key} to a \link{srcref} object
 
 }}
 \keyword{internal}

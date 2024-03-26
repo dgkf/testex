@@ -2,20 +2,20 @@
 % Please edit documentation in R/utils_srcref.R
 \name{split_srcref}
 \alias{split_srcref}
-\title{Split a srcref into separate srcrefs at specific lines}
+\title{Split a Source Reference at specific lines}
 \usage{
 split_srcref(sr, where)
 }
 \arguments{
-\item{sr}{An original srcref object}
+\item{sr}{An original \link{srcref} object}
 
-\item{where}{A numeric vector of line numbers where the srcref should be
+\item{where}{A numeric vector of line numbers where the \link{srcref} should be
 split}
 }
 \value{
-A list of \code{srcref}
+A list of \link{srcref}
 }
 \description{
-Split a srcref into separate srcrefs at specific lines
+Split a Source Reference at specific lines
 }
 \keyword{internal}

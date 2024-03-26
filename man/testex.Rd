@@ -22,7 +22,7 @@ last example result.}
 \code{.Last.value}.}
 
 \item{obj}{An optional object name used to construct a more helpful error
-message testthat failure message.}
+message \code{testthat} failure message.}
 
 \item{example}{An option \code{srcref_key} string used to indicate where the
 relevant example code originated from.}
@@ -44,8 +44,8 @@ A wrapper around \code{stopifnot} that allows you to use \code{.} to refer to
 \section{Documenting with \code{testex}}{
 
 
-\code{testex} is a simple wrapper around execution that propegates the
-\code{.Last.value} returned before running, allowing you to chain expectations
+\code{testex} is a simple wrapper around execution that propagates the
+\code{.Last.value} returned before running, allowing you to chain tests
 more easily.
 \subsection{Use in \code{Rd} files:}{
 
@@ -69,15 +69,15 @@ documentation, which use this function internally.
 
 \subsection{Use with \code{roxygen2}}{
 
-Within a \code{roxygen2} \verb{@examples} block you can instead use the \verb{@expect} tag
+Within a \code{roxygen2} \verb{@examples} block you can instead use the \verb{@test} tag
 which will generate Rd code as shown above.
 
 \preformatted{
 #' @examples
 #' f <- function(a, b) a + b
 #' f(3, 4)
-#' @expect is.numeric(.)
-#' @expect identical(., 7)
+#' @test is.numeric(.)
+#' @test identical(., 7)
 }
 }
 }

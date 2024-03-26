@@ -13,7 +13,7 @@ this will be found by looking for a function called \code{generic.class}
 in the package environment.
 
 Note that providing \code{method} can be dangerous if you use
-devtools. When the namespace of the method is reloaded by
+\code{devtools}. When the namespace of the method is reloaded by
 \code{devtools::load_all()}, the function will keep inheriting from
 the old namespace. This might cause crashes because of dangling
 \code{.Call()} pointers.}
@@ -21,7 +21,7 @@ the old namespace. This might cause crashes because of dangling
 \description{
 Generally, the recommend way to register an S3 method is to use the
 \code{S3Method()} namespace directive (often generated automatically by the
-\verb{@export} roxygen2 tag). However, this technique requires that the generic
+\verb{@export} \code{roxygen2} tag). However, this technique requires that the generic
 be in an imported package, and sometimes you want to suggest a package,
 and only provide a method when that package is loaded. \code{s3_register()}
 can be called from your package's \code{.onLoad()} to dynamically register
@@ -41,10 +41,10 @@ by using "delayed method registration", i.e. placing the following in your
 }
 \section{Usage in other packages}{
 
-To avoid taking a dependency on vctrs, you copy the source of
+To avoid taking a dependency on \code{vctrs}, you copy the source of
 \href{https://github.com/r-lib/vctrs/blob/main/R/register-s3.R}{\code{s3_register()}}
 into your own package. It is licensed under the permissive
-\href{https://choosealicense.com/licenses/unlicense/}{unlicense} to make it
+\href{https://choosealicense.com/licenses/unlicense/}{\code{unlicense}} to make it
 crystal clear that we're happy for you to do this. There's no need to include
 the license or even credit us when using this function.
 }

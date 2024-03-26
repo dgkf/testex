@@ -22,7 +22,7 @@ directory. Only considered if \code{package} is missing.}
 \item{package}{A package name}
 }
 \value{
-NULl, invisibly
+NULL, invisibly
 
 A list of package Rd objects, as returned by \code{\link[tools:Rdutils]{tools::Rd_db()}}
 }

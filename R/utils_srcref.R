@@ -1,13 +1,13 @@
-#' Convert a srcref to a character representation
+#' Convert a [`srcref`] to a [`character`] representation
 #'
-#' @param x A srcref object
-#' @param nloc The number of src locations to use. Defaults to 2, indicating
-#'   starting and ending line number.
-#' @param path A form of filepath to use for the key. One of `"base"` for only
-#'   the basename of the source filepath, `"root"` for a path relative to a
-#'   package root directory if found, or `"full"` for the full filepath.
+#' @param x A [`srcref`] object
+#' @param nloc The number of locations ([`utils::getSrcLocation`]) to use.
+#'   Defaults to 2, indicating starting and ending line number.
+#' @param path A form of file path to use for the key. One of `"base"` for only
+#'   the basename of the source file path, `"root"` for a path relative to a
+#'   package root directory if found, or `"full"` for the full file path.
 #'
-#' @return A string hash of a `srcref`
+#' @return A string hash of a [srcref]
 #'
 #' @keywords internal
 #' @importFrom utils getSrcref getSrcFilename
@@ -42,11 +42,10 @@ srcref_key <- function(x, nloc = 2, path = c("base", "root", "full")) {
 
 
 
-#' Convert to srcref
+#' Convert to [srcref]
 #'
 #' @param x an object to coerce
-#'
-#' @return A `srcref`
+#' @return A [srcref]
 #'
 #' @name as.srcref
 #' @keywords internal
@@ -57,8 +56,7 @@ as.srcref <- function(x) {
 
 
 #' @describeIn as.srcref
-#'
-#' Convert from a `srcref_key` to a sourceref object
+#' Convert from a `srcref_key` to a [srcref] object
 #'
 as.srcref.character <- function(x) {
   m <- regexpr("(?<filename>.*?)(?<location>(:\\d+)+)", x, perl = TRUE)
@@ -68,7 +66,7 @@ as.srcref.character <- function(x) {
     dimnames = list(x, colnames(s))
   )
 
-  filename <- m[,"filename"]
+  filename <- m[, "filename"]
   pkgroot <- find_package_root(quiet = TRUE)
 
   if (!is.null(pkgroot)) {
@@ -86,7 +84,7 @@ as.srcref.character <- function(x) {
 
 
 
-#' Build srcLocation from a minimal numeric vector
+#' Build a source location from a minimal numeric vector
 #'
 #' Build a length four source location from a length two source location. The
 #' starting column on the first line is assumed to be 1, and the final column is
@@ -96,7 +94,7 @@ as.srcref.character <- function(x) {
 #' @param x A numeric vector of at least length 2
 #' @param file A file to use to determine the length of the final line
 #'
-#' @return A numeric vector similar to a `srcLocation` object
+#' @return A numeric vector similar to a [`utils::getSrcLocation`] object
 #'
 #' @keywords internal
 srclocs <- function(x, file) {
@@ -111,13 +109,13 @@ srclocs <- function(x, file) {
 
 
 
-#' Split a srcref into separate srcrefs at specific lines
+#' Split a Source Reference at specific lines
 #'
-#' @param sr An original srcref object
-#' @param where A numeric vector of line numbers where the srcref should be
+#' @param sr An original [srcref] object
+#' @param where A numeric vector of line numbers where the [srcref] should be
 #'   split
 #'
-#' @return A list of `srcref`
+#' @return A list of [srcref]
 #'
 #' @importFrom utils getSrcFilename
 #' @keywords internal
@@ -125,7 +123,7 @@ split_srcref <- function(sr, where) {
   if (is.null(sr)) return(rep_len(sr, length(where)))
   file <- utils::getSrcFilename(sr, full.names = TRUE)
 
-  # allocate a list of new srcrefs
+  # allocate a list of new [srcref]s
   refs <- list()
   length(refs) <- length(where)
 
@@ -133,7 +131,7 @@ split_srcref <- function(sr, where) {
   start <- getSrcLocation(sr)
   where <- start + where
 
-  # create new srcrefs of regions, divided by "where" lines
+  # create new [srcref]s of regions, divided by "where" lines
   for (i in seq_along(where)) {
     locs <- srclocs(c(start, where[[i]]), file)
     refs[[i]] <- srcref(srcfile(file), locs)
@@ -145,11 +143,10 @@ split_srcref <- function(sr, where) {
 
 
 
-#' Determine the number of source code lines of a given srcref
+#' Determine the number of source code lines of a given [srcref]
 #'
-#' @param x A `srcref` object
-#'
-#' @return The number of lines in the original source of a `srcref`
+#' @param x A [srcref] object
+#' @return The number of lines in the original source of a [srcref]
 #'
 #' @importFrom utils getSrcLocation
 #' @keywords internal

@@ -24,8 +24,8 @@ The examples section of an Rd object
 
 A formatted Rd example
 
-An interlaced list of expressions, either representing evaluable code
-or tests. The names of the list are either \verb{\\\testonly} or \code{RDCODE}
+An interlaced list of expressions, either representing example
+code or tests. The names of the list are either \verb{\testonly} or \code{RDCODE}
 depending on the originating source of the expression.
 
 A list of Rd tag contents
@@ -40,11 +40,11 @@ Rd Example Parsing Helpers
 \item \code{rd_code_as_string()}: Convert an Rd example to string
 
 \item \code{split_testonly_as_expr()}: Split sections of an example into evaluated example code blocks and code
-blocks wrapped in testonly \code{Rd_tag}s, reassigning \code{srcref}s as the example
-code is split.
+blocks wrapped in \verb{\testonly} \code{Rd_tag}s, reassigning \code{\link{srcref}}s as the
+example code is split.
 
-\item \code{split_testonly()}: Split sections of an example into lists of \code{Rd_tag}s. Note that srcrefs are
-split by line number. If a line is split between two sections, it is
+\item \code{split_testonly()}: Split sections of an example into lists of \code{Rd_tag}s. Note that \code{\link{srcref}}s
+are split by line number. If a line is split between two sections, it is
 attributed to the first section. As this is used primarily for giving line
 numbers to test messages, this is sufficient for providing test failures
 locations.

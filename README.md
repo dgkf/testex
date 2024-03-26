@@ -1,27 +1,26 @@
-# `testex` _**test** **ex**amples_ <img src="https://user-images.githubusercontent.com/18220321/211960830-8c969bee-8c80-4984-8132-b5993911f179.png" align="right" width="134px"/>
+# `testex` ***test examples*** <img src="https://user-images.githubusercontent.com/18220321/211960830-8c969bee-8c80-4984-8132-b5993911f179.png" align="right" width="134px"/>
 
 [![CRAN](https://img.shields.io/cran/v/testex.svg)](https://cran.r-project.org/package=testex)
-[![R CMD
-check](https://github.com/dgkf/testex/workflows/R-CMD-check/badge.svg)](https://github.com/dgkf/testex/actions?query=workflow%3AR-CMD-check)
-[![Codecov](https://img.shields.io/codecov/c/github/dgkf/testex/main.svg)](https://app.codecov.io/gh/dgkf/testex) 
+[![`R CMD check`](https://github.com/dgkf/testex/workflows/R-CMD-check/badge.svg)](https://github.com/dgkf/testex/actions?query=workflow%3AR-CMD-check)
+[![coverage](https://img.shields.io/codecov/c/github/dgkf/testex/main.svg)](https://app.codecov.io/gh/dgkf/testex) 
 
 Add tests and assertions in-line in examples
 
 ## Quick Start
 
-### 1. Add some expectations
+### 1. Add some tests!
 
-Adding tests right next to your examples using the roxygen `@expect` tag.
+Adding tests right next to your examples using the `roxygen2` `@test` tag.
 
 ```r
 #' Hello, World!
 #' 
 #' @examples
 #' hello("World")
-#' @expect "Hello, World!"
+#' @test "Hello, World!"
 #'
 #' hello("darkness my old friend")
-#' @expect grepl("darkness", .)
+#' @test grepl("darkness", .)
 #' 
 #' @export
 hello <- function(who) {
@@ -29,10 +28,10 @@ hello <- function(who) {
 }
 ```
 
-### 2. Add the `roclet`
+### 2. Add the `roxygen2` tags
 
-To enable this roclet, you'll also need to modify your package's `DESCRIPTION`
-to include the `testex::rd` roclet. Adding it is as easy as calling:
+To enable the new `roxygen2` tags, you'll also need to modify your package's 
+`DESCRIPTION`. Adding it is as easy as calling:
 
 ```r
 testex::use_testex()
@@ -47,8 +46,7 @@ This will take a few steps to set up your package:
 
 ### 3. Configure how you want to run your tests
 
-You could call it a day there if you'd like, but there are a few options if
-you'd like to tune your testing workflow.
+Alternatively, you can configure how `testex` works yourself.
 
 #### Running tests with `testthat`
 
@@ -61,9 +59,9 @@ testex::use_testex_as_testthat()
 ```
 
 This will add a `tests/testthat/test-testex.R` file to your `testthat` directory
-which will re-build and run testthat tests based on examples each time you run
-your testing suite. Tests are created to expect that examples execute
-successfully and that each example expectation is fulfilled. 
+which will re-build and run `testthat` tests based on examples each time you run
+your testing suite. Tests are created, expecting that examples execute
+successfully and that each example test is fulfilled. 
 
 #### Disabling example checks during `R CMD check`
 
@@ -149,14 +147,13 @@ identity("hello, world")
 ```
 
 Already `testex` is doing a bit of work to make our lives easier. The
-`.Last.value` is propegated to each of the tests and we can use the convenient
+`.Last.value` is propagated to each of the tests and we can use the convenient
 shorthand `.` to refer to the value we want to test.
 
-### Use a `roclet`!
+### Use a `roxygen2` tag!
 
-If you're already using `roxygen2`, then things get even easier! You can add in
-the `"testex::rd"` roclet (replacing the default `roxygen2` `"rd"` roclet) and
-make use of the `@expect` tag.
+If you're already using `roxygen2`, then things get even easier! `roxygen2` 
+can make use of new tags provided by `testex`:
 
 ```r
 #' Hello, World!
@@ -164,10 +161,10 @@ make use of the `@expect` tag.
 #' @examples
 #' 
 #' hello("World")
-#' @expect "Hello, World!"
+#' @test "Hello, World!"
 #'
 #' hello("darkness my old friend")
-#' @expect grepl("darkness", .)
+#' @test grepl("darkness", .)
 #' 
 #' @export
 hello <- function(who) {
@@ -203,15 +200,15 @@ hello <- function(who) {
 
 The `@testthat` tag will automatically insert the `.Last.value` from the
 previous example into the first argument of each expectation. Multiple
-consecutive `@testthat` expecations will all test the previous example output.
+consecutive `@testthat` expectations will all test the previous example output.
 
-## Roadmap
+## Planned Features
 
 |   |   |
 |---|---|
-| Example result propegation using `testex::testex()`| :ballot_box_with_check: |
+| Example result propagation using `testex::testex()`| :ballot_box_with_check: |
 | `DESCRPTION` `Config/testex/options` to disable execution during `R CMD check` | :ballot_box_with_check: |
-| `roxygen2` tag `@expect` | :ballot_box_with_check: |
+| `roxygen2` tag `@test` | :ballot_box_with_check: |
 | `roxygen2` tag `@testthat` | :ballot_box_with_check: |
 | Aggregation with `testthat` test results | :ballot_box_with_check: |
 | Other ideas? Request a feature! | :thought_balloon: |

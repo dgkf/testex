@@ -1,14 +1,14 @@
-#' Add `testex` tags and configure package to fully use `testex` features
+#' Add [`testex`] tags and configure package to fully use [`testex`] features
 #'
 #' @note
-#' The testex roxygen tags behave similarly to 'roxygen2' `@examples` tags,
-#' with the minor addition of some wrapping code to manage the tests. This
+#' The [`testex`] `roxygen2` tags behave similarly to `roxygen2` `@examples`
+#' tags, with the minor addition of some wrapping code to manage the tests. This
 #' means that they will be integrated into your `@examples` and can be
 #' intermixed between `@examples` tags
 #'
 #' @param path A package source code working directory
-#' @param check A \code{logical} value indicating whether tests should be
-#'   executing during \code{R CMD check}.
+#' @param check A `logical` value indicating whether tests should be
+#'   executing during `R CMD check`.
 #' @param quiet Whether output should be suppressed
 #'
 #' @return The result of [`write.dcf()`] upon modifying the package
@@ -63,7 +63,7 @@ report <- function(quiet) {
 
 
 
-#' Update Roxygen field in DESCRIPTION
+#' Update [`roxygen2`] Settings Field in DESCRIPTION
 #'
 #' @param desc A parsed DESCRIPTION matrix
 #' @param report A reporter to aggregate output
@@ -122,7 +122,7 @@ update_desc_suggests <- function(desc, report) {
   desc_update(desc, Suggests = suggests)
 }
 
-#' Add Config/pkg/options field to DESCRIPTION
+#' Add `Config/pkg/options` field to DESCRIPTION
 #'
 #' @param desc A parsed DESCRIPTION matrix
 #' @param options Options to use
@@ -155,7 +155,7 @@ update_desc_config_options <- function(desc, options, report) {
   desc
 }
 
-#' Add testthat test for running example tests
+#' Add `testthat` test for running example tests
 #'
 #' @param path A directory path to use as basis for finding testing suite
 #' @param report A reporter to aggregate output
@@ -254,10 +254,10 @@ cliless <- function(..., .envir = parent.frame(), .less = FALSE) {
 
 
 
-#' Run examples as testthat expectations
+#' Run examples as `testthat` expectations
 #'
 #' @param path A package source code working directory
-#' @param context A testthat test context to use as the basis for a new test
+#' @param context A `testthat` test context to use as the basis for a new test
 #'   filename.
 #' @param quiet Whether to emit output messages.
 #'

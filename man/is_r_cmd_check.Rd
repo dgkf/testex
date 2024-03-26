@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{is_r_cmd_check}
 \alias{is_r_cmd_check}
-\title{Test whether currently executing R CMD check}
+\title{Test whether currently executing R checks}
 \usage{
 is_r_cmd_check()
 }
@@ -10,6 +10,6 @@ is_r_cmd_check()
 A logical indicating whether \verb{R CMD check} is currently running
 }
 \description{
-Test whether currently executing R CMD check
+Test whether currently executing R checks
 }
 \keyword{internal}

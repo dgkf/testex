@@ -30,13 +30,13 @@ testex::with_srcref("fn.R:84:84", expect_match(., "^testing"))
 }
 fn_roxygen_testthat("testing")
 \testonly{
-testex::testthat_block(test_that("example tests at `fn.R:88:88`", {
-testex::with_srcref("fn.R:88:88", expect_equal(., "testing 1 2 3"))
+testex::testthat_block(test_that("example tests at `fn.R:87:87`", {
+testex::with_srcref("fn.R:87:87", expect_equal(., "testing 1 2 3"))
 }))
 }
 \testonly{
-testex::testthat_block(test_that("example tests at `fn.R:89:89`", {
-testex::with_srcref("fn.R:89:89", expect_match(., "^testing"))
+testex::testthat_block(test_that("example tests at `fn.R:88:88`", {
+testex::with_srcref("fn.R:88:88", expect_match(., "^testing"))
 }))
 }
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/testthat.R
 \name{test_examples_as_testthat}
 \alias{test_examples_as_testthat}
-\title{Execute examples from Rd files as testthat tests}
+\title{Execute examples from Rd files as \code{testthat} tests}
 \usage{
 test_examples_as_testthat(
   package,
@@ -31,16 +31,16 @@ execution. Defaults to \code{TRUE}.}
 \item{overwrite}{Whether files should be overwritten if \code{test_dir} already
 exists. Defaults to \code{TRUE}.}
 
-\item{reporter}{A \pkg{testthat} reporter to use. Defaults to the active
-reporter in the \pkg{testthat} environment or default reporter.}
+\item{reporter}{A \code{testthat} reporter to use. Defaults to the active
+reporter in the \code{testthat} environment or default reporter.}
 }
 \value{
 The result of \code{\link[testthat:source_file]{testthat::source_file()}}, after iterating over
 generated test files.
 }
 \description{
-Reads examples from Rd files and constructs \pkg{testthat}-style tests.
-\pkg{testthat} expectations are built such that
+Reads examples from Rd files and constructs \code{testthat}-style tests.
+\code{testthat} expectations are built such that
 }
 \details{
 \enumerate{

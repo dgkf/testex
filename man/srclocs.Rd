@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_srcref.R
 \name{srclocs}
 \alias{srclocs}
-\title{Build srcLocation from a minimal numeric vector}
+\title{Build a source location from a minimal numeric vector}
 \usage{
 srclocs(x, file)
 }
@@ -12,7 +12,7 @@ srclocs(x, file)
 \item{file}{A file to use to determine the length of the final line}
 }
 \value{
-A numeric vector similar to a \code{srcLocation} object
+A numeric vector similar to a \code{\link[utils:sourceutils]{utils::getSrcLocation}} object
 }
 \description{
 Build a length four source location from a length two source location. The

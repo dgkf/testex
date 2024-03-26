@@ -8,7 +8,7 @@ test_that("roxygen2 can parse testex tags without raising conditions", {
     #'
     #' @examples
     #' 1 + 2
-    #' @expect 3
+    #' @test 3
     #'
     #' @export
     f <- function(x, y) x + y

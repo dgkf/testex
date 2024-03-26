@@ -44,18 +44,18 @@ fn <- function(x) {
 #' }
 #'
 #' fn_roxygen(value)
-#' @expect "testing 1 2 3"
+#' @test "testing 1 2 3"
 #'
 #' \dontrun{
 #'   stop("this won't work")
 #' }
 #'
 #' fn_roxygen("testing")
-#' @expect grepl("\\d", .)
-#' @expect startsWith(., "testing")
+#' @test grepl("\\d", .)
+#' @test startsWith(., "testing")
 #'
 #' fn_roxygen("testing")
-#' @expect {
+#' @test {
 #'   "testing 1 2 3"
 #' }
 #'
@@ -83,7 +83,6 @@ fn_roxygen <- function(x) {
 #' @testthat expect_equal("testing 1 2 3")
 #' @testthat expect_match("^testing")
 #'
-#' @examples
 #' fn_roxygen_testthat("testing")
 #' @testthat expect_equal("testing 1 2 3")
 #' @testthat expect_match("^testing")
@@ -111,8 +110,8 @@ NULL
 #'
 #' @examples
 #' fn_roxygen_multiple1("testing")
-#' @expect grepl("\\d", .)
-#' @expect startsWith(., "testing")
+#' @test grepl("\\d", .)
+#' @test startsWith(., "testing")
 #'
 #' @export
 fn_roxygen_multiple1 <- function(x) {
@@ -124,8 +123,8 @@ fn_roxygen_multiple1 <- function(x) {
 #'
 #' @examples
 #' fn_roxygen_multiple2("testing")
-#' @expect grepl("\\d", .)
-#' @expect startsWith(., "testing")
+#' @test grepl("\\d", .)
+#' @test startsWith(., "testing")
 #'
 #' @export
 fn_roxygen_multiple2 <- function(x) {
