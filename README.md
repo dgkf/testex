@@ -8,9 +8,13 @@ Add tests and assertions in-line in examples
 
 ## Quick Start
 
-### 1. Add some tests!
+Set up your package to use `testex` using
 
-Adding tests right next to your examples using the `roxygen2` `@test` tag.
+```r
+testex::use_testex()
+```
+
+and then start adding tests!
 
 ```r
 #' Hello, World!
@@ -28,42 +32,78 @@ hello <- function(who) {
 }
 ```
 
-### 2. Add the `roxygen2` tags
+If you were already using `testthat`, you'll immediately see a new test 
+context for testing your examples. And if you aren't using `testthat`, then
+you'll find that your tests are being run with your examples when you run
+`R CMD check`
 
-To enable the new `roxygen2` tags, you'll also need to modify your package's 
-`DESCRIPTION`. Adding it is as easy as calling:
+## Details
+
+`testex` provides two new `roxygen2` tags: `@test` and `@testthat`. 
+
+ - `@test` will check that the result of the last example is identical to 
+   your test. You can use the example output in a function using a `.`.
+
+  ```r
+  #' @examples
+  #' sum(1:10)
+  #' @test 55
+  #' @test is.numeric(.)
+  ```
+
+ - `@testthat` is similar, but has the added benefit of automatically inserting
+   a `.` into `testthat::expect_*` functions.
+
+  ```r
+  #' @examples
+  #' sum(1:10)
+  #' @testthat expect_equal(55)
+  #' @testthat expect_vector(numeric())
+  ```
+
+## Setup
+
+To make the most of `testex`, there are a few configuration steps you might
+consider. These are made simple by using:
 
 ```r
 testex::use_testex()
 ```
 
-This will take a few steps to set up your package:
+which will :
 
-- [x] Adds `packages = "testex"` to the `Roxygen` field in `DESCRIPTION`
-- [x] Adds `testex` as a `Suggests` dependency
-- [x] Adds settings to the `Config/testex/options` field in `DESCRIPTION`
-- [x] Adds a `test-testex.R` test file if you're using `testthat`
+- [x] Add `packages = "testex"` to the `Roxygen` field in `DESCRIPTION`,
+  allowing `roxygen2` to make use of the `testex` tags.
+- [x] Add `testex` as a `Suggests` dependency
+- [x] Add settings to the `Config/testex/options` field in `DESCRIPTION`,
+  enabling example tests during `R CMD check` by default.
+- [x] Add a `test-testex.R` test file if you're using `testthat`, 
+  enabling example tests during `testthat` test evaluation.
 
-### 3. Configure how you want to run your tests
+### Running tests with `testthat`
 
-Alternatively, you can configure how `testex` works yourself.
-
-#### Running tests with `testthat`
-
-If you'd like to automatically test your examples when you test your package,
-`testex` can generate tests for you that will automatically contribute to
-`testthat` results. Simply run:
+Running tests using `testthat` is simple. Just use
 
 ```r
 testex::use_testex_as_testthat()
 ```
 
-This will add a `tests/testthat/test-testex.R` file to your `testthat` directory
-which will re-build and run `testthat` tests based on examples each time you run
-your testing suite. Tests are created, expecting that examples execute
-successfully and that each example test is fulfilled. 
+This will add a simple, one-line file to your `tests/testthat` directory 
+containing
 
-#### Disabling example checks during `R CMD check`
+```r
+testex::test_examples_as_testthat()
+```
+
+By adding this single line to a `testthat` test file (such as 
+`tests/testthat/test-testex.R`), your example tests will be included as part
+of your test suite.
+
+When run this way, `testex` tests are embedded with additional metadata
+including the original file location of the examples so that `testthat` is 
+able to provide more informative error messages.
+
+### Disabling example checks during `R CMD check`
 
 By default, your tests will run when your run examples using `R CMD check`.
 However, `R CMD check` will stop on the first error and truncates error output,
@@ -211,6 +251,7 @@ consecutive `@testthat` expectations will all test the previous example output.
 | `roxygen2` tag `@test` | :ballot_box_with_check: |
 | `roxygen2` tag `@testthat` | :ballot_box_with_check: |
 | Aggregation with `testthat` test results | :ballot_box_with_check: |
+| Add stable Rd-file API* | :thought_balloon: |
 | Other ideas? Request a feature! | :thought_balloon: |
 | Have a better name for the package? I'm all ears! | :ear: |
 

@@ -1,20 +1,24 @@
 Package: testex
 Title: Add tests and assertions in-line in examples
-Version: 0.0.0.9000
-Authors@R: c(
-    person(
-      "Doug", "Kelkhoff", 
-      email = "doug.kelkhoff@gmail.com", 
-      role = c("aut", "cre")
+Version: 0.1.0
+Authors@R: 
+    c(
+      person(
+        "Doug", "Kelkhoff", 
+        email = "doug.kelkhoff@gmail.com", 
+        role = c("aut", "cre")
+      )
     )
-  )
 Description:
-  Add tests and assertions in-line in examples.
+    Add tests in-line in examples. Provides standalone functions for
+    facilitating easier test writing in Rd files. However, a more familiar
+    interface is provided using 'roxygen2' tags. Tools are also provided for
+    facilitating package configuration and use with 'testthat'.
 License: MIT + file LICENSE
 Depends:
-  R (>= 3.2.0)
+    R (>= 3.2.0)
 Imports:
-  utils
+    utils
 Suggests:
     testthat,
     withr,
