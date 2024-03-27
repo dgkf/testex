@@ -14,7 +14,7 @@ Description:
     facilitating easier test writing in Rd files. However, a more familiar
     interface is provided using 'roxygen2' tags. Tools are also provided for
     facilitating package configuration and use with 'testthat'.
-URL: https://github.com/dgkf/testex, https://dgkf.github.io/testex
+URL: https://github.com/dgkf/testex, https://dgkf.github.io/testex/
 License: MIT + file LICENSE
 Depends:
     R (>= 3.2.0)
