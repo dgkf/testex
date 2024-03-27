@@ -1,6 +1,8 @@
 pandoc: 3.1.11
 pkgdown: 2.0.7
 pkgdown_sha: ~
-articles: {}
-last_built: 2024-03-26T04:25Z
+articles:
+  configuration: configuration.html
+  interface_layers: interface_layers.html
+last_built: 2024-03-27T00:32Z
 
