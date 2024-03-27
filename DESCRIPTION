@@ -1,5 +1,5 @@
 Package: testex
-Title: Add tests and assertions in-line in examples
+Title: Add Tests to Examples
 Version: 0.1.0
 Authors@R: 
     c(
@@ -14,6 +14,7 @@ Description:
     facilitating easier test writing in Rd files. However, a more familiar
     interface is provided using 'roxygen2' tags. Tools are also provided for
     facilitating package configuration and use with 'testthat'.
+URL: https://github.com/dgkf/testex, https://dgkf.github.io/testex
 License: MIT + file LICENSE
 Depends:
     R (>= 3.2.0)
@@ -24,8 +25,11 @@ Suggests:
     withr,
     callr,
     roxygen2,
-    spelling
+    spelling,
+    knitr,
+    rmarkdown
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Language: en-US
+VignetteBuilder: knitr

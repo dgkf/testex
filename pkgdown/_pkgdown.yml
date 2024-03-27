@@ -5,9 +5,15 @@ url: ~
 template:
   bootstrap: 5
   theme: arrow-light #atom-one-light
+  
   bslib: 
     fg: "#404040"
     bg: "#F4F4F4"
+    navbar-dark-active-color: var(--bs-fg)
+    navbar-dark-color: var(--bs-fg)
+    navbar-dark-brand-color: var(--bs-fg)
+    navbar-dark-brand-hover-color: white
+    navbar-dark-hover-color: white
     primary: "#9A1FF4"
 
 navbar:

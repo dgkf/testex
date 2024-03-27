@@ -91,18 +91,21 @@ code.
 1 + 2
 
 # within `testthat_block`, test code refers to previous result with `.`
-testthat_block(test_that("addition holds up", {
-  expect_equal(., 3)
-})
+testthat_block({
+  test_that("addition holds up", {
+    expect_equal(., 3)
+  })
 
-# `with_srcref` to spoof the source of the code that caused the failure
-test_that("test failure is spoofed to report error at abc.R:1:0", {
-  with_srcref("abc.R:1:3", expect_equal(1, 2))
-})
+  # `with_srcref` to spoof the source of the code that caused the failure
+  test_that("test failure is spoofed to report error at abc.R:1:0", {
+    with_srcref("abc.R:1:3", expect_equal(1, 2))
+  })
 
-# `expect_no_error`
-test_that("expectation runs without error", {
-  expect_no_error(stop("whoops!"))
-})}
+  # `expect_no_error`
+  test_that("expectation runs without error", {
+    expect_no_error(stop("whoops!"))
+  })
+  })
+}
 
 }

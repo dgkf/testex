@@ -72,7 +72,7 @@ fn_roxygen <- function(x) {
 #' Test Function
 #'
 #' This example introduces `testthat`-style tests using in-line `@testthat`
-#' roxygen tags.
+#' `roxygen2` tags.
 #'
 #' @param x A thing
 #'
