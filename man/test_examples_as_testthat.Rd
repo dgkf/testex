@@ -57,9 +57,8 @@ It is assumed that this function is used within a \code{testthat} run, when
 the necessary packages are already installed and loaded.
 }
 \examples{
-\dontrun{
+\donttest{
 library(pkg.example)  # from /inst/pkg.example
-
 path <- system.file("pkg.example", package = "testex")
 test_examples_as_testthat(path = path)
 }

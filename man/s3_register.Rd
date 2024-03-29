@@ -18,6 +18,10 @@ Note that providing \code{method} can be dangerous if you use
 the old namespace. This might cause crashes because of dangling
 \code{.Call()} pointers.}
 }
+\value{
+No return value, called for side-effect of registering an S3
+generic.
+}
 \description{
 Generally, the recommend way to register an S3 method is to use the
 \code{S3Method()} namespace directive (often generated automatically by the

@@ -18,7 +18,7 @@
 #' @inheritParams testex
 #'
 #' @examples
-#' \dontrun{library(testthat)
+#' library(testthat)
 #'
 #' # example code
 #' 1 + 2
@@ -31,15 +31,9 @@
 #'
 #'   # `with_srcref` to spoof the source of the code that caused the failure
 #'   test_that("test failure is spoofed to report error at abc.R:1:0", {
-#'     with_srcref("abc.R:1:3", expect_equal(1, 2))
+#'     with_srcref("abc.R:1:3", expect_equal(., 3))
 #'   })
-#'
-#'   # `expect_no_error`
-#'   test_that("expectation runs without error", {
-#'     expect_no_error(stop("whoops!"))
-#'   })
-#'   })
-#' }
+#' })
 #'
 #' @name testex-testthat
 NULL
@@ -175,9 +169,8 @@ fallback_expect_no_error <- function(object, ...) {
 #'   generated test files.
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' library(pkg.example)  # from /inst/pkg.example
-#'
 #' path <- system.file("pkg.example", package = "testex")
 #' test_examples_as_testthat(path = path)
 #' }

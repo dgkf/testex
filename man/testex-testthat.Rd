@@ -85,7 +85,7 @@ code.
 
 }}
 \examples{
-\dontrun{library(testthat)
+library(testthat)
 
 # example code
 1 + 2
@@ -98,14 +98,8 @@ testthat_block({
 
   # `with_srcref` to spoof the source of the code that caused the failure
   test_that("test failure is spoofed to report error at abc.R:1:0", {
-    with_srcref("abc.R:1:3", expect_equal(1, 2))
+    with_srcref("abc.R:1:3", expect_equal(., 3))
   })
-
-  # `expect_no_error`
-  test_that("expectation runs without error", {
-    expect_no_error(stop("whoops!"))
-  })
-  })
-}
+})
 
 }

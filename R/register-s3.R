@@ -44,6 +44,9 @@
 #'   the old namespace. This might cause crashes because of dangling
 #'   `.Call()` pointers.
 #'
+#' @return No return value, called for side-effect of registering an S3 
+#'   generic.
+#'
 #' @examples
 #' # A typical use case is to dynamically register tibble/pillar methods
 #' # for your class. That way you avoid creating a hard dependency on packages
