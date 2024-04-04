@@ -57,10 +57,11 @@ It is assumed that this function is used within a \code{testthat} run, when
 the necessary packages are already installed and loaded.
 }
 \examples{
+\dontshow{if (requireNamespace("testthat", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 \donttest{
-library(pkg.example)  # from /inst/pkg.example
+# library(pkg.example)
 path <- system.file("pkg.example", package = "testex")
 test_examples_as_testthat(path = path)
 }
-
+\dontshow{\}) # examplesIf}
 }

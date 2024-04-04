@@ -17,14 +17,14 @@
 #'   tests.
 #' @inheritParams testex
 #'
-#' @examples
-#' library(testthat)
-#'
+#' @examplesIf requireNamespace("testthat", quietly = TRUE)
 #' # example code
 #' 1 + 2
 #'
 #' # within `testthat_block`, test code refers to previous result with `.`
-#' testthat_block({
+#' testthat_block({ \dontshow{
+#'   . <- 3 # needed because roxygen2 @examplesIf mutates .Last.value
+#'   }
 #'   test_that("addition holds up", {
 #'     expect_equal(., 3)
 #'   })
@@ -52,9 +52,9 @@ NULL
 #' @return The result of evaluating provided expressions
 #'
 #' @export
-testthat_block <- function(..., value = get_example_value(), obj = NULL,
-  example = NULL, tests = NULL, envir = parent.frame()) {
-
+testthat_block <- function(
+    ..., value = get_example_value(), obj = NULL,
+    example = NULL, tests = NULL, envir = parent.frame()) {
   if (!missing(value)) value <- substitute(value)
 
   exprs <- substitute(...())
@@ -168,23 +168,22 @@ fallback_expect_no_error <- function(object, ...) {
 #' @return The result of [`testthat::source_file()`], after iterating over
 #'   generated test files.
 #'
-#' @examples
+#' @examplesIf requireNamespace("testthat", quietly = TRUE)
 #' \donttest{
-#' library(pkg.example)  # from /inst/pkg.example
+#' # library(pkg.example)
 #' path <- system.file("pkg.example", package = "testex")
 #' test_examples_as_testthat(path = path)
 #' }
 #'
 #' @export
 test_examples_as_testthat <- function(
-  package, path, ..., test_dir = tempfile("testex"), clean = TRUE,
-  overwrite = TRUE, reporter = testthat::get_reporter()
-) {
+    package, path, ..., test_dir = tempfile("testex"), clean = TRUE,
+    overwrite = TRUE, reporter = testthat::get_reporter()) {
   requireNamespace("testthat")
 
   testthat_envvar_val <- Sys.getenv("TESTTHAT")
   Sys.setenv(TESTTHAT = "true")
-  on.exit(Sys.setenv(TESTTHAT = testthat_envvar_val))
+  on.exit(Sys.setenv(TESTTHAT = testthat_envvar_val), add = TRUE)
 
   if (missing(path)) {
     path <- find_package_root(testthat::test_path())
@@ -195,10 +194,10 @@ test_examples_as_testthat <- function(
 
   if (!test_dir_exists) {
     dir.create(test_dir)
-    if (clean) on.exit(unlink(test_dir))
+    if (clean) on.exit(unlink(test_dir), add = TRUE)
   }
 
-  if (test_dir_exists && !overwrite)  {
+  if (test_dir_exists && !overwrite) {
     test_files <- list.files(test_dir, full.names = TRUE)
     test_files(test_files, chdir = FALSE, "examples [run from testex]")
     return()
@@ -216,7 +215,7 @@ test_examples_as_testthat <- function(
     exprs[is_ex] <- lapply(
       exprs[is_ex],
       wrap_expect_no_error,
-      value = quote(..Last.value)  # can't use base::.Last.value in testthat env
+      value = quote(..Last.value) # can't use base::.Last.value in testthat env
     )
 
     # write out test code to file in test dir
@@ -285,6 +284,9 @@ wrap_expect_no_error <- function(expr, value) {
 #'
 #' @keywords internal
 get_example_value <- function() {
-  if (testthat::is_testing()) quote(..Last.value)
-  else quote(.Last.value)
+  if (testthat::is_testing()) {
+    quote(..Last.value)
+  } else {
+    quote(.Last.value)
+  }
 }

@@ -85,13 +85,14 @@ code.
 
 }}
 \examples{
-library(testthat)
-
+\dontshow{if (requireNamespace("testthat", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # example code
 1 + 2
 
 # within `testthat_block`, test code refers to previous result with `.`
-testthat_block({
+testthat_block({ \dontshow{
+  . <- 3 # needed because roxygen2 mutates .Last.value
+  }
   test_that("addition holds up", {
     expect_equal(., 3)
   })
@@ -101,5 +102,5 @@ testthat_block({
     with_srcref("abc.R:1:3", expect_equal(., 3))
   })
 })
-
+\dontshow{\}) # examplesIf}
 }
