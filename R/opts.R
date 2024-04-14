@@ -110,7 +110,7 @@ testex_options <- function(path = package_desc(), ...) {
     )))
   }
 
-  if (file.exists(path)) {
+  if (!is.null(path) && file.exists(path)) {
     fingerprint <- list(
       desc = TRUE,
       path = path,

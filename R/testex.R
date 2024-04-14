@@ -118,7 +118,7 @@ testex_testthat <- function(exprs, srcref, value) {
 }
 
 testex_standalone <- function(exprs, srcref, value) {
-  bquote({
+  expr <- bquote({
     . <- .(value)
     .(as.call(append(list(as.name("stopifnot")), exprs)))
     invisible(.)
