@@ -50,7 +50,8 @@ read_testex_options <- function(path, warn = TRUE, update = TRUE) {
 
   warn_mismatch_msg <- cliless(
     "{.pkg testex} {.code version} in {.file DESCRIPTION} does not match ",
-    "currently loaded version. Execution during {.code R CMD check} disabled."
+    "currently loaded version. Consider updating to avoid unexpected test ",
+    "failures. Execution during {.code R CMD check} disabled."
   )
 
   if (update) {
