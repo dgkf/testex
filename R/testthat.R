@@ -15,7 +15,6 @@
 #' @param ... Expectations to evaluate with `testthat`
 #' @param value A symbol or quote to use to refer to the subject of `testthat`
 #'   tests.
-#' @inheritParams testex
 #'
 #' @examplesIf requireNamespace("testthat", quietly = TRUE)
 #' # example code
@@ -42,38 +41,6 @@ NULL
 
 #' @describeIn testex-testthat
 #'
-#' A flavor of [testex] that will inject [.Last.value] into the first argument
-#' of each expression - suitable for using the `expect_*` family of functions
-#' from `testthat`. Also handles temporarily attaching the `testthat` package.
-#'
-#' @inheritParams testex
-#' @param envir An environment in which the expectations should be evaluated
-#'
-#' @return The result of evaluating provided expressions
-#'
-#' @export
-testthat_block <- function(
-    ..., value = get_example_value(), obj = NULL,
-    example = NULL, tests = NULL, envir = parent.frame()) {
-  if (!missing(value)) value <- substitute(value)
-
-  exprs <- substitute(...())
-  expr <- bquote({
-    . <- .(value)
-    skip_if(inherits(., "error"), "previous example produced an error")
-    invisible(.)
-  })
-
-  expr <- as.call(append(as.list(expr), exprs, after = 3L))
-  expr <- bquote(local(testex::with_attached("testthat", .(expr))))
-
-  eval(expr, envir = envir)
-}
-
-
-
-#' @describeIn testex-testthat
-#'
 #' Retroactively assigns a source file and location to a expectation. This
 #' allows `testthat` to report an origin for any code that raised an example
 #' test failure from the source `roxygen2` code, even though the test code is
@@ -83,6 +50,7 @@ testthat_block <- function(
 #'   for the expectation signaled messages.
 #' @param expr An expression to be evaluated. If an `expectation` condition is
 #'   raised during its evaluation, its [`srcref`] is converted to `src`.
+#' @param envir An environment in which to evaluate `expr`.
 #'
 #' @return The result of evaluating `expr`, or an expectation with appended
 #'   [`srcref`] information if an expectation is raised.
@@ -93,7 +61,8 @@ with_srcref <- function(src, expr, envir = parent.frame()) {
   withCallingHandlers(
     eval(expr, envir = envir),
     expectation = function(e) {
-      e[["srcref"]] <- as.srcref(src)
+      srcref <- as.srcref(src)
+      e[["srcref"]] <- srcref
       testthat::exp_signal(e)
       invokeRestart(computeRestarts()[[1L]])
     }
@@ -134,6 +103,16 @@ fallback_expect_no_error <- function(object, ...) {
   invisible(act$val)
 }
 
+#' Return appropriate call name provided testthat version
+#' @noRd
+expect_no_error_call <- function() {
+  if (packageVersion("testthat") >= "3.1.5") {
+    quote(testthat::expect_no_error)
+  } else {
+    quote(testex::fallback_expect_no_error)
+  }
+}
+
 
 
 #' Execute examples from Rd files as `testthat` tests
@@ -161,6 +140,11 @@ fallback_expect_no_error <- function(object, ...) {
 #'   execution. Defaults to `TRUE`.
 #' @param overwrite Whether files should be overwritten if `test_dir` already
 #'   exists. Defaults to `TRUE`.
+#' @param roxygenize Whether R documentation files should be re-written using
+#'   `roxygen2` prior to testing. When not `FALSE`, tests written in `roxygen2`
+#'   tags will be used to update R documentation files prior to testing to use
+#'   the most up-to-date example tests. May be `TRUE`, or a `list` of arguments
+#'   passed to [roxygen2::roxygenize].
 #' @param ... Additional argument unused
 #' @param reporter A `testthat` reporter to use. Defaults to the active
 #'   reporter in the `testthat` environment or default reporter.
@@ -177,8 +161,14 @@ fallback_expect_no_error <- function(object, ...) {
 #'
 #' @export
 test_examples_as_testthat <- function(
-    package, path, ..., test_dir = tempfile("testex"), clean = TRUE,
-    overwrite = TRUE, reporter = testthat::get_reporter()) {
+    package,
+    path,
+    ...,
+    test_dir = tempfile("testex"),
+    clean = TRUE,
+    overwrite = TRUE,
+    roxygenize = uses_roxygen2(path),
+    reporter = testthat::get_reporter()) {
   requireNamespace("testthat")
 
   testthat_envvar_val <- Sys.getenv("TESTTHAT")
@@ -187,6 +177,17 @@ test_examples_as_testthat <- function(
 
   if (missing(path)) {
     path <- find_package_root(testthat::test_path())
+  }
+
+  if (isTRUE(roxygenize)) roxygenize <- list()
+  if (is.list(roxygenize) && requireNamespace("roxygen2", quietly = TRUE)) {
+    args <- roxygenize
+    args$package.dir <- path
+    context <- cliless("{.pkg testex} re-roxygenizing examples")
+    testthat::context_start_file(context)
+    testthat::expect_invisible(suppressMessages({
+      do.call(getExportedValue("roxygen2", "roxygenize"), args)
+    }))
   }
 
   rds <- find_package_rds(package, path)
@@ -199,7 +200,8 @@ test_examples_as_testthat <- function(
 
   if (test_dir_exists && !overwrite) {
     test_files <- list.files(test_dir, full.names = TRUE)
-    test_files(test_files, chdir = FALSE, "examples [run from testex]")
+    context <- cliless("{.pkg testex} testing examples")
+    test_files(test_files, context, chdir = FALSE)
     return()
   }
 
@@ -226,7 +228,8 @@ test_examples_as_testthat <- function(
     path
   })
 
-  test_files(test_files, chdir = FALSE, "examples [run from testex]")
+  context <- cliless("{.pkg testex} testing examples")
+  test_files(test_files, context, chdir = FALSE)
 }
 
 
@@ -262,15 +265,9 @@ test_files <- function(files, context, ...) {
 wrap_expect_no_error <- function(expr, value) {
   srckey <- srcref_key(expr, path = "root")
   # nocov start
-  expect_no_error <- if (packageVersion("testthat") >= "3.1.5") {
-    quote(testthat::expect_no_error)
-  } else {
-    quote(testex::fallback_expect_no_error)
-  }
-
   bquote(testthat::test_that("example executes without error", {
     testex::with_srcref(.(srckey), {
-      .(value) <<- .(expect_no_error)(.(expr))
+      .(value) <<- .(expect_no_error_call())(.(expr))
     })
   }))
   # nocov end

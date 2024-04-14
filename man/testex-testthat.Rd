@@ -2,52 +2,31 @@
 % Please edit documentation in R/testthat.R
 \name{testex-testthat}
 \alias{testex-testthat}
-\alias{testthat_block}
 \alias{with_srcref}
 \alias{fallback_expect_no_error}
 \title{Support for \code{testthat} example expectations}
 \usage{
-testthat_block(
-  ...,
-  value = get_example_value(),
-  obj = NULL,
-  example = NULL,
-  tests = NULL,
-  envir = parent.frame()
-)
-
 with_srcref(src, expr, envir = parent.frame())
 
 fallback_expect_no_error(object, ...)
 }
 \arguments{
-\item{...}{Additional arguments unused}
-
-\item{value}{A symbol or quote to use to refer to the subject of \code{testthat}
-tests.}
-
-\item{obj}{An optional object name used to construct a more helpful error
-message \code{testthat} failure message.}
-
-\item{example}{An option \code{srcref_key} string used to indicate where the
-relevant example code originated from.}
-
-\item{tests}{An option \code{srcref_key} string used to indicate where the
-relevant test code originated from.}
-
-\item{envir}{An environment in which the expectations should be evaluated}
-
 \item{src}{A \code{srcref_key} which is parsed to produce an artificial \code{\link{srcref}}
 for the expectation signaled messages.}
 
 \item{expr}{An expression to be evaluated. If an \code{expectation} condition is
 raised during its evaluation, its \code{\link{srcref}} is converted to \code{src}.}
 
+\item{envir}{An environment in which to evaluate \code{expr}.}
+
 \item{object}{An expression to evaluate}
+
+\item{...}{Additional arguments unused}
+
+\item{value}{A symbol or quote to use to refer to the subject of \code{testthat}
+tests.}
 }
 \value{
-The result of evaluating provided expressions
-
 The result of evaluating \code{expr}, or an expectation with appended
 \code{\link{srcref}} information if an expectation is raised.
 
@@ -69,10 +48,6 @@ in the style of \code{testthat}.
 }
 \section{Functions}{
 \itemize{
-\item \code{testthat_block()}: A flavor of \link{testex} that will inject \link{.Last.value} into the first argument
-of each expression - suitable for using the \verb{expect_*} family of functions
-from \code{testthat}. Also handles temporarily attaching the \code{testthat} package.
-
 \item \code{with_srcref()}: Retroactively assigns a source file and location to a expectation. This
 allows \code{testthat} to report an origin for any code that raised an example
 test failure from the source \code{roxygen2} code, even though the test code is
@@ -91,7 +66,7 @@ code.
 
 # within `testthat_block`, test code refers to previous result with `.`
 testthat_block({ \dontshow{
-  . <- 3 # needed because roxygen2 mutates .Last.value
+  . <- 3 # needed because roxygen2 @examplesIf mutates .Last.value
   }
   test_that("addition holds up", {
     expect_equal(., 3)

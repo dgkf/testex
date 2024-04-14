@@ -14,8 +14,11 @@ test_that("srcrefs can round-trip through a string srcref key", {
 
   # srcref keys can be parsed back into srcrefs
   expect_equal(
-    as.srcref.character(srcref_key(expr)),
-    srcref(srcfile("test-srcref-key.R"), c(2, 1, 4, 1))
+    as.srcref(srcref_key(expr)),
+    srcref(
+      srcfilealias("test-srcref-key.R", srcfile("test-srcref-key.R")),
+      c(2, 1, 4, 1)
+    )
   )
 })
 
@@ -32,7 +35,7 @@ test_that("srcrefs for package files find actual file full path", {
 
   # srcref key file paths can be absolute when a package root is found
   expect_true(!is.null(find_package_root(quiet = FALSE)))
-  expect_silent(src_key_file <- getSrcFilename(as.srcref(srcref_key(expr, path = "root")), full.names = TRUE))
+  expect_silent(src_key_file <- getSrcFilename(as.srcref(srcref_key(expr, path = "full")), full.names = TRUE))
   expect_equal(src_key_file, tools::file_path_as_absolute(src_key_file))
 })
 

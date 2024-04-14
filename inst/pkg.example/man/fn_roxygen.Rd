@@ -13,7 +13,7 @@ fn_roxygen(x)
 The pasted thing
 }
 \description{
-This example introduces the \verb{@expect} tag, either a value or an expression
+This example introduces the \verb{@test} tag, either a value or an expression
 using the \code{.}-syntax to test the last example result.
 }
 \examples{
@@ -22,16 +22,24 @@ using the \code{.}-syntax to test the last example result.
 }
 
 fn_roxygen(value)
-\testonly{testex::testex(identical(., "testing 1 2 3"))}
+\testonly{
+testex::testex(srcref = "fn.R:47:47", 
+identical(., "testing 1 2 3"))}
 \dontrun{
   stop("this won't work")
 }
 
 fn_roxygen("testing")
-\testonly{testex::testex(grepl("\\\\d", .))}
-\testonly{testex::testex(startsWith(., "testing"))}
+\testonly{
+testex::testex(srcref = "fn.R:54:54", 
+grepl("\\\\d", .))}
+\testonly{
+testex::testex(srcref = "fn.R:55:55", 
+startsWith(., "testing"))}
 fn_roxygen("testing")
-\testonly{testex::testex(identical(., {
+\testonly{
+testex::testex(srcref = "fn.R:58:60", 
+identical(., {
   "testing 1 2 3"
 }))}
 

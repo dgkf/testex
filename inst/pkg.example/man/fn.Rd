@@ -25,7 +25,7 @@ fn("testing")
   startsWith(., "testing")
 )}
 
-\testonly{testex::testthat_block(
+\testonly{testex::testex(tag = "testthat",
   test_that("fn gives expected results", {
     expect_equal(., "testing 1 2 3")
   })

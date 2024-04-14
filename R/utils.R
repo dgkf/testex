@@ -24,7 +24,9 @@
 #' @export
 with_attached <- function(ns, expr) {
   nsname <- if (isNamespace(ns)) getNamespaceName(ns) else ns
-  if (paste0("package:", nsname) %in% search()) return(eval(expr))
+  if (paste0("package:", nsname) %in% search()) {
+    return(eval(expr))
+  }
 
   if (is.character(ns)) {
     requireNamespace(ns)
@@ -123,10 +125,14 @@ find_package_rds <- function(package, path = getwd()) {
 #' @name package-file-helpers
 package_desc <- function() {
   x <- Sys.getenv("_R_CHECK_PACKAGE_NAME_", unset = NA_character_)
-  if (!is.na(x)) return(file.path(find.package(x), "DESCRIPTION"))
+  if (!is.na(x)) {
+    return(file.path(find.package(x), "DESCRIPTION"))
+  }
 
   x <- find_package_root(getwd(), quiet = TRUE)
-  if (!is.null(x)) return(file.path(x, "DESCRIPTION"))
+  if (!is.null(x)) {
+    return(file.path(x, "DESCRIPTION"))
+  }
 
   invisible(NULL)
 }
@@ -146,17 +152,17 @@ package_desc <- function() {
 #'
 #' @rdname vapplys
 #' @keywords internal
-vlapply <- function(..., FUN.VALUE = logical(1L)) {  # nolint
+vlapply <- function(..., FUN.VALUE = logical(1L)) { # nolint
   vapply(..., FUN.VALUE = FUN.VALUE)
 }
 
 #' @rdname vapplys
-vcapply <- function(..., FUN.VALUE = character(1L)) {  # nolint
+vcapply <- function(..., FUN.VALUE = character(1L)) { # nolint
   vapply(..., FUN.VALUE = FUN.VALUE)
 }
 
 #' @rdname vapplys
-vnapply <- function(..., FUN.VALUE = numeric(1L)) {  # nolint
+vnapply <- function(..., FUN.VALUE = numeric(1L)) { # nolint
   vapply(..., FUN.VALUE = FUN.VALUE)
 }
 
@@ -217,6 +223,25 @@ string_newline_count <- function(x) {
 #' @keywords internal
 file_line_nchar <- function(file, line) {
   bn <- basename(file)
-  if (!file.exists(file) || (startsWith(bn, "<") && endsWith(bn, ">"))) return(10000)
+  if (!file.exists(file) || (startsWith(bn, "<") && endsWith(bn, ">"))) {
+    return(10000)
+  }
   nchar(scan(file, what = character(), skip = line - 1, n = 1, sep = "\n", quiet = TRUE))
+}
+
+
+
+#' Checks for use of `roxygen2`
+#'
+#' @param path A file path to a package source code directory
+#' @return A logical value indicating whether a package takes `roxygen2` as
+#'   a dependency.
+#'
+#' @export
+uses_roxygen2 <- function(path) {
+  x <- find_package_root(path, quiet = TRUE)
+  desc <- file.path(x, "DESCRIPTION")
+  deps <- read.dcf(desc, fields = c("Depends", "Imports", "Suggests"))
+  deps <- trimws(unlist(strsplit(deps, ",")))
+  isTRUE(any(grepl("^roxygen2( |$)", deps)))
 }

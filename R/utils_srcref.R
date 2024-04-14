@@ -22,8 +22,11 @@ srcref_key <- function(x, nloc = 2, path = c("base", "root", "full")) {
 
   srcpath <- utils::getSrcFilename(x, full.names = TRUE)
   pkgroot <- find_package_root(srcpath, quiet = TRUE)
-  if (!length(pkgroot)) pkgroot <- ""
-  else pkgroot <- paste0(pkgroot, .Platform$file.sep)
+  if (!length(pkgroot)) {
+    pkgroot <- ""
+  } else {
+    pkgroot <- paste0(pkgroot, .Platform$file.sep)
+  }
 
   srcpath <- switch(path,
     "full" = srcpath,
@@ -69,9 +72,14 @@ as.srcref.character <- function(x) {
   filename <- m[, "filename"]
   pkgroot <- find_package_root(quiet = TRUE)
 
-  if (!is.null(pkgroot)) {
-    if (file.exists(f <- file.path(pkgroot, filename))) filename <- f
-    else if (file.exists(f <- file.path(pkgroot, "R", filename))) filename <- f
+  filepath <- if (is.null(pkgroot)) {
+    filename
+  } else if (file.exists(f <- file.path(pkgroot, filename))) {
+    f
+  } else if (file.exists(f <- file.path(pkgroot, "R", filename))) {
+    f
+  } else {
+    filename
   }
 
   location <- srclocs(
@@ -79,7 +87,8 @@ as.srcref.character <- function(x) {
     filename
   )
 
-  srcref(srcfile(filename), location)
+  src_file <- srcfilealias(filename, srcfile(filepath))
+  srcref(src_file, location)
 }
 
 
@@ -120,7 +129,9 @@ srclocs <- function(x, file) {
 #' @importFrom utils getSrcFilename
 #' @keywords internal
 split_srcref <- function(sr, where) {
-  if (is.null(sr)) return(rep_len(sr, length(where)))
+  if (is.null(sr)) {
+    return(rep_len(sr, length(where)))
+  }
   file <- utils::getSrcFilename(sr, full.names = TRUE)
 
   # allocate a list of new [srcref]s

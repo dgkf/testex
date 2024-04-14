@@ -16,7 +16,7 @@
 #'   startsWith(., "testing")
 #' )}
 #'
-#' \testonly{testex::testthat_block(
+#' \testonly{testex::testex(tag = "testthat",
 #'   test_that("fn gives expected results", {
 #'     expect_equal(., "testing 1 2 3")
 #'   })
@@ -31,7 +31,7 @@ fn <- function(x) {
 
 #' Test Function
 #'
-#' This example introduces the `@expect` tag, either a value or an expression
+#' This example introduces the `@test` tag, either a value or an expression
 #' using the `.`-syntax to test the last example result.
 #'
 #' @param x A thing
@@ -111,7 +111,7 @@ NULL
 #' @examples
 #' fn_roxygen_multiple1("testing")
 #' @test grepl("\\d", .)
-#' @test startsWith(., "testing")
+#' @test startsWith(., "testing 1 2 3")
 #'
 #' @export
 fn_roxygen_multiple1 <- function(x) {

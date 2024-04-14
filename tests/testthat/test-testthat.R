@@ -15,7 +15,7 @@ test_that("with_srcref binds srcref to testthat condition expectations", {
         test_that("example", with_srcref("<test>:1:2", expect_true(FALSE)))
       })
     )),
-    "<test>:1"  # error reported at "start" of srcref
+    "<test>:1" # error reported at "start" of srcref
   )
 })
 
@@ -36,17 +36,17 @@ test_that("wrap_expect_no_error adds srcref, wraps code in expect_no_error expec
 
 test_that("expect_no_error reports when testthat errors occurs while evaluating an expression", {
   expect_condition(
-    expect_no_error(stop(1)),
+    fallback_expect_no_error(stop(1)),
     class = "expectation"
   )
 
-  expect_silent(expect_no_error(1 + 2))
+  expect_silent(fallback_expect_no_error(1 + 2))
 })
 
 test_that("testthat_block returns last value from previous expression", {
   expect_silent({
     ..Last.value <- 3
-    out <- testthat_block(expect_equal(., 3), value = ..Last.value)
+    out <- testex(tag = "testthat", expect_equal(., 3), value = ..Last.value)
   })
 
   expect_equal(out, 3)
@@ -54,9 +54,10 @@ test_that("testthat_block returns last value from previous expression", {
 
 test_that("testthat_block skips if example throws error", {
   expect_silent({
-    cond <- tryCatch({
+    cond <- tryCatch(
+      {
         ..Last.value <- errorCondition("whoops!")
-        testthat_block(expect_equal(., 3), value = ..Last.value)
+        testex(tag = "testthat", expect_equal(., 3), value = ..Last.value)
       },
       condition = identity
     )

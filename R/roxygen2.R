@@ -98,14 +98,22 @@ as_example <- function(tag) {
 #'
 #' @noRd
 #' @keywords internal
-format_tag_expect_test <- function(tag) {  # nolint
+format_tag_expect_test <- function(tag) { # nolint
   parsed_test <- parse(text = tag$raw, n = 1, keep.source = TRUE)
   test <- populate_test_dot(parsed_test)
   n <- first_expr_end(parsed_test)
 
+  test_str <- trimws(substring(tag$raw, 0, n), "right")
+  n_newlines <- nchar(gsub("[^\n]", "", test_str))
+
+  srcref_str <- paste0(
+    basename(tag$file),
+    ":", tag$line, ":", tag$line + n_newlines
+  )
+
   paste0(
-    "\\testonly{",
-    "testex::testex(",
+    "\\testonly{\n",
+    "testex::testex(srcref = ", deparse(srcref_str), ", \n",
     deparse_pretty(test),
     ")}",
     trimws(substring(tag$raw, n + 1L), "right")
@@ -139,7 +147,7 @@ populate_test_dot <- function(expr) {
 #'
 #' @noRd
 #' @keywords internal
-format_tag_testthat_test <- function(tag) {  # nolint
+format_tag_testthat_test <- function(tag) { # nolint
   parsed_test <- parse(text = tag$raw, n = 1, keep.source = TRUE)
   test <- populate_testthat_dot(parsed_test)
 
@@ -148,20 +156,13 @@ format_tag_testthat_test <- function(tag) {  # nolint
 
   nlines <- string_newline_count(trimws(test_str, "right"))
   lines <- tag$line + c(0L, nlines)
-
   src <- paste0(basename(tag$file), ":", lines[[1]], ":", lines[[2]])
-  desc <- sprintf("example tests at `%s`", src)
 
   paste0(
     "\\testonly{\n",
-    paste0("testex::testthat_block(test_that(", deparse(desc), ", {\n"),
-    paste0(
-      "testex::with_srcref(",
-      "\"", src, "\", ", deparse_pretty(test),
-      ")\n"
-    ),
-    "}))\n",
-    "}",
+    "testex::testex(tag = \"testthat\", srcref = ", deparse(src), ", \n",
+    deparse_pretty(test),
+    ")}",
     trimws(substring(tag$raw, n + 1L), "right")
   )
 }

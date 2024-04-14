@@ -11,6 +11,7 @@ test_examples_as_testthat(
   test_dir = tempfile("testex"),
   clean = TRUE,
   overwrite = TRUE,
+  roxygenize = uses_roxygen2(path),
   reporter = testthat::get_reporter()
 )
 }
@@ -30,6 +31,12 @@ execution. Defaults to \code{TRUE}.}
 
 \item{overwrite}{Whether files should be overwritten if \code{test_dir} already
 exists. Defaults to \code{TRUE}.}
+
+\item{roxygenize}{Whether R documentation files should be re-written using
+\code{roxygen2} prior to testing. When not \code{FALSE}, tests written in \code{roxygen2}
+tags will be used to update R documentation files prior to testing to use
+the most up-to-date example tests. May be \code{TRUE}, or a \code{list} of arguments
+passed to \link[roxygen2:roxygenize]{roxygen2::roxygenize}.}
 
 \item{reporter}{A \code{testthat} reporter to use. Defaults to the active
 reporter in the \code{testthat} environment or default reporter.}

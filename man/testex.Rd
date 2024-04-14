@@ -6,11 +6,11 @@
 \usage{
 testex(
   ...,
+  srcref = NULL,
+  example_srcref = NULL,
   value = get_example_value(),
-  obj = NULL,
-  example = NULL,
-  tests = NULL,
-  envir = parent.frame()
+  envir = parent.frame(),
+  tag = "test"
 )
 }
 \arguments{
@@ -18,20 +18,17 @@ testex(
 expression passed to \code{val}, and may be used as a shorthand for the
 last example result.}
 
+\item{example_srcref}{An option \code{srcref_key} string used to indicate where
+the relevant example code originated from.}
+
 \item{value}{A value to test against. By default, this will use the example's
 \code{.Last.value}.}
 
-\item{obj}{An optional object name used to construct a more helpful error
-message \code{testthat} failure message.}
-
-\item{example}{An option \code{srcref_key} string used to indicate where the
-relevant example code originated from.}
-
-\item{tests}{An option \code{srcref_key} string used to indicate where the
-relevant test code originated from.}
-
 \item{envir}{An environment in which tests should be evaluated. By default
 the parent environment where tests are evaluated.}
+
+\item{test_srcref}{An option \code{srcref_key} string used to indicate where the
+relevant test code originated from.}
 }
 \value{
 Invisibly returns the \code{.Last.value} as it existed prior to evaluating
