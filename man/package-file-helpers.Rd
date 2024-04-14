@@ -11,7 +11,7 @@ find_package_root(path = ".", quiet = FALSE)
 
 find_package_rds(package, path = getwd())
 
-package_desc()
+package_desc(path = getwd())
 }
 \arguments{
 \item{path}{A file path within a package's source code or installation

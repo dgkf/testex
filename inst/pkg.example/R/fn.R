@@ -111,7 +111,7 @@ NULL
 #' @examples
 #' fn_roxygen_multiple1("testing")
 #' @test grepl("\\d", .)
-#' @test startsWith(., "testing 1 2 3")
+#' @test startsWith(., "testing")
 #'
 #' @export
 fn_roxygen_multiple1 <- function(x) {

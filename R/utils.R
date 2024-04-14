@@ -123,13 +123,13 @@ find_package_rds <- function(package, path = getwd()) {
 
 
 #' @name package-file-helpers
-package_desc <- function() {
+package_desc <- function(path = getwd()) {
   x <- Sys.getenv("_R_CHECK_PACKAGE_NAME_", unset = NA_character_)
   if (!is.na(x)) {
     return(file.path(find.package(x), "DESCRIPTION"))
   }
 
-  x <- find_package_root(getwd(), quiet = TRUE)
+  x <- find_package_root(path, quiet = TRUE)
   if (!is.null(x)) {
     return(file.path(x, "DESCRIPTION"))
   }

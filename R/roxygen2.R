@@ -59,6 +59,7 @@ NULL
 #' @importFrom utils head tail
 #' @exportS3Method roxygen2::roxy_tag_parse roxy_tag_test
 roxy_tag_parse.roxy_tag_test <- function(x) {
+  testex_options(path = x$file, warn = TRUE, update = TRUE)
   x$raw <- x$val <- format_tag_expect_test(x)
   as_example(x)
 }
@@ -66,6 +67,7 @@ roxy_tag_parse.roxy_tag_test <- function(x) {
 #' @importFrom utils head tail
 #' @exportS3Method roxygen2::roxy_tag_parse roxy_tag_test
 roxy_tag_parse.roxy_tag_testthat <- function(x) {
+  testex_options(path = x$file, warn = TRUE, update = TRUE)
   x$raw <- x$val <- format_tag_testthat_test(x)
   as_example(x)
 }

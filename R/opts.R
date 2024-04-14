@@ -35,7 +35,7 @@ memoise_testex_desc <- function(path, fingerprint, ...) {
 
 
 
-read_testex_options <- function(path, warn = TRUE, update = TRUE) {
+read_testex_options <- function(path, warn = TRUE, update = FALSE) {
   desc <- read.dcf(file = path, all = TRUE)
   desc <- read.dcf(file = path, keep.white = colnames(desc))
 
@@ -62,7 +62,13 @@ read_testex_options <- function(path, warn = TRUE, update = TRUE) {
 
     # only write if field was modified
     if (!identical(pkg_opts, pkg_opts_orig)) {
+      if (!field %in% colnames(desc)) {
+        field_col <- matrix(nrow = nrow(desc), dimnames = list(c(), field))
+        desc <- cbind(desc, field_col)
+      }
+
       desc[, field] <- deparse(pkg_opts)
+
       write.dcf(
         desc,
         file = path,
@@ -70,6 +76,7 @@ read_testex_options <- function(path, warn = TRUE, update = TRUE) {
         width = 80L,
         indent = 2L
       )
+
       return(read_testex_options(path, warn = warn, update = FALSE))
     }
   }
@@ -88,7 +95,9 @@ read_testex_options <- function(path, warn = TRUE, update = TRUE) {
 #'
 #' @return The test options environment as a list
 #'
-testex_options <- function(path = package_desc()) {
+testex_options <- function(path = package_desc(), ...) {
+  path <- package_desc(path)
+
   if (is_r_cmd_check()) {
     fingerprint <- list(rcmdcheck = TRUE, pid = Sys.getpid())
 
@@ -108,7 +117,7 @@ testex_options <- function(path = package_desc()) {
       mtime = file.info(path)[["mtime"]]
     )
 
-    return(as.list(memoise_testex_desc(path, fingerprint)))
+    return(as.list(memoise_testex_desc(path, fingerprint, ...)))
   }
 
   return(as.list(.testex_options))
