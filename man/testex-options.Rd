@@ -2,13 +2,13 @@
 % Please edit documentation in R/opts.R
 \name{testex-options}
 \alias{testex-options}
-\alias{update_testex_desc}
+\alias{memoise_testex_desc}
 \alias{testex_options}
 \title{Cached retrieval of testex options from package DESCRIPTION}
 \usage{
-update_testex_desc(path, fingerprint)
+memoise_testex_desc(path, fingerprint, ...)
 
-testex_options(path = package_desc())
+testex_options(path = package_desc(), ...)
 }
 \arguments{
 \item{path}{A path in which to search for a package \code{DESCRIPTION}}

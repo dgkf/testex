@@ -1,37 +1,21 @@
-#' Support for `testthat` example expectations
+#' Support for `testthat` Expectations
 #'
-#' Various functions that are used to produce a more native `testthat`
-#' experience, automatically converting [testex] tests into `testthat` code and
-#' executing tests such that they produce informative messages on failure.
-#'
-#' [testex] operates on the previous value produced in example code. This is
-#' unlike `testthat` expectations, which expect a value to be provided as a
-#' first argument.
-#'
-#' To accommodate a more native `testthat` interface, [testex] provides a few
-#' convenience functions to make [testex] expectations run more idiomatically
-#' in the style of `testthat`.
-#'
-#' @param ... Expectations to evaluate with `testthat`
-#' @param value A symbol or quote to use to refer to the subject of `testthat`
-#'   tests.
-#' @inheritParams testex
+#' `testthat` support is managed through a "style" provided to [`testex`].
+#' When using the `testthat` style (automatically when using the `@testthat`
+#' tag), expectations are processed such that they always refer to the previous
+#' example. Special care is taken to manage propagation of this value through
+#' your test code, regardless of how `testthat` is executed.
 #'
 #' @examplesIf requireNamespace("testthat", quietly = TRUE)
 #' # example code
 #' 1 + 2
 #'
-#' # within `testthat_block`, test code refers to previous result with `.`
-#' testthat_block({ \dontshow{
+#' # within `testex` block, test code refers to previous result with `.`
+#' testex(style = "testthat", srcref = "abc.R:1:3", { \dontshow{
 #'   . <- 3 # needed because roxygen2 @examplesIf mutates .Last.value
 #'   }
 #'   test_that("addition holds up", {
 #'     expect_equal(., 3)
-#'   })
-#'
-#'   # `with_srcref` to spoof the source of the code that caused the failure
-#'   test_that("test failure is spoofed to report error at abc.R:1:0", {
-#'     with_srcref("abc.R:1:3", expect_equal(., 3))
 #'   })
 #' })
 #'
@@ -40,39 +24,7 @@ NULL
 
 
 
-#' @describeIn testex-testthat
-#'
-#' A flavor of [testex] that will inject [.Last.value] into the first argument
-#' of each expression - suitable for using the `expect_*` family of functions
-#' from `testthat`. Also handles temporarily attaching the `testthat` package.
-#'
-#' @inheritParams testex
-#' @param envir An environment in which the expectations should be evaluated
-#'
-#' @return The result of evaluating provided expressions
-#'
-#' @export
-testthat_block <- function(
-    ..., value = get_example_value(), obj = NULL,
-    example = NULL, tests = NULL, envir = parent.frame()) {
-  if (!missing(value)) value <- substitute(value)
-
-  exprs <- substitute(...())
-  expr <- bquote({
-    . <- .(value)
-    skip_if(inherits(., "error"), "previous example produced an error")
-    invisible(.)
-  })
-
-  expr <- as.call(append(as.list(expr), exprs, after = 3L))
-  expr <- bquote(local(testex::with_attached("testthat", .(expr))))
-
-  eval(expr, envir = envir)
-}
-
-
-
-#' @describeIn testex-testthat
+#' Raise `testthat` Expectations With A Known Source Reference
 #'
 #' Retroactively assigns a source file and location to a expectation. This
 #' allows `testthat` to report an origin for any code that raised an example
@@ -83,6 +35,7 @@ testthat_block <- function(
 #'   for the expectation signaled messages.
 #' @param expr An expression to be evaluated. If an `expectation` condition is
 #'   raised during its evaluation, its [`srcref`] is converted to `src`.
+#' @param envir An environment in which to evaluate `expr`.
 #'
 #' @return The result of evaluating `expr`, or an expectation with appended
 #'   [`srcref`] information if an expectation is raised.
@@ -93,7 +46,8 @@ with_srcref <- function(src, expr, envir = parent.frame()) {
   withCallingHandlers(
     eval(expr, envir = envir),
     expectation = function(e) {
-      e[["srcref"]] <- as.srcref(src)
+      srcref <- as.srcref(src)
+      e[["srcref"]] <- srcref
       testthat::exp_signal(e)
       invokeRestart(computeRestarts()[[1L]])
     }
@@ -102,7 +56,10 @@ with_srcref <- function(src, expr, envir = parent.frame()) {
 
 
 
-#' @describeIn testex-testthat
+#' Expect no Error
+#'
+#' @note This is a stop-gap implementation, and will only be used for legacy
+#' versions of `testthat` before this was properly supported.
 #'
 #' A `testthat` expectation that the provided code can be evaluated without
 #' producing an error. This is the most basic expectation one should expect of
@@ -134,6 +91,16 @@ fallback_expect_no_error <- function(object, ...) {
   invisible(act$val)
 }
 
+#' Return appropriate call name provided testthat version
+#' @noRd
+expect_no_error_call <- function() {
+  if (packageVersion("testthat") >= "3.1.5") {
+    quote(testthat::expect_no_error)
+  } else {
+    quote(testex::fallback_expect_no_error)
+  }
+}
+
 
 
 #' Execute examples from Rd files as `testthat` tests
@@ -161,6 +128,12 @@ fallback_expect_no_error <- function(object, ...) {
 #'   execution. Defaults to `TRUE`.
 #' @param overwrite Whether files should be overwritten if `test_dir` already
 #'   exists. Defaults to `TRUE`.
+#' @param roxygenize Whether R documentation files should be re-written using
+#'   `roxygen2` prior to testing. When not `FALSE`, tests written in `roxygen2`
+#'   tags will be used to update R documentation files prior to testing to use
+#'   the most up-to-date example tests. May be `TRUE`, or a `list` of arguments
+#'   passed to [`roxygen2::roxygenize`]. By default, only enabled when running
+#'   outside of `R CMD check` and while taking `roxygen2` as a dependency.
 #' @param ... Additional argument unused
 #' @param reporter A `testthat` reporter to use. Defaults to the active
 #'   reporter in the `testthat` environment or default reporter.
@@ -177,16 +150,32 @@ fallback_expect_no_error <- function(object, ...) {
 #'
 #' @export
 test_examples_as_testthat <- function(
-    package, path, ..., test_dir = tempfile("testex"), clean = TRUE,
-    overwrite = TRUE, reporter = testthat::get_reporter()) {
+    package,
+    path,
+    ...,
+    test_dir = file.path(tempdir(), "testex-tests"),
+    clean = TRUE,
+    overwrite = TRUE,
+    roxygenize = !is_r_cmd_check() && uses_roxygen2(path),
+    reporter = testthat::get_reporter()) {
   requireNamespace("testthat")
-
   testthat_envvar_val <- Sys.getenv("TESTTHAT")
   Sys.setenv(TESTTHAT = "true")
   on.exit(Sys.setenv(TESTTHAT = testthat_envvar_val), add = TRUE)
 
   if (missing(path)) {
     path <- find_package_root(testthat::test_path())
+  }
+
+  if (isTRUE(roxygenize)) roxygenize <- list()
+  if (is.list(roxygenize) && requireNamespace("roxygen2", quietly = TRUE)) {
+    args <- roxygenize
+    args$package.dir <- path
+    context <- cliless("{.pkg testex} re-roxygenizing examples")
+    testthat::context_start_file(context)
+    testthat::expect_invisible(suppressMessages({
+      do.call(getExportedValue("roxygen2", "roxygenize"), args)
+    }))
   }
 
   rds <- find_package_rds(package, path)
@@ -199,7 +188,8 @@ test_examples_as_testthat <- function(
 
   if (test_dir_exists && !overwrite) {
     test_files <- list.files(test_dir, full.names = TRUE)
-    test_files(test_files, chdir = FALSE, "examples [run from testex]")
+    context <- cliless("{.pkg testex} testing examples")
+    test_files(test_files, context, chdir = FALSE)
     return()
   }
 
@@ -226,7 +216,8 @@ test_examples_as_testthat <- function(
     path
   })
 
-  test_files(test_files, chdir = FALSE, "examples [run from testex]")
+  context <- cliless("{.pkg testex} testing examples")
+  test_files(test_files, context, chdir = FALSE)
 }
 
 
@@ -262,15 +253,9 @@ test_files <- function(files, context, ...) {
 wrap_expect_no_error <- function(expr, value) {
   srckey <- srcref_key(expr, path = "root")
   # nocov start
-  expect_no_error <- if (packageVersion("testthat") >= "3.1.5") {
-    quote(testthat::expect_no_error)
-  } else {
-    quote(testex::fallback_expect_no_error)
-  }
-
   bquote(testthat::test_that("example executes without error", {
     testex::with_srcref(.(srckey), {
-      .(value) <<- .(expect_no_error)(.(expr))
+      .(value) <<- .(expect_no_error_call())(.(expr))
     })
   }))
   # nocov end

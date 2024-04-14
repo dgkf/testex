@@ -2,104 +2,25 @@
 % Please edit documentation in R/testthat.R
 \name{testex-testthat}
 \alias{testex-testthat}
-\alias{testthat_block}
-\alias{with_srcref}
-\alias{fallback_expect_no_error}
-\title{Support for \code{testthat} example expectations}
-\usage{
-testthat_block(
-  ...,
-  value = get_example_value(),
-  obj = NULL,
-  example = NULL,
-  tests = NULL,
-  envir = parent.frame()
-)
-
-with_srcref(src, expr, envir = parent.frame())
-
-fallback_expect_no_error(object, ...)
-}
-\arguments{
-\item{...}{Additional arguments unused}
-
-\item{value}{A symbol or quote to use to refer to the subject of \code{testthat}
-tests.}
-
-\item{obj}{An optional object name used to construct a more helpful error
-message \code{testthat} failure message.}
-
-\item{example}{An option \code{srcref_key} string used to indicate where the
-relevant example code originated from.}
-
-\item{tests}{An option \code{srcref_key} string used to indicate where the
-relevant test code originated from.}
-
-\item{envir}{An environment in which the expectations should be evaluated}
-
-\item{src}{A \code{srcref_key} which is parsed to produce an artificial \code{\link{srcref}}
-for the expectation signaled messages.}
-
-\item{expr}{An expression to be evaluated. If an \code{expectation} condition is
-raised during its evaluation, its \code{\link{srcref}} is converted to \code{src}.}
-
-\item{object}{An expression to evaluate}
-}
-\value{
-The result of evaluating provided expressions
-
-The result of evaluating \code{expr}, or an expectation with appended
-\code{\link{srcref}} information if an expectation is raised.
-
-The value produced by the expectation code
-}
+\title{Support for \code{testthat} Expectations}
 \description{
-Various functions that are used to produce a more native \code{testthat}
-experience, automatically converting \link{testex} tests into \code{testthat} code and
-executing tests such that they produce informative messages on failure.
+\code{testthat} support is managed through a "style" provided to \code{\link{testex}}.
+When using the \code{testthat} style (automatically when using the \verb{@testthat}
+tag), expectations are processed such that they always refer to the previous
+example. Special care is taken to manage propagation of this value through
+your test code, regardless of how \code{testthat} is executed.
 }
-\details{
-\link{testex} operates on the previous value produced in example code. This is
-unlike \code{testthat} expectations, which expect a value to be provided as a
-first argument.
-
-To accommodate a more native \code{testthat} interface, \link{testex} provides a few
-convenience functions to make \link{testex} expectations run more idiomatically
-in the style of \code{testthat}.
-}
-\section{Functions}{
-\itemize{
-\item \code{testthat_block()}: A flavor of \link{testex} that will inject \link{.Last.value} into the first argument
-of each expression - suitable for using the \verb{expect_*} family of functions
-from \code{testthat}. Also handles temporarily attaching the \code{testthat} package.
-
-\item \code{with_srcref()}: Retroactively assigns a source file and location to a expectation. This
-allows \code{testthat} to report an origin for any code that raised an example
-test failure from the source \code{roxygen2} code, even though the test code is
-reconstructed from package documentation files.
-
-\item \code{fallback_expect_no_error()}: A \code{testthat} expectation that the provided code can be evaluated without
-producing an error. This is the most basic expectation one should expect of
-any example code. Further expectations are provided in subsequent \code{testthat}
-code.
-
-}}
 \examples{
 \dontshow{if (requireNamespace("testthat", quietly = TRUE)) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 # example code
 1 + 2
 
-# within `testthat_block`, test code refers to previous result with `.`
-testthat_block({ \dontshow{
-  . <- 3 # needed because roxygen2 mutates .Last.value
+# within `testex` block, test code refers to previous result with `.`
+testex(style = "testthat", srcref = "abc.R:1:3", { \dontshow{
+  . <- 3 # needed because roxygen2 @examplesIf mutates .Last.value
   }
   test_that("addition holds up", {
     expect_equal(., 3)
-  })
-
-  # `with_srcref` to spoof the source of the code that caused the failure
-  test_that("test failure is spoofed to report error at abc.R:1:0", {
-    with_srcref("abc.R:1:3", expect_equal(., 3))
   })
 })
 \dontshow{\}) # examplesIf}

@@ -13,5 +13,4 @@ Roxygen: list(markdown = TRUE, packages = "testex")
 RoxygenNote: 7.3.1
 License: MIT + file LICENSE
 Config/testthat/edition: 3
-Config/testex/options: 
-    list(check = TRUE)
+Config/testex/options: list(check = TRUE, version = "0.2.0")

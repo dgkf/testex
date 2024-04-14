@@ -14,29 +14,21 @@ The pasted thing
 }
 \description{
 This example introduces \code{testthat}-style tests using in-line \verb{@testthat}
-roxygen tags.
+\code{roxygen2} tags.
 }
 \examples{
 fn_roxygen_testthat("testing")
 \testonly{
-testex::testthat_block(test_that("example tests at `fn.R:83:83`", {
-testex::with_srcref("fn.R:83:83", expect_equal(., "testing 1 2 3"))
-}))
-}
+testex::testex(style = "testthat", srcref = "fn.R:83:83", 
+expect_equal(., "testing 1 2 3"))}
 \testonly{
-testex::testthat_block(test_that("example tests at `fn.R:84:84`", {
-testex::with_srcref("fn.R:84:84", expect_match(., "^testing"))
-}))
-}
+testex::testex(style = "testthat", srcref = "fn.R:84:84", 
+expect_match(., "^testing"))}
 fn_roxygen_testthat("testing")
 \testonly{
-testex::testthat_block(test_that("example tests at `fn.R:87:87`", {
-testex::with_srcref("fn.R:87:87", expect_equal(., "testing 1 2 3"))
-}))
-}
+testex::testex(style = "testthat", srcref = "fn.R:87:87", 
+expect_equal(., "testing 1 2 3"))}
 \testonly{
-testex::testthat_block(test_that("example tests at `fn.R:88:88`", {
-testex::with_srcref("fn.R:88:88", expect_match(., "^testing"))
-}))
-}
+testex::testex(style = "testthat", srcref = "fn.R:88:88", 
+expect_match(., "^testing"))}
 }

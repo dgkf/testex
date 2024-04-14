@@ -28,9 +28,17 @@ This example composes an examples section from multiple blocks.
 }}
 \examples{
 fn_roxygen_multiple1("testing")
-\testonly{testex::testex(grepl("\\\\d", .))}
-\testonly{testex::testex(startsWith(., "testing"))}
+\testonly{
+testex::testex(srcref = "fn.R:113:113", 
+grepl("\\\\d", .))}
+\testonly{
+testex::testex(srcref = "fn.R:114:114", 
+startsWith(., "testing 1 2 3"))}
 fn_roxygen_multiple2("testing")
-\testonly{testex::testex(grepl("\\\\d", .))}
-\testonly{testex::testex(startsWith(., "testing"))}
+\testonly{
+testex::testex(srcref = "fn.R:126:126", 
+grepl("\\\\d", .))}
+\testonly{
+testex::testex(srcref = "fn.R:127:127", 
+startsWith(., "testing"))}
 }

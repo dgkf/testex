@@ -25,9 +25,9 @@ fn("testing")
   startsWith(., "testing")
 )}
 
-\testonly{testex::testthat_block(
-  test_that("fn gives expected results", {
-    expect_equal(., "testing 1 2 3")
+\testonly{testex::testex(style = "testthat",
+  testthat::test_that("fn gives expected results", {
+    testthat::expect_equal(., "testing 1 2 3")
   })
 )}
 
