@@ -1,6 +1,6 @@
 # testex (development)
 
-> **Pre-`v1.0.0` Lifecycle Policy**
+> **Life-cycle Policy Prior to `v1.0.0`**
 > 
 > Be aware that this package produces code that enters into your package's
 > R documentation files. Until `testex` reaches `1.0.0`, there are no 
@@ -24,12 +24,12 @@
   testex(style = "testthat", srcref = "fn.R:10:11", { code })
   ```
 
-  This syntax is intended to be more resiliant to changes to keep your
+  This syntax is intended to be more resilient to changes to keep your
   tests from relying to heavily on an unchanging `testex` function interface.
 
 ## New Features
 
-* Adds config (`Config/testex/options`) field `"version"`, which is 
+* Adds configuration (`Config/testex/options`) field `"version"`, which is 
   automatically updated when a newer version of `testex` is first used. 
   
   This field is checked to decide whether the currently loaded version of 

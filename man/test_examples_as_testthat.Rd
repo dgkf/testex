@@ -36,7 +36,7 @@ exists. Defaults to \code{TRUE}.}
 \code{roxygen2} prior to testing. When not \code{FALSE}, tests written in \code{roxygen2}
 tags will be used to update R documentation files prior to testing to use
 the most up-to-date example tests. May be \code{TRUE}, or a \code{list} of arguments
-passed to \link[roxygen2:roxygenize]{roxygen2::roxygenize}. By default, only enabled when running
+passed to \code{\link[roxygen2:roxygenize]{roxygen2::roxygenize}}. By default, only enabled when running
 outside of \verb{R CMD check} and while taking \code{roxygen2} as a dependency.}
 
 \item{reporter}{A \code{testthat} reporter to use. Defaults to the active

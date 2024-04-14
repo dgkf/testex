@@ -76,8 +76,6 @@ read_testex_options <- function(path, warn = TRUE, update = FALSE) {
         width = 80L,
         indent = 2L
       )
-
-      return(read_testex_options(path, warn = warn, update = FALSE))
     }
   }
 

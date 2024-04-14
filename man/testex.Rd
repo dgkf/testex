@@ -18,6 +18,9 @@ testex(
 expression passed to \code{val}, and may be used as a shorthand for the
 last example result.}
 
+\item{srcref}{An option \code{srcref_key} string used to indicate where the
+relevant test code originated from.}
+
 \item{example_srcref}{An option \code{srcref_key} string used to indicate where
 the relevant example code originated from.}
 
@@ -32,9 +35,6 @@ which expects \code{TRUE} and uses a \code{.}-notation. Accepts one of
 \code{"standalone"} or \code{"testthat"}. By default, styles will be implicitly
 converted to accommodate known testing frameworks, though this can be
 disabled by passing the style \code{"AsIs"} with \code{\link[=I]{I()}}.}
-
-\item{test_srcref}{An option \code{srcref_key} string used to indicate where the
-relevant test code originated from.}
 }
 \value{
 Invisibly returns the \code{.Last.value} as it existed prior to evaluating

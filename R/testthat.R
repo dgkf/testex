@@ -1,36 +1,21 @@
-#' Support for `testthat` example expectations
+#' Support for `testthat` Expectations
 #'
-#' Various functions that are used to produce a more native `testthat`
-#' experience, automatically converting [testex] tests into `testthat` code and
-#' executing tests such that they produce informative messages on failure.
-#'
-#' [testex] operates on the previous value produced in example code. This is
-#' unlike `testthat` expectations, which expect a value to be provided as a
-#' first argument.
-#'
-#' To accommodate a more native `testthat` interface, [testex] provides a few
-#' convenience functions to make [testex] expectations run more idiomatically
-#' in the style of `testthat`.
-#'
-#' @param ... Expectations to evaluate with `testthat`
-#' @param value A symbol or quote to use to refer to the subject of `testthat`
-#'   tests.
+#' `testthat` support is managed through a "style" provided to [`testex`].
+#' When using the `testthat` style (automatically when using the `@testthat`
+#' tag), expectations are processed such that they always refer to the previous
+#' example. Special care is taken to manage propagation of this value through
+#' your test code, regardless of how `testthat` is executed.
 #'
 #' @examplesIf requireNamespace("testthat", quietly = TRUE)
 #' # example code
 #' 1 + 2
 #'
-#' # within `testthat_block`, test code refers to previous result with `.`
-#' testthat_block({ \dontshow{
+#' # within `testex` block, test code refers to previous result with `.`
+#' testex(style = "testthat", srcref = "abc.R:1:3", { \dontshow{
 #'   . <- 3 # needed because roxygen2 @examplesIf mutates .Last.value
 #'   }
 #'   test_that("addition holds up", {
 #'     expect_equal(., 3)
-#'   })
-#'
-#'   # `with_srcref` to spoof the source of the code that caused the failure
-#'   test_that("test failure is spoofed to report error at abc.R:1:0", {
-#'     with_srcref("abc.R:1:3", expect_equal(., 3))
 #'   })
 #' })
 #'
@@ -39,7 +24,7 @@ NULL
 
 
 
-#' @describeIn testex-testthat
+#' Raise `testthat` Expectations With A Known Source Reference
 #'
 #' Retroactively assigns a source file and location to a expectation. This
 #' allows `testthat` to report an origin for any code that raised an example
@@ -71,7 +56,10 @@ with_srcref <- function(src, expr, envir = parent.frame()) {
 
 
 
-#' @describeIn testex-testthat
+#' Expect no Error
+#'
+#' @note This is a stop-gap implementation, and will only be used for legacy
+#' versions of `testthat` before this was properly supported.
 #'
 #' A `testthat` expectation that the provided code can be evaluated without
 #' producing an error. This is the most basic expectation one should expect of
@@ -144,7 +132,7 @@ expect_no_error_call <- function() {
 #'   `roxygen2` prior to testing. When not `FALSE`, tests written in `roxygen2`
 #'   tags will be used to update R documentation files prior to testing to use
 #'   the most up-to-date example tests. May be `TRUE`, or a `list` of arguments
-#'   passed to [roxygen2::roxygenize]. By default, only enabled when running
+#'   passed to [`roxygen2::roxygenize`]. By default, only enabled when running
 #'   outside of `R CMD check` and while taking `roxygen2` as a dependency.
 #' @param ... Additional argument unused
 #' @param reporter A `testthat` reporter to use. Defaults to the active

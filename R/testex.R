@@ -48,7 +48,7 @@
 #'   `.Last.value`.
 #' @param example_srcref An option `srcref_key` string used to indicate where
 #'   the relevant example code originated from.
-#' @param test_srcref An option `srcref_key` string used to indicate where the
+#' @param srcref An option `srcref_key` string used to indicate where the
 #'   relevant test code originated from.
 #' @param envir An environment in which tests should be evaluated. By default
 #'   the parent environment where tests are evaluated.

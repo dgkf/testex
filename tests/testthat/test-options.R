@@ -12,8 +12,12 @@ Config/testex/options: list(a = 1)
   withr::defer(unlink(test_dir, recursive = TRUE))
 
   writeLines(trimws(desc), desc_path)
-  expect_warning(testex_options(desc_path), "version")
-  expect_silent(orig <- testex_options(""))
+
+  as_not_r_cmd_check({
+    expect_warning(testex_options(desc_path), "version")
+    expect_silent(orig <- testex_options(""))
+  })
+
   expect_length(orig, 2)
   expect_identical(orig$a, 1)
   expect_identical(orig$check, FALSE)
@@ -34,8 +38,12 @@ Config/testex/options: list(a = 1, b = 2)
 
   # expect invalidation of cached value and new values stored
   writeLines(trimws(desc), desc_path)
-  expect_warning(testex_options(desc_path))
-  expect_silent(updated <- testex_options(""))
+
+  as_not_r_cmd_check({
+    expect_warning(testex_options(desc_path))
+    expect_silent(updated <- testex_options(""))
+  })
+
   expect_true(.testex_options$.fingerprint$mtime != orig_mtime)
   expect_length(updated, 3)
   expect_identical(updated$a, 1)
