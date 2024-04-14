@@ -6,11 +6,11 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary"><div class="container">
+    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary" data-bs-theme="dark"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">testex</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -52,10 +52,36 @@
     </div>
 
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.1.0" id="testex-010">testex 0.1.0<a class="anchor" aria-label="anchor" href="#testex-010"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.2.0" id="testex-020">testex 0.2.0<a class="anchor" aria-label="anchor" href="#testex-020"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-0-2-0">Breaking Changes<a class="anchor" aria-label="anchor" href="#breaking-changes-0-2-0"></a></h3>
+<blockquote>
+<p>Documentation syntax changes. Documentation will be need to be re-<code>roxygenize</code>’d or otherwise updated.</p>
+</blockquote>
+<ul><li>
+<p>Changes syntax of tests to minimize reliance on <code>testex</code> namespace consistency across versions. Instead of using <code>testex(with_srcref(..))</code> and <code>testthat_block(test_that(.., with_srcref(..)))</code>, both interfaces are now handled via <code><a href="../reference/testex.html">testex()</a></code> with an added <code>style</code> parameter:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="fu"><a href="../reference/testex.html">testex</a></span><span class="op">(</span>style <span class="op">=</span> <span class="st">"testthat"</span>, srcref <span class="op">=</span> <span class="st">"fn.R:10:11"</span>, <span class="op">{</span> <span class="va">code</span> <span class="op">}</span><span class="op">)</span></span></code></pre></div>
+<p>This syntax is intended to be more resilient to changes to keep your tests from relying to heavily on an unchanging <code>testex</code> function interface.</p>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="new-features-0-2-0">New Features<a class="anchor" aria-label="anchor" href="#new-features-0-2-0"></a></h3>
+<ul><li>
+<p>Adds configuration (<code>Config/testex/options</code>) field <code>"version"</code>, which is automatically updated when a newer version of <code>testex</code> is first used.</p>
+<p>This field is checked to decide whether the currently loaded version of <code>testex</code> is capable of re-running your tests.</p>
+<p>Currently, a conservative approach is taken. If there is a version mismatch, <code>testex</code> will suggest updating when run independently using a testing framework and will disable <code>testex</code> testing during <code>R CMD check</code> to avoid causing downstream test failures as the API changes. However, this means that <code>testex</code> tests will be ineffective if your package is out-of-date with the released <code>testex</code> version on <code>CRAN</code></p>
+<p>Past a <code>v1.0.0</code> release, this behavior will be relaxed to check for a compatible major version.</p>
+</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.1.0" id="testex-010">testex 0.1.0<a class="anchor" aria-label="anchor" href="#testex-010"></a></h2><p class="text-muted">CRAN release: 2024-04-04</p>
 <ul><li>Initial CRAN submission</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">
@@ -63,7 +89,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.8.</p>
 </div>
 
     </footer></div>

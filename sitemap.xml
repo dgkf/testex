@@ -37,6 +37,9 @@
     <loc>/reference/deparse_pretty.html</loc>
   </url>
   <url>
+    <loc>/reference/fallback_expect_no_error.html</loc>
+  </url>
+  <url>
     <loc>/reference/file_line_nchar.html</loc>
   </url>
   <url>
@@ -97,10 +100,16 @@
     <loc>/reference/use_testex_as_testthat.html</loc>
   </url>
   <url>
+    <loc>/reference/uses_roxygen2.html</loc>
+  </url>
+  <url>
     <loc>/reference/vapplys.html</loc>
   </url>
   <url>
     <loc>/reference/with_attached.html</loc>
+  </url>
+  <url>
+    <loc>/reference/with_srcref.html</loc>
   </url>
   <url>
     <loc>/reference/wrap_expect_no_error.html</loc>
