@@ -144,7 +144,8 @@ expect_no_error_call <- function() {
 #'   `roxygen2` prior to testing. When not `FALSE`, tests written in `roxygen2`
 #'   tags will be used to update R documentation files prior to testing to use
 #'   the most up-to-date example tests. May be `TRUE`, or a `list` of arguments
-#'   passed to [roxygen2::roxygenize].
+#'   passed to [roxygen2::roxygenize]. By default, only enabled when running
+#'   outside of `R CMD check` and while taking `roxygen2` as a dependency.
 #' @param ... Additional argument unused
 #' @param reporter A `testthat` reporter to use. Defaults to the active
 #'   reporter in the `testthat` environment or default reporter.
@@ -164,13 +165,12 @@ test_examples_as_testthat <- function(
     package,
     path,
     ...,
-    test_dir = tempfile("testex"),
+    test_dir = file.path(tempdir(), "testex-tests"),
     clean = TRUE,
     overwrite = TRUE,
-    roxygenize = uses_roxygen2(path),
+    roxygenize = !is_r_cmd_check() && uses_roxygen2(path),
     reporter = testthat::get_reporter()) {
   requireNamespace("testthat")
-
   testthat_envvar_val <- Sys.getenv("TESTTHAT")
   Sys.setenv(TESTTHAT = "true")
   on.exit(Sys.setenv(TESTTHAT = testthat_envvar_val), add = TRUE)

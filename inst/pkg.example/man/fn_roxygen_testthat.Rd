@@ -19,16 +19,16 @@ This example introduces \code{testthat}-style tests using in-line \verb{@testtha
 \examples{
 fn_roxygen_testthat("testing")
 \testonly{
-testex::testex(tag = "testthat", srcref = "fn.R:83:83", 
+testex::testex(style = "testthat", srcref = "fn.R:83:83", 
 expect_equal(., "testing 1 2 3"))}
 \testonly{
-testex::testex(tag = "testthat", srcref = "fn.R:84:84", 
+testex::testex(style = "testthat", srcref = "fn.R:84:84", 
 expect_match(., "^testing"))}
 fn_roxygen_testthat("testing")
 \testonly{
-testex::testex(tag = "testthat", srcref = "fn.R:87:87", 
+testex::testex(style = "testthat", srcref = "fn.R:87:87", 
 expect_equal(., "testing 1 2 3"))}
 \testonly{
-testex::testex(tag = "testthat", srcref = "fn.R:88:88", 
+testex::testex(style = "testthat", srcref = "fn.R:88:88", 
 expect_match(., "^testing"))}
 }

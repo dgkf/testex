@@ -160,7 +160,7 @@ format_tag_testthat_test <- function(tag) { # nolint
 
   paste0(
     "\\testonly{\n",
-    "testex::testex(tag = \"testthat\", srcref = ", deparse(src), ", \n",
+    "testex::testex(style = \"testthat\", srcref = ", deparse(src), ", \n",
     deparse_pretty(test),
     ")}",
     trimws(substring(tag$raw, n + 1L), "right")

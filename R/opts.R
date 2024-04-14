@@ -7,7 +7,7 @@
 #' As long as the `fingerprint` has not changed, the package `DESCRIPTION` will
 #' be read only once to parse and retrieve configuration options. If the
 #' `DESCRIPTION` file is modified or if run from a separate process, the
-#' configured settings will be refreshed based on the most recent version of 
+#' configured settings will be refreshed based on the most recent version of
 #' the file.
 #'
 #' @param path A path in which to search for a package `DESCRIPTION`
@@ -18,22 +18,67 @@
 #'
 #' @name testex-options
 #' @keywords internal
-update_testex_desc <- function(path, fingerprint) {
+memoise_testex_desc <- function(path, fingerprint, ...) {
   if (identical(fingerprint, .testex_options$.fingerprint)) {
     return(invisible(.testex_options))
   }
 
+  desc_opts <- read_testex_options(path, ...)
+
+  # clean and re-load memoised options
+  rm(list = names(.testex_options), envir = .testex_options)
+  for (n in names(desc_opts)) .testex_options[[n]] <- desc_opts[[n]]
+
+  .testex_options$.fingerprint <- fingerprint
+  invisible(.testex_options)
+}
+
+
+
+read_testex_options <- function(path, warn = TRUE, update = TRUE) {
+  desc <- read.dcf(file = path, all = TRUE)
+  desc <- read.dcf(file = path, keep.white = colnames(desc))
+
   field <- "Config/testex/options"
-  desc_opts <- read.dcf(file = path, fields = field, keep.white = field)[[1L]]
+  desc_opts <- if (field %in% colnames(desc)) desc[, field][[1]] else ""
 
   # the field name is erroneously parsed with the contents on R <4.1 in CMD check
   desc_opts <- gsub(paste0(field, ": "), "", desc_opts, fixed = TRUE)
+  pkg_opts <- pkg_opts_orig <- eval(parse(text = desc_opts), envir = baseenv())
+  loaded_version <- packageVersion(packageName())
+  loaded_version_str <- as.character(loaded_version)
 
-  desc_opts <- eval(parse(text = desc_opts), envir = baseenv())
-  rm(list = names(.testex_options), envir = .testex_options)
-  for (n in names(desc_opts)) .testex_options[[n]] <- desc_opts[[n]]
-  .testex_options$.fingerprint <- fingerprint
-  invisible(.testex_options)
+  warn_mismatch_msg <- cliless(
+    "{.pkg testex} {.code version} in {.file DESCRIPTION} does not match ",
+    "currently loaded version. Execution during {.code R CMD check} disabled."
+  )
+
+  if (update) {
+    # update registered version if necessary
+    if (is.null(pkg_opts$version) || pkg_opts$version < loaded_version) {
+      pkg_opts$version <- loaded_version_str
+    }
+
+    # only write if field was modified
+    if (!identical(pkg_opts, pkg_opts_orig)) {
+      desc[, field] <- deparse(pkg_opts)
+      write.dcf(
+        desc,
+        file = path,
+        keep.white = colnames(desc),
+        width = 80L,
+        indent = 2L
+      )
+      return(read_testex_options(path, warn = warn, update = FALSE))
+    }
+  }
+
+  if (!identical(pkg_opts$version, loaded_version_str)) {
+    if (warn) warning(warn_mismatch_msg)
+    pkg_opts$check <- FALSE
+  }
+
+  pkg_opts
 }
 
 
@@ -44,12 +89,15 @@ update_testex_desc <- function(path, fingerprint) {
 #'
 testex_options <- function(path = package_desc()) {
   if (is_r_cmd_check()) {
-    fingerprint <- list(
-      rcmdcheck = TRUE,
-      pid = Sys.getpid()
-    )
+    fingerprint <- list(rcmdcheck = TRUE, pid = Sys.getpid())
 
-    return(as.list(update_testex_desc(path, fingerprint)))
+    # don't warn or update description during checking
+    return(as.list(memoise_testex_desc(
+      path,
+      fingerprint,
+      warn = FALSE,
+      update = FALSE
+    )))
   }
 
   if (file.exists(path)) {
@@ -59,7 +107,7 @@ testex_options <- function(path = package_desc()) {
       mtime = file.info(path)[["mtime"]]
     )
 
-    return(as.list(update_testex_desc(path, fingerprint)))
+    return(as.list(memoise_testex_desc(path, fingerprint)))
   }
 
   return(as.list(.testex_options))

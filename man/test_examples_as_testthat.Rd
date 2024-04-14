@@ -8,10 +8,10 @@ test_examples_as_testthat(
   package,
   path,
   ...,
-  test_dir = tempfile("testex"),
+  test_dir = file.path(tempdir(), "testex-tests"),
   clean = TRUE,
   overwrite = TRUE,
-  roxygenize = uses_roxygen2(path),
+  roxygenize = !is_r_cmd_check() && uses_roxygen2(path),
   reporter = testthat::get_reporter()
 )
 }
@@ -36,7 +36,8 @@ exists. Defaults to \code{TRUE}.}
 \code{roxygen2} prior to testing. When not \code{FALSE}, tests written in \code{roxygen2}
 tags will be used to update R documentation files prior to testing to use
 the most up-to-date example tests. May be \code{TRUE}, or a \code{list} of arguments
-passed to \link[roxygen2:roxygenize]{roxygen2::roxygenize}.}
+passed to \link[roxygen2:roxygenize]{roxygen2::roxygenize}. By default, only enabled when running
+outside of \verb{R CMD check} and while taking \code{roxygen2} as a dependency.}
 
 \item{reporter}{A \code{testthat} reporter to use. Defaults to the active
 reporter in the \code{testthat} environment or default reporter.}

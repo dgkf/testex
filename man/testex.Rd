@@ -10,7 +10,7 @@ testex(
   example_srcref = NULL,
   value = get_example_value(),
   envir = parent.frame(),
-  tag = "test"
+  style = "standalone"
 )
 }
 \arguments{
@@ -26,6 +26,12 @@ the relevant example code originated from.}
 
 \item{envir}{An environment in which tests should be evaluated. By default
 the parent environment where tests are evaluated.}
+
+\item{style}{A syntactic style used by the test. Defaults to \code{"standalone"},
+which expects \code{TRUE} and uses a \code{.}-notation. Accepts one of
+\code{"standalone"} or \code{"testthat"}. By default, styles will be implicitly
+converted to accommodate known testing frameworks, though this can be
+disabled by passing the style \code{"AsIs"} with \code{\link[=I]{I()}}.}
 
 \item{test_srcref}{An option \code{srcref_key} string used to indicate where the
 relevant test code originated from.}

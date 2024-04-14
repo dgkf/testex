@@ -52,6 +52,11 @@
 #'   relevant test code originated from.
 #' @param envir An environment in which tests should be evaluated. By default
 #'   the parent environment where tests are evaluated.
+#' @param style A syntactic style used by the test. Defaults to `"standalone"`,
+#'   which expects `TRUE` and uses a `.`-notation. Accepts one of
+#'   `"standalone"` or `"testthat"`. By default, styles will be implicitly
+#'   converted to accommodate known testing frameworks, though this can be
+#'   disabled by passing the style `"AsIs"` with [I()].
 #'
 #' @return Invisibly returns the `.Last.value` as it existed prior to evaluating
 #'   the test.
@@ -63,8 +68,9 @@ testex <- function(
     example_srcref = NULL,
     value = get_example_value(),
     envir = parent.frame(),
-    tag = "test") {
-  if (is_r_cmd_check() && isFALSE(testex_options()$check)) {
+    style = "standalone") {
+  opts <- testex_options()
+  if (is_r_cmd_check() && isFALSE(opts$check)) {
     return(invisible(.Last.value))
   }
 
@@ -76,9 +82,9 @@ testex <- function(
     testthat::is_testing()
 
   exprs <- substitute(...())
-  expr <- if (is_testthat_running && tag == "test") {
-    testex_test_as_testthat(exprs, srcref, value)
-  } else if (is_testthat_running && tag == "testthat") {
+  expr <- if (is_testthat_running && identical(style, "standalone")) {
+    testex_standalone_as_testthat(exprs, srcref, value)
+  } else if (identical(style, "testthat")) {
     testex_testthat(exprs, srcref, value)
   } else {
     testex_standalone(exprs, srcref, value)
@@ -87,20 +93,10 @@ testex <- function(
   eval(expr, envir = envir)
 }
 
-testex_test_as_testthat <- function(exprs, srcref, value) {
+testex_standalone_as_testthat <- function(exprs, ...) {
   # wrap @test tests in expect_true when running with `testthat`
-  exprs_as_call(lapply(exprs, function(expr) {
-    expr <- bquote({
-      . <- .(value)
-      testthat::expect_true(.(expr))
-      invisible(.(value))
-    })
-    if (!is.null(srcref)) {
-      bquote(testex::with_srcref(.(srcref), .(expr)))
-    } else {
-      expr
-    }
-  }))
+  exprs <- lapply(exprs, function(expr) bquote(testthat::expect_true(.(expr))))
+  testex_testthat(exprs, ...)
 }
 
 testex_testthat <- function(exprs, srcref, value) {
@@ -122,10 +118,11 @@ testex_testthat <- function(exprs, srcref, value) {
 }
 
 testex_standalone <- function(exprs, srcref, value) {
-  # wrap test expressions in stopifnot, handle dot syntax
-  as.call(append(list(as.name("stopifnot")), lapply(exprs, function(expr) {
-    eval(bquote(substitute(.(expr), list(`.` = .(value)))))
-  })))
+  bquote({
+    . <- .(value)
+    .(as.call(append(list(as.name("stopifnot")), exprs)))
+    invisible(.)
+  })
 }
 
 exprs_as_call <- function(exprs) {
