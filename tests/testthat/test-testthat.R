@@ -68,9 +68,16 @@ test_that("testthat_block skips if example throws error", {
 
 test_that("test_examples_as_testthat converts examples to tests and executes test suite", {
   dir.create(test_lib <- tempfile("testex_test_lib"))
-  ex_pkg_path <- system.file(package = "testex", "pkg.example")
-  install.packages(ex_pkg_path, lib = test_lib, repos = NULL, type = "source", quiet = TRUE)
   withr::defer(unlink(test_lib, recursive = TRUE))
+
+  install.packages(
+    system.file(package = "testex", "pkg.example"),
+    lib = test_lib,
+    repos = NULL,
+    type = "source",
+    INSTALL_opts = "--install-tests",
+    quiet = testthat::is_testing()
+  )
 
   expect_silent({
     res <- callr::r(
@@ -80,7 +87,10 @@ test_that("test_examples_as_testthat converts examples to tests and executes tes
         library(pkg.example)
 
         with_reporter(ListReporter$new(), {
-          test_examples_as_testthat(path = find.package("pkg.example"))
+          test_examples_as_testthat(
+            path = find.package("pkg.example"),
+            roxygenize = FALSE # pkgload works weirdly here...
+          )
         })
       },
       libpath = c(test_lib, .libPaths()),
