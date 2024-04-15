@@ -44,16 +44,16 @@ test_that("expect_no_error reports when testthat errors occurs while evaluating 
 })
 
 test_that("testthat_block returns last value from previous expression", {
-  expect_silent(withr::with_dir(pkg_example_dir, {
+  expect_silent(withr::with_dir(pkg_example_dir, as_not_r_cmd_check({
     ..Last.value <- 3
     out <- testex(style = "testthat", expect_equal(., 3), value = ..Last.value)
-  }))
+  })))
 
   expect_equal(out, 3)
 })
 
 test_that("testthat_block skips if example throws error", {
-  expect_silent(withr::with_dir(pkg_example_dir, {
+  expect_silent(withr::with_dir(pkg_example_dir, as_not_r_cmd_check({
     cond <- tryCatch(
       {
         ..Last.value <- errorCondition("whoops!")
@@ -61,7 +61,7 @@ test_that("testthat_block skips if example throws error", {
       },
       condition = identity
     )
-  }))
+  })))
 
   expect_s3_class(cond, "skip")
 })
