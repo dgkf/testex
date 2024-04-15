@@ -1,4 +1,4 @@
-body {
+[data-bs-theme="dark"] {
   --bs-code-color: rgba(var(--bs-primary-rgb), 0.8);
 }
 
@@ -44,12 +44,12 @@ pre {
   input[type="search"] {
     border: none;
     border-radius: 0.1em;
-    background-color: rgba(var(--bs-body-bg-rgb), 0.8);
+    background-color: rgba(var(--bs-light-rgb), 0.2);
     color: rgba(var(--bs-primary-rgb), 0.6);
-    &:focus { background-color: rgba(var(--bs-body-bg-rgb), 0.90); }
+    &:focus { background-color: rgba(var(--bs-light-rgb), 0.3); }
   }
 }
 
 .text-muted {
-  color: rgba(var(--bs-body-bg-rgb), 0.6) !important;
+  color: rgba(var(--bs-light-rgb), 0.6) !important;
 }

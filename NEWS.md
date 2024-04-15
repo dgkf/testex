@@ -25,7 +25,7 @@
   ```
 
   This syntax is intended to be more resilient to changes to keep your
-  tests from relying to heavily on an unchanging `testex` function interface.
+  tests from relying too heavily on an unchanging `testex` function interface.
 
 ## New Features
 
