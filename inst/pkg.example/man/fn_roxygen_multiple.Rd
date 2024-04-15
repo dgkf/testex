@@ -33,7 +33,7 @@ testex::testex(srcref = "fn.R:113:113",
 grepl("\\\\d", .))}
 \testonly{
 testex::testex(srcref = "fn.R:114:114", 
-startsWith(., "testing 1 2 3"))}
+startsWith(., "testing"))}
 fn_roxygen_multiple2("testing")
 \testonly{
 testex::testex(srcref = "fn.R:126:126", 
