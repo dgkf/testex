@@ -1,6 +1,6 @@
 Package: testex
 Title: Add Tests to Examples
-Version: 0.2.0
+Version: 0.2.0.9000
 Authors@R: 
     c(
       person(
@@ -33,4 +33,3 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.1
 Language: en-US
 VignetteBuilder: knitr
-Config/testex/options: list(version = "0.2.0")
