@@ -1,114 +1,40 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/dev/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/dev/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>/dev/articles/configuration.html</loc>
-  </url>
-  <url>
-    <loc>/dev/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/dev/articles/interface_layers.html</loc>
-  </url>
-  <url>
-    <loc>/dev/authors.html</loc>
-  </url>
-  <url>
-    <loc>/dev/index.html</loc>
-  </url>
-  <url>
-    <loc>/dev/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/as.srcref.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/deparse_indent.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/deparse_pretty.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/fallback_expect_no_error.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/file_line_nchar.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/get_example_value.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/is_r_cmd_check.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/package-file-helpers.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/s3_register.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/split_srcref.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/srclocs.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/srcref_key.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/srcref_nlines.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/string_newline_count.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/test_examples_as_testthat.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/test_files.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/testex-options.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/testex-rd-example-helpers.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/testex-roxygen-tags.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/testex-testthat.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/testex.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/use_testex.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/use_testex_as_testthat.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/uses_roxygen2.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/vapplys.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/with_attached.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/with_srcref.html</loc>
-  </url>
-  <url>
-    <loc>/dev/reference/wrap_expect_no_error.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/dev/LICENSE-text.html</loc></url>
+<url><loc>/dev/LICENSE.html</loc></url>
+<url><loc>/dev/articles/configuration.html</loc></url>
+<url><loc>/dev/articles/index.html</loc></url>
+<url><loc>/dev/articles/interface_layers.html</loc></url>
+<url><loc>/dev/authors.html</loc></url>
+<url><loc>/dev/index.html</loc></url>
+<url><loc>/dev/news/index.html</loc></url>
+<url><loc>/dev/reference/as.srcref.html</loc></url>
+<url><loc>/dev/reference/deparse_indent.html</loc></url>
+<url><loc>/dev/reference/deparse_pretty.html</loc></url>
+<url><loc>/dev/reference/fallback_expect_no_error.html</loc></url>
+<url><loc>/dev/reference/file_line_nchar.html</loc></url>
+<url><loc>/dev/reference/get_example_value.html</loc></url>
+<url><loc>/dev/reference/index.html</loc></url>
+<url><loc>/dev/reference/is_r_cmd_check.html</loc></url>
+<url><loc>/dev/reference/package-file-helpers.html</loc></url>
+<url><loc>/dev/reference/s3_register.html</loc></url>
+<url><loc>/dev/reference/split_srcref.html</loc></url>
+<url><loc>/dev/reference/srclocs.html</loc></url>
+<url><loc>/dev/reference/srcref_key.html</loc></url>
+<url><loc>/dev/reference/srcref_nlines.html</loc></url>
+<url><loc>/dev/reference/string_newline_count.html</loc></url>
+<url><loc>/dev/reference/test_examples_as_testthat.html</loc></url>
+<url><loc>/dev/reference/test_files.html</loc></url>
+<url><loc>/dev/reference/testex-options.html</loc></url>
+<url><loc>/dev/reference/testex-rd-example-helpers.html</loc></url>
+<url><loc>/dev/reference/testex-roxygen-tags.html</loc></url>
+<url><loc>/dev/reference/testex-testthat.html</loc></url>
+<url><loc>/dev/reference/testex.html</loc></url>
+<url><loc>/dev/reference/use_testex.html</loc></url>
+<url><loc>/dev/reference/use_testex_as_testthat.html</loc></url>
+<url><loc>/dev/reference/uses_roxygen2.html</loc></url>
+<url><loc>/dev/reference/vapplys.html</loc></url>
+<url><loc>/dev/reference/with_attached.html</loc></url>
+<url><loc>/dev/reference/with_srcref.html</loc></url>
+<url><loc>/dev/reference/wrap_expect_no_error.html</loc></url>
 </urlset>
+
