@@ -23,7 +23,6 @@
 NULL
 
 
-
 #' Raise `testthat` Expectations With A Known Source Reference
 #'
 #' Retroactively assigns a source file and location to a expectation. This
@@ -53,7 +52,6 @@ with_srcref <- function(src, expr, envir = parent.frame()) {
     }
   )
 }
-
 
 
 #' Expect no Error
@@ -100,7 +98,6 @@ expect_no_error_call <- function() {
     quote(testex::fallback_expect_no_error)
   }
 }
-
 
 
 #' Execute examples from Rd files as `testthat` tests
@@ -150,14 +147,15 @@ expect_no_error_call <- function() {
 #'
 #' @export
 test_examples_as_testthat <- function(
-    package,
-    path,
-    ...,
-    test_dir = file.path(tempdir(), "testex-tests"),
-    clean = TRUE,
-    overwrite = TRUE,
-    roxygenize = !is_r_cmd_check() && uses_roxygen2(path),
-    reporter = testthat::get_reporter()) {
+  package,
+  path,
+  ...,
+  test_dir = file.path(tempdir(), "testex-tests"),
+  clean = TRUE,
+  overwrite = TRUE,
+  roxygenize = !is_r_cmd_check() && uses_roxygen2(path),
+  reporter = testthat::get_reporter()
+) {
   requireNamespace("testthat")
   testthat_envvar_val <- Sys.getenv("TESTTHAT")
   Sys.setenv(TESTTHAT = "true")
@@ -167,7 +165,9 @@ test_examples_as_testthat <- function(
     path <- find_package_root(testthat::test_path())
   }
 
-  if (isTRUE(roxygenize)) roxygenize <- list()
+  if (isTRUE(roxygenize)) {
+    roxygenize <- list()
+  }
   if (is.list(roxygenize) && requireNamespace("roxygen2", quietly = TRUE)) {
     args <- roxygenize
     args$package.dir <- path
@@ -187,15 +187,15 @@ test_examples_as_testthat <- function(
   }
 
   if (test_dir_exists && !overwrite) {
-    test_files <- list.files(test_dir, full.names = TRUE)
+    test_file_paths <- list.files(test_dir, full.names = TRUE)
     context <- cliless("{.pkg testex} testing examples")
-    test_files(test_files, context, chdir = FALSE)
+    test_files(test_file_paths, context, reporter = reporter, chdir = FALSE)
     return()
   }
 
   # find example sections and convert them to tests
   rd_examples <- Filter(Negate(is.null), lapply(rds, rd_extract_examples))
-  test_files <- lapply(seq_along(rd_examples), function(i) {
+  test_file_paths <- lapply(seq_along(rd_examples), function(i) {
     rd_filename <- names(rd_examples[i])
     rd_example <- rd_examples[[i]]
 
@@ -217,26 +217,36 @@ test_examples_as_testthat <- function(
   })
 
   context <- cliless("{.pkg testex} testing examples")
-  test_files(test_files, context, chdir = FALSE)
+  test_files(test_file_paths, context, reporter = reporter, chdir = FALSE)
 }
-
 
 
 #' Test a list of files
 #'
 #' @param files A collection of file paths to test
 #' @param context An optional context message to display in `testthat` reporters
+#' @param reporter A reporter to use when running each test file
 #' @param ... Additional arguments passed to `testhat::source_file`
 #'
 #' @return The result of [testthat::source_file()], after iterating over
 #'   generated test files.
 #'
 #' @keywords internal
-test_files <- function(files, context, ...) {
+test_files <- function(files, context, reporter, ...) {
   testthat::context_start_file(context)
-  for (file in files) testthat::source_file(file, ...)
-}
+  for (file in files) {
+    if (!is.null(reporter)) {
+      reporter$start_file(file)
+    }
 
+    testthat::source_file(file, ...)
+
+    if (!is.null(reporter)) {
+      reporter$end_context_if_started()
+      reporter$end_file()
+    }
+  }
+}
 
 
 #' Wraps an example expression in a `testthat` expectation to not error
@@ -260,7 +270,6 @@ wrap_expect_no_error <- function(expr, value) {
   }))
   # nocov end
 }
-
 
 
 #' Determine which symbol to use by default when testing examples

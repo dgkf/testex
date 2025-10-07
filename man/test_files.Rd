@@ -4,12 +4,14 @@
 \alias{test_files}
 \title{Test a list of files}
 \usage{
-test_files(files, context, ...)
+test_files(files, context, reporter, ...)
 }
 \arguments{
 \item{files}{A collection of file paths to test}
 
 \item{context}{An optional context message to display in \code{testthat} reporters}
+
+\item{reporter}{A reporter to use when running each test file}
 
 \item{...}{Additional arguments passed to \code{testhat::source_file}}
 }

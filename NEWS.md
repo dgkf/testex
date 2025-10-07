@@ -8,6 +8,11 @@
 > in documentation files may fail if interface changes.
 >
 
+# testex 0.2.1
+
+* Updated internals to be compatible with the next version of `testthat`
+  following `v3.2.3`. (@dgkf #12)
+
 # testex 0.2.0
 
 ## Breaking Changes
