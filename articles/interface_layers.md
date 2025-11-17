@@ -1,0 +1,104 @@
+# Interface Layers
+
+`testex` provides a multi-tiered API, allowing you to adopt it at in a
+way that makes the most sense for your package – whether you’re
+minimizing your dependency footprint or rely on a specific set of tools.
+Whatever your workflow, `testex` has something to offer.
+
+## Base building-blocks
+
+R examples can include test code! Even if you’re not using `testex`, you
+can already add tests to your examples!
+
+``` latex
+\examples{
+identity("hello, world")
+\testonly{
+  stopifnot(.Last.value == "hello, world")
+}
+}
+```
+
+Here we use `.Last.value` to grab the result of our last example and
+test it against an expected value. Though, as you might expect, you
+can’t easily add *another* test because `.Last.value` will have changed.
+
+`testex` provides a familiar interface for managing just this:
+
+``` latex
+\examples{
+identity("hello, world")
+\testonly{testex::testex(
+  is.character(.),
+  . == "hello, world")
+)}
+}
+```
+
+Already `testex` is doing a bit of work to make our lives easier. The
+`.Last.value` is propagated to each of the tests and we can use the
+convenient shorthand `.` to refer to the value we want to test.
+
+## Use a `roxygen2` tag!
+
+If you’re already using `roxygen2`, then things get even easier!
+`roxygen2` can make use of new tags provided by `testex`:
+
+``` r
+#' Hello, World!
+#' 
+#' @examples
+#' 
+#' hello("World")
+#' @test "Hello, World!"
+#'
+#' hello("darkness my old friend")
+#' @test grepl("darkness", .)
+#' 
+#' @export
+hello <- function(who) {
+  paste0("Hello, ", who, "!")
+}
+```
+
+After running
+[`roxygen2::roxygenize()`](https://roxygen2.r-lib.org/reference/roxygenize.html),
+you can take a peak at the `Rd` files and see how the code has been
+translated to `testex` tests.
+
+## Leverage `testthat` expectations
+
+A convenience tag is also provide for those that prefer the `testthat`
+style of testing. `testthat` provides a wealth of expectation functions,
+which can be used in conjunction with `testex` to write more familiar
+tests.
+
+``` r
+#' Hello, World!
+#' 
+#' @examples
+#' 
+#' hello("World")
+#' @testthat expect_equal("Hello, World!")
+#'
+#' hello("testthat my old friend")
+#' @testthat expect_match("testthat")
+#' 
+#' @export
+hello <- function(who) {
+  paste0("Hello, ", who, "!")
+}
+```
+
+The `@testthat` tag will automatically insert the `.Last.value` from the
+previous example into the first argument of each expectation. Multiple
+consecutive `@testthat` expectations will all test the previous example
+output.
+
+## Other Test Suites?
+
+There are, of course, plenty of other flavors of testing suites.
+Thankfully, `testex` is quite versatile because `Rd` code is used as the
+foundation of everything else.
+
+If you want to see support for another framework, please open an issue!
